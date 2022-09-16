@@ -73,11 +73,6 @@ namespace Data.DataAccess.Repositories.Implementation
             this.DbSet.Remove(entityToDelete);
         }
 
-        public int SaveChanges()
-        {
-            return this.ApplicationDbContext.SaveChanges();
-        }
-
         public void Dispose()
         {
             this.DisposeApplicationDbContext(true);

@@ -23,7 +23,5 @@ namespace Data.DataAccess.Repositories
         void Update(TEntity entity);
 
         void Delete(string id);
-
-        int SaveChanges();
     }
 }

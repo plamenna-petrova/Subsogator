@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Subsogator.Web", "Subsogato
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Subsogator.Infrastructure", "Subsogator.Infrastructure\Subsogator.Infrastructure.csproj", "{7C1B47C8-4D41-4F48-93C7-5FF3D63CED9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{BA4E3B5E-37AE-4A4B-92F5-628C5B96C43C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsole", "TestConsole\TestConsole.csproj", "{BA4E3B5E-37AE-4A4B-92F5-628C5B96C43C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subsogator.Business", "Subsogator.Business\Subsogator.Business.csproj", "{5B853086-8439-4103-BC70-AE6AACF6FFCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{BA4E3B5E-37AE-4A4B-92F5-628C5B96C43C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA4E3B5E-37AE-4A4B-92F5-628C5B96C43C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA4E3B5E-37AE-4A4B-92F5-628C5B96C43C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B853086-8439-4103-BC70-AE6AACF6FFCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B853086-8439-4103-BC70-AE6AACF6FFCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B853086-8439-4103-BC70-AE6AACF6FFCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B853086-8439-4103-BC70-AE6AACF6FFCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

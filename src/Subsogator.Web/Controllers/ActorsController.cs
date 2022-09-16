@@ -22,7 +22,7 @@ namespace Subsogator.Web.Controllers
         // GET: Actors
         public IActionResult Index()
         {
-            return View(_context.Actors.ToListAsync());
+            return View(_context.Actors.ToList());
         }
 
         // GET: Actors/Details/5
@@ -98,7 +98,7 @@ namespace Subsogator.Web.Controllers
                 try
                 {
                     _context.Update(actor);
-                    _context.SaveChangesAsync();
+                    _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
