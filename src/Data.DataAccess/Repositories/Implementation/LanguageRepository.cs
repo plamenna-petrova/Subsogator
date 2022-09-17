@@ -2,6 +2,8 @@
 using Data.DataModels.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Data.DataAccess.Repositories.Implementation
@@ -12,6 +14,16 @@ namespace Data.DataAccess.Repositories.Implementation
             : base(applicationDbContext)
         {
 
+        }
+
+        public override bool Exists(IQueryable<Language> languages, Language languageToFind)
+        {
+            Expression<Func<Language, bool>> languageExistsPredicate = l =>
+                l.Name.Trim().ToLower() == languageToFind.Name;
+
+            bool languageExists = languages.Any(languageExistsPredicate);
+
+            return languageExists;
         }
     }
 }

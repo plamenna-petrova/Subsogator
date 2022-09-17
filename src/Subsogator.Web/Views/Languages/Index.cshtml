@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Subsogator.Web.Models.Languages.ViewModels.AllLanguagesViewModel>
+
+@{
+    ViewData["Title"] = "Languages List";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Language</a>
+</p>
+@if (TempData["LanguageSuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["LanguageSuccessMessage"]
+    </div>
+}
+<table class="table table-bordered table-dark table-striped table-hover mt-3">
+    <thead class="thead-light">
+        <tr class="text-center">
+            <th>
+                @Html.DisplayNameFor(language => language.Name)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var language in Model)
+        {
+            <tr class="text-center">
+                <td>
+                    @Html.DisplayFor(languageModelItem => language.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@language.Id" class="btn btn-light">Edit</a>
+                    <a asp-action="Details" asp-route-id="@language.Id" class="btn btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@language.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,36 @@
+﻿@model Subsogator.Web.Models.Languages.ViewModels.LanguageDetailsViewModel
+
+@{
+    ViewData["Title"] = "Language Details";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div>
+    <h4>Language</h4>
+    <hr />
+    <dl class="row bg-secondary">
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(language => language.Name)
+        </dt>
+        <dd class="col-sm-10 text-light">
+            @Html.DisplayFor(language => language.Name)
+        </dd>
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(language => language.CreatedOn)
+        </dt>
+        <dd class="col-sm-10 text-light">
+            @Html.DisplayFor(language => language.CreatedOn)
+        </dd>
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(language => language.ModifiedOn)
+        </dt>
+        <dd class="col-sm-10 text-light">
+            @Html.DisplayFor(language => language.ModifiedOn)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Language</a>
+</div>

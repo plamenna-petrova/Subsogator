@@ -23,5 +23,8 @@ namespace Subsogator.Common.GlobalConstants
 
         public const string GenreNameMinimumLengthValidationMessage = "The country name " +
             "cannot be shorter than 5 symbols";
+
+        public const string LanguageNameMinimumLengthValidationMessage = "The language name " +
+           "cannot be shorter than 5 symbols";
     }
 }
