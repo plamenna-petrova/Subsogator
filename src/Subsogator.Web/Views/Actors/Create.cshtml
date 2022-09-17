@@ -1,12 +1,10 @@
 ﻿@model Subsogator.Web.Models.Actors.BindingModels.CreateActorBindingModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create New Actor";
 }
 
-<h3>Create</h3>
-
-<h3>Actor</h3>
+<h3>@ViewData["Title"]</h3>
 <hr />
 @if (TempData["ActorErrorMessage"] != null)
 {

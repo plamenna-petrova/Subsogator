@@ -1,0 +1,35 @@
+﻿@model Subsogator.Web.Models.Countries.ViewModels.CountryDetailsViewModel
+
+@{
+    ViewData["Title"] = "Country Details";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>Country</h4>
+    <hr />
+    <dl class="row bg-secondary">
+        <dt class = "col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(country => country.Name)
+        </dt>
+        <dd class = "col-sm-10 text-light">
+            @Html.DisplayFor(country => country.Name)
+        </dd>
+        <dt class = "col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(country => country.CreatedOn)
+        </dt>
+        <dd class = "col-sm-10 text-light">
+            @Html.DisplayFor(country => country.CreatedOn)
+        </dd>
+        <dt class = "col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(country => country.ModifiedOn)
+        </dt>
+        <dd class = "col-sm-10 text-light">
+            @Html.DisplayFor(country => country.ModifiedOn)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

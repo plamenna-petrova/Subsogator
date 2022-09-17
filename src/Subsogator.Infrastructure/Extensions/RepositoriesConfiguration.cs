@@ -12,6 +12,7 @@ namespace Subsogator.Infrastructure.Extensions
         public static void RegisterRepositories(this IServiceCollection serviceCollection) 
         {
             serviceCollection.AddScoped<IActorRepository, ActorRepository>();
+            serviceCollection.AddScoped<ICountryRepository, CountryRepository>();
         }
     }
 }

@@ -16,25 +16,18 @@ namespace Subsogator.Web.Controllers
 {
     public class ActorsController : BaseController
     {
-        private readonly ApplicationDbContext _context;
-
         private readonly IUnitOfWork _unitOfWork;
 
         private readonly IActorService _actorService;
 
-        public ActorsController(
-            ApplicationDbContext context,
-            IUnitOfWork unitOfWork,
-            IActorService actorService
-        )
+        public ActorsController(IActorService actorService, IUnitOfWork unitOfWork)
         {
-            _context = context;
             _unitOfWork = unitOfWork;
             _actorService = actorService;
         }
 
         // GET: Actors
-        public IActionResult Index()
+        public ViewResult Index()
         {
             IEnumerable<AllActorsViewModel> allActorsViewModel = _actorService.GetAllActors();
 
@@ -55,7 +48,7 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: Actors/Create
-        public IActionResult Create()
+        public ViewResult Create()
         {
             return View(new CreateActorBindingModel());
         }
@@ -161,7 +154,7 @@ namespace Subsogator.Web.Controllers
         // POST: Actors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmDelete(string id)
+        public IActionResult ConfirmDeletion(string id)
         {
             Actor actorToDelete = _actorService.FindActor(id);
 

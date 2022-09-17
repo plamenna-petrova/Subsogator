@@ -1,6 +1,5 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
-using Subsogator.Infrastructure.Formatting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
