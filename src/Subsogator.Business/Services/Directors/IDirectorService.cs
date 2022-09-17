@@ -12,18 +12,18 @@ namespace Subsogator.Business.Services.Directors
     {
         IEnumerable<AllDirectorsViewModel> GetAllDirectors();
 
-        DirectorDetailsViewModel GetDirectorDetails(string actorId);
+        DirectorDetailsViewModel GetDirectorDetails(string directorId);
 
         bool CreateDirector(CreateDirectorBindingModel createDirectorBindingModel);
 
-        EditDirectorBindingModel GetDirectorEditingDetails(string actorId);
+        EditDirectorBindingModel GetDirectorEditingDetails(string directorId);
 
         bool EditDirector(EditDirectorBindingModel editDirectorBindingModel);
 
-        DeleteDirectorViewModel GetDirectorDeletionDetails(string actorId);
+        DeleteDirectorViewModel GetDirectorDeletionDetails(string directorId);
 
-        void DeleteDirector(Director actor);
+        void DeleteDirector(Director director);
 
-        Director FindDirector(string actorId);
+        Director FindDirector(string directorId);
     }
 }

@@ -132,7 +132,7 @@ namespace Subsogator.Web.Controllers
             }
 
             TempData["ActorSuccessMessage"] = $"Actor {editActorBindingModel.FirstName} " +
-                $"{editActorBindingModel.LastName} edited successfully!";
+                $"{editActorBindingModel.LastName} saved successfully!";
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -156,9 +156,9 @@ namespace Subsogator.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {
-            Actor actorToDelete = _actorService.FindActor(id);
+            Actor actorToConfirmDeletion = _actorService.FindActor(id);
 
-            _actorService.DeleteActor(actorToDelete);
+            _actorService.DeleteActor(actorToConfirmDeletion);
 
             bool isActorDeleted = _unitOfWork.CommitSaveChanges();
 
@@ -168,8 +168,8 @@ namespace Subsogator.Web.Controllers
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["ActorSuccessMessage"] = $"Actor {actorToDelete.FirstName} " +
-                $"{actorToDelete.LastName} deleted successfully!";
+            TempData["ActorSuccessMessage"] = $"Actor {actorToConfirmDeletion.FirstName} " +
+                $"{actorToConfirmDeletion.LastName} deleted successfully!";
 
             return RedirectToIndexActionInCurrentController();
         }

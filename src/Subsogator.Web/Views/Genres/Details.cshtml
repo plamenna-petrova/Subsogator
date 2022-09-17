@@ -1,0 +1,36 @@
+﻿@model Subsogator.Web.Models.Genres.ViewModels.GenreDetailsViewModel
+
+@{
+    ViewData["Title"] = "Genre Details";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div>
+    <h4>Genre</h4>
+    <hr />
+    <dl class="row bg-secondary">
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(genre => genre.Name)
+        </dt>
+        <dd class="col-sm-10 text-light">
+            @Html.DisplayFor(genre => genre.Name)
+        </dd>
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(genre => genre.CreatedOn)
+        </dt>
+        <dd class="col-sm-10 text-light">
+            @Html.DisplayFor(genre => genre.CreatedOn)
+        </dd>
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(genre => genre.ModifiedOn)
+        </dt>
+        <dd class="col-sm-10 text-light">
+            @Html.DisplayFor(genre => genre.ModifiedOn)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Genre</a>
+</div>

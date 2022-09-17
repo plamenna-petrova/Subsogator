@@ -20,5 +20,8 @@ namespace Subsogator.Common.GlobalConstants
 
         public const string DirectorLastNameMinimumLengthValidationMessage = "The last name of the " +
              "director cannot be shorter than 2 symbols";
+
+        public const string GenreNameMinimumLengthValidationMessage = "The country name " +
+            "cannot be shorter than 5 symbols";
     }
 }

@@ -23,11 +23,11 @@ namespace Subsogator.Business.Services.Directors
         {
             List<AllDirectorsViewModel> allDirectors = _directorRepository
                  .GetAllAsNoTracking()
-                 .Select(a => new AllDirectorsViewModel
+                 .Select(d => new AllDirectorsViewModel
                  {
-                     Id = a.Id,
-                     FirstName = a.FirstName,
-                     LastName = a.LastName
+                     Id = d.Id,
+                     FirstName = d.FirstName,
+                     LastName = d.LastName
                  })
                  .ToList();
 

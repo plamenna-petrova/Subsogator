@@ -131,7 +131,7 @@ namespace Subsogator.Web.Controllers
             }
 
             TempData["CountrySuccessMessage"] = $"Country {editCountryBindingModel.Name} " +
-                $"edited successfully!";
+                $"saved successfully!";
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -155,20 +155,20 @@ namespace Subsogator.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {
-            Country countryToDelete = _countryService.FindCountry(id);
+            Country countryToConfirmDeletion = _countryService.FindCountry(id);
 
-            _countryService.DeleteCountry(countryToDelete);
+            _countryService.DeleteCountry(countryToConfirmDeletion);
 
             bool isCountryDeleted = _unitOfWork.CommitSaveChanges();
 
             if (!isCountryDeleted)
             {
                 TempData["CountryErrorMessage"] = $"Error, couldn't delete the country " +
-                    $"{countryToDelete.Name}!";
+                    $"{countryToConfirmDeletion.Name}!";
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["CountrySuccessMessage"] = $"Country {countryToDelete.Name} " +
+            TempData["CountrySuccessMessage"] = $"Country {countryToConfirmDeletion.Name} " +
                 $"deleted successfully!";
 
             return RedirectToIndexActionInCurrentController();

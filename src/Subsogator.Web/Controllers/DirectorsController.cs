@@ -133,7 +133,7 @@ namespace Subsogator.Web.Controllers
             }
 
             TempData["DirectorSuccessMessage"] = $"Director {editDirectorBindingModel.FirstName} " +
-                $"{editDirectorBindingModel.LastName} edited successfully!";
+                $"{editDirectorBindingModel.LastName} saved successfully!";
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -157,9 +157,9 @@ namespace Subsogator.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {
-            Director directorToDelete = _directorService.FindDirector(id);
+            Director directorToConfirmDeletion = _directorService.FindDirector(id);
 
-            _directorService.DeleteDirector(directorToDelete);
+            _directorService.DeleteDirector(directorToConfirmDeletion);
 
             bool isDirectorDeleted = _unitOfWork.CommitSaveChanges();
 
@@ -169,8 +169,8 @@ namespace Subsogator.Web.Controllers
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["DirectorSuccessMessage"] = $"Director {directorToDelete.FirstName} " +
-                $"{directorToDelete.LastName} deleted successfully!";
+            TempData["DirectorSuccessMessage"] = $"Director {directorToConfirmDeletion.FirstName} " +
+                $"{directorToConfirmDeletion.LastName} deleted successfully!";
 
             return RedirectToIndexActionInCurrentController();
         }
