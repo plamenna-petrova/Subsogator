@@ -9,6 +9,8 @@ namespace Subsogator.Web.Models.Actors.ViewModels
 {
     public class ActorDetailsViewModel
     {
+        public string Id { get; set; }
+
         [DisplayName(DisplayConstants.FirstNameDisplayName)]
         public string FirstName { get; set; }
 

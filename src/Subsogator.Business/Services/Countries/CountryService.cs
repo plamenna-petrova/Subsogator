@@ -25,9 +25,7 @@ namespace Subsogator.Business.Services.Countries
                 .Select(c => new AllCountriesViewModel
                 {
                     Id = c.Id,
-                    Name = c.Name,
-                    CreatedOn = c.CreatedOn,
-                    ModifiedOn = c.ModifiedOn
+                    Name = c.Name
                 })
                 .ToList();
 
@@ -45,6 +43,7 @@ namespace Subsogator.Business.Services.Countries
 
             var singleCountryDetails = new CountryDetailsViewModel
             {
+                Id = singleCountry.Id,
                 Name = singleCountry.Name,
                 CreatedOn = singleCountry.CreatedOn,
                 ModifiedOn = singleCountry.ModifiedOn

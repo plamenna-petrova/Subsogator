@@ -17,7 +17,7 @@
 }
 <table class="table table-bordered table-dark table-striped table-hover mt-3">
     <thead class="thead-light">
-        <tr>
+        <tr class="text-center">
             <th>
                 @Html.DisplayNameFor(actor => actor.FirstName)
             </th>
@@ -25,29 +25,19 @@
                 @Html.DisplayNameFor(actor => actor.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(actor => actor.CreatedOn)
+                Actions
             </th>
-            <th>
-                @Html.DisplayNameFor(actor => actor.ModifiedOn)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var actor in Model)
         {
-            <tr>
+            <tr class="text-center">
                 <td>
                     @Html.DisplayFor(actorModelItem => actor.FirstName)
                 </td>
                 <td>
                     @Html.DisplayFor(actorModelItem => actor.LastName)
-                </td>
-                <td>
-                    @Html.DisplayFor(actorModelItem => actor.CreatedOn)
-                </td>
-                <td>
-                    @Html.DisplayFor(actorModelItem => actor.ModifiedOn)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@actor.Id" class="btn btn-light">Edit</a>

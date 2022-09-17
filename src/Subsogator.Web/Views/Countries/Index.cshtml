@@ -7,7 +7,7 @@
 <h3>@ViewData["Title"]</h3>
 
 <p>
-    <a asp-action="Create">Create New Country</a>
+    <a asp-action="Create" class="btn btn-primary">Create New Country</a>
 </p>
 @if (TempData["CountrySuccessMessage"] != null)
 {
@@ -17,31 +17,21 @@
 }
 <table class="table table-bordered table-dark table-striped table-hover mt-3">
     <thead class="thead-light">
-        <tr>
+        <tr class="text-center">
             <th>
                 @Html.DisplayNameFor(country => country.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(country => country.CreatedOn)
+                Actions
             </th>
-            <th>
-                @Html.DisplayNameFor(country => country.ModifiedOn)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var country in Model)
         {
-            <tr>
+            <tr class="text-center">
                 <td>
                     @Html.DisplayFor(coutryModelItem => country.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(countryModelItem => country.CreatedOn)
-                </td>
-                <td>
-                    @Html.DisplayFor(countryModelItem => country.ModifiedOn)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@country.Id" class="btn btn-light">Edit</a>

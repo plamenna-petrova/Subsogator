@@ -17,11 +17,6 @@ namespace Subsogator.Web.Models.Actors.ViewModels
         [DisplayName(DisplayConstants.LastNameDisplayName)]
         public string LastName { get; set; }
 
-        [DisplayName(DisplayConstants.CreatedOnDisplayName)]
-        public DateTime CreatedOn { get; set; }
-
-        [DisplayName(DisplayConstants.ModifiedOnDisplayName)]
-        [DisplayFormat(NullDisplayText = "Not Yet Modified")]
         public DateTime? ModifiedOn { get; set; }
     }
 }

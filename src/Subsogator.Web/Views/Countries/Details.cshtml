@@ -4,7 +4,7 @@
     ViewData["Title"] = "Country Details";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h3>@ViewData["Title"]</h3>
 
 <div>
     <h4>Country</h4>
@@ -32,4 +32,5 @@
 </div>
 <div>
     <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Country</a>
 </div>

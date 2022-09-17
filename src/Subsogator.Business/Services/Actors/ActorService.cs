@@ -28,9 +28,7 @@ namespace Subsogator.Business.Services.Actors
                 {
                     Id = a.Id,
                     FirstName = a.FirstName,
-                    LastName = a.LastName,
-                    CreatedOn = a.CreatedOn,
-                    ModifiedOn = a.ModifiedOn
+                    LastName = a.LastName
                 })
                 .ToList();
 
@@ -48,6 +46,7 @@ namespace Subsogator.Business.Services.Actors
 
             var singleActorDetails = new ActorDetailsViewModel
             {
+                Id = singleActor.Id,
                 FirstName = singleActor.FirstName,
                 LastName = singleActor.LastName,
                 CreatedOn = singleActor.CreatedOn,

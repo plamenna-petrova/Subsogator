@@ -8,4 +8,8 @@
     <ProjectReference Include="..\Subsogator.Common\Subsogator.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Directors\" />
+  </ItemGroup>
+
 </Project>

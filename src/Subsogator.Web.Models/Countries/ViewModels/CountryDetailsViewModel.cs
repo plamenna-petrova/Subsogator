@@ -9,6 +9,8 @@ namespace Subsogator.Web.Models.Countries.ViewModels
 {
     public class CountryDetailsViewModel
     {
+        public string Id { get; set; }
+
         public string Name { get; set; }
 
         [DisplayName(DisplayConstants.CreatedOnDisplayName)]
