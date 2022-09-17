@@ -165,7 +165,7 @@ namespace Subsogator.Web.Controllers
         {
             Actor actorToDelete = _actorService.FindActor(id);
 
-            _actorService.DeleteActor(actorToDelete.Id);
+            _actorService.DeleteActor(actorToDelete);
 
             bool isActorDeleted = _unitOfWork.CommitSaveChanges();
 

@@ -136,9 +136,9 @@ namespace Subsogator.Business.Services.Actors
             return actorToDeleteDetails;
         }
 
-        public void DeleteActor(string actorId)
+        public void DeleteActor(Actor actor)
         {
-            _actorRepository.Delete(actorId);
+            _actorRepository.Delete(actor);
         }
 
         public Actor FindActor(string actorId)

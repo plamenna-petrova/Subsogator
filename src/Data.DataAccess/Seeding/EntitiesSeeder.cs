@@ -15,7 +15,7 @@ namespace Data.DataAccess.Seeding
                 return false;
             }
 
-            this.ExecutePartialSeeders(applicationDbContext);
+            ExecutePartialSeeders(applicationDbContext);
 
             return false;
         }

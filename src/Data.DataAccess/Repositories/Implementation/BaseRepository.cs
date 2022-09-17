@@ -58,17 +58,9 @@ namespace Data.DataAccess.Repositories.Implementation
             DbSet.Update(entity);
         }
 
-        public virtual void Delete(string id)
+        public virtual void Delete(TEntity entity)
         {
-            var entityToDelete = GetById(id);
-
-            if (entityToDelete == null)
-            {
-                throw new ArgumentNullException($"The object of type {typeof(TEntity)} " +
-                    $"with id: {id} does not exist");
-            }
-
-            DbSet.Remove(entityToDelete);
+            DbSet.Remove(entity);
         }
 
         public virtual bool Exists(IQueryable<TEntity> entities, TEntity entityToFind)

@@ -15,9 +15,11 @@ namespace Subsogator.Infrastructure.Extensions
         {
             try
             {
-                using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+                using (var serviceScope = applicationBuilder
+                    .ApplicationServices.CreateScope())
                 {
-                    using (var applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
+                    using (var applicationDbContext = serviceScope
+                        .ServiceProvider.GetRequiredService<ApplicationDbContext>())
                     {
                         var seeders = new List<ISeeder>
                         {

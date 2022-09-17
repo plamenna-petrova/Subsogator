@@ -16,7 +16,8 @@ namespace Subsogator.Infrastructure.Extensions
         {
             try
             {
-                using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+                using (var serviceScope = applicationBuilder
+                    .ApplicationServices.CreateScope())
                 {
                     using (var applicationDbContext = serviceScope.ServiceProvider
                         .GetRequiredService<ApplicationDbContext>())
@@ -29,7 +30,8 @@ namespace Subsogator.Infrastructure.Extensions
                         if (anyPendingMigrations)
                         {
                             applicationDbContext.Database.Migrate();
-                            logger.LogInformation($"Pending migrations applied to the database");
+                            logger.LogInformation($"Pending migrations " +
+                                $"applied to the database");
                         }
                         else
                         {

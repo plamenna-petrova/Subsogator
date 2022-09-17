@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Subsogator.Common.GlobalConstants;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -7,10 +8,10 @@ namespace Subsogator.Web.Models.Actors.ViewModels
 {
     public class DeleteActorViewModel
     {
-        [DisplayName("First Name")]
+        [DisplayName(DisplayConstants.FirstNameDisplayName)]
         public string FirstName { get; set; }
 
-        [DisplayName("Last Name")]
+        [DisplayName(DisplayConstants.LastNameDisplayName)]
         public string LastName { get; set; }
     }
 }

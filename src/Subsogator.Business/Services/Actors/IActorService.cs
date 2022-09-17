@@ -21,7 +21,7 @@ namespace Subsogator.Business.Services.Actors
 
         DeleteActorViewModel GetActorDeletionDetails(string actorId);
 
-        void DeleteActor(string actorId);
+        void DeleteActor(Actor actor);
 
         Actor FindActor(string actorId);
     }
