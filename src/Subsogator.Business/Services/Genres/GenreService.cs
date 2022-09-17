@@ -22,10 +22,10 @@ namespace Subsogator.Business.Services.Genres
         {
             List<AllGenresViewModel> allGenres = _genreRepository
                 .GetAllAsNoTracking()
-                .Select(c => new AllGenresViewModel
+                .Select(g => new AllGenresViewModel
                 {
-                    Id = c.Id,
-                    Name = c.Name
+                    Id = g.Id,
+                    Name = g.Name
                 })
                 .ToList();
 
@@ -97,7 +97,7 @@ namespace Subsogator.Business.Services.Genres
 
             var filteredGenres = _genreRepository
                 .GetAllAsNoTracking()
-                .Where(c => !c.Id.Equals(genreToUpdate.Id));
+                .Where(g => !g.Id.Equals(genreToUpdate.Id));
 
             if (_genreRepository.Exists(filteredGenres, genreToUpdate))
             {

@@ -20,10 +20,10 @@ namespace Subsogator.Business.Services.Languages
         {
             List<AllLanguagesViewModel> allLanguages = _languageRepository
                 .GetAllAsNoTracking()
-                .Select(c => new AllLanguagesViewModel
+                .Select(l => new AllLanguagesViewModel
                 {
-                    Id = c.Id,
-                    Name = c.Name
+                    Id = l.Id,
+                    Name = l.Name
                 })
                 .ToList();
 
@@ -95,7 +95,7 @@ namespace Subsogator.Business.Services.Languages
 
             var filteredLanguages = _languageRepository
                 .GetAllAsNoTracking()
-                .Where(c => !c.Id.Equals(languageToUpdate.Id));
+                .Where(l => !l.Id.Equals(languageToUpdate.Id));
 
             if (_languageRepository.Exists(filteredLanguages, languageToUpdate))
             {

@@ -5,22 +5,23 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Subsogator.Web.Models.Directors.BindingModels
+namespace Subsogator.Web.Models.Screenwriters.ViewModels
 {
-    public class EditDirectorBindingModel
+    public class ScreenwriterDetailsViewModel
     {
         public string Id { get; set; }
 
-        [Required]
-        [StringLength(25, MinimumLength = 2,
-            ErrorMessage = ValidationConstants.DirectorFirstNameMinimumLengthValidationMessage)]
         [DisplayName(DisplayConstants.FirstNameDisplayName)]
         public string FirstName { get; set; }
 
-        [Required]
-        [StringLength(25, MinimumLength = 2,
-            ErrorMessage = ValidationConstants.DirectorLastNameMinimumLengthValidationMessage)]
         [DisplayName(DisplayConstants.LastNameDisplayName)]
         public string LastName { get; set; }
+
+        [DisplayName(DisplayConstants.CreatedOnDisplayName)]
+        public DateTime CreatedOn { get; set; }
+
+        [DisplayName(DisplayConstants.ModifiedOnDisplayName)]
+        [DisplayFormat(NullDisplayText = DisplayConstants.NullModifiedOnEntryDisplayName)]
+        public DateTime? ModifiedOn { get; set; }
     }
 }

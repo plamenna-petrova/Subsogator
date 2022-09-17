@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\NewFolder\**" />
+    <EmbeddedResource Remove="Services\NewFolder\**" />
+    <None Remove="Services\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Data.DataAccess\Data.DataAccess.csproj" />
     <ProjectReference Include="..\Data.DataModels\Data.DataModels.csproj" />
     <ProjectReference Include="..\Subsogator.Web.Models\Subsogator.Web.Models.csproj" />

@@ -26,5 +26,11 @@ namespace Subsogator.Common.GlobalConstants
 
         public const string LanguageNameMinimumLengthValidationMessage = "The language name " +
            "cannot be shorter than 5 symbols";
+
+        public const string ScreenwriterFirstNameMinimumLengthValidationMessage = "The first name of the " +
+            "screenwriter cannot be shorter than 2 symbols";
+
+        public const string ScreenwriterLastNameMinimumLengthValidationMessage = "The last name of the " +
+             "screenwriter cannot be shorter than 2 symbols";
     }
 }

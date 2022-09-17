@@ -16,6 +16,7 @@ namespace Subsogator.Infrastructure.Extensions
             serviceCollection.AddScoped<IDirectorRepository, DirectorRepository>();
             serviceCollection.AddScoped<IGenreRepository, GenreRepository>();
             serviceCollection.AddScoped<ILanguageRepository, LanguageRepository>();
+            serviceCollection.AddScoped<IScreenwriterRepository, ScreenwriterRepository>();
         }
     }
 }

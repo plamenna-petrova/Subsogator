@@ -19,7 +19,7 @@ namespace Subsogator.Web.Models.Actors.BindingModels
 
         [Required]
         [StringLength(25, MinimumLength = 2,
-            ErrorMessage = ValidationConstants.ActorFirstNameMinimumLengthValidationMessage)]
+            ErrorMessage = ValidationConstants.ActorLastNameMinimumLengthValidationMessage)]
         [DisplayName(DisplayConstants.LastNameDisplayName)]
         public string LastName { get; set; }
     }

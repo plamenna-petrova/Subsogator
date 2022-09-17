@@ -8,6 +8,7 @@ using Subsogator.Business.Services.Countries;
 using Subsogator.Business.Services.Directors;
 using Subsogator.Business.Services.Genres;
 using Subsogator.Business.Services.Languages;
+using Subsogator.Business.Services.Screenwriters;
 using Subsogator.Business.Transactions.Implementation;
 using Subsogator.Business.Transactions.Interfaces;
 
@@ -24,6 +25,7 @@ namespace Subsogator.Infrastructure.Extensions
             serviceCollection.AddTransient<IDirectorService, DirectorService>();
             serviceCollection.AddTransient<IGenreService, GenreService>();
             serviceCollection.AddTransient<ILanguageService, LanguageService>();
+            serviceCollection.AddTransient<IScreenwriterService, ScreenwriterService>();
         }
     }
 }

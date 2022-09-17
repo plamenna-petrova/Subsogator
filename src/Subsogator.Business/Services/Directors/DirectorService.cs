@@ -103,7 +103,7 @@ namespace Subsogator.Business.Services.Directors
 
             var filteredDirectors = _directorRepository
                 .GetAllAsNoTracking()
-                .Where(a => !a.Id.Equals(directorToUpdate.Id))
+                .Where(d => !d.Id.Equals(directorToUpdate.Id))
                 .AsQueryable();
 
             if (_directorRepository.Exists(filteredDirectors, directorToUpdate))

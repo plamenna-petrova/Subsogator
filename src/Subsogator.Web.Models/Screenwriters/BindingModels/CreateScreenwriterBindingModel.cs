@@ -5,21 +5,19 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Subsogator.Web.Models.Directors.BindingModels
+namespace Subsogator.Web.Models.Screenwriters.BindingModels
 {
-    public class EditDirectorBindingModel
+    public class CreateScreenwriterBindingModel
     {
-        public string Id { get; set; }
-
         [Required]
         [StringLength(25, MinimumLength = 2,
-            ErrorMessage = ValidationConstants.DirectorFirstNameMinimumLengthValidationMessage)]
+            ErrorMessage = ValidationConstants.ScreenwriterFirstNameMinimumLengthValidationMessage)]
         [DisplayName(DisplayConstants.FirstNameDisplayName)]
         public string FirstName { get; set; }
 
         [Required]
         [StringLength(25, MinimumLength = 2,
-            ErrorMessage = ValidationConstants.DirectorLastNameMinimumLengthValidationMessage)]
+            ErrorMessage = ValidationConstants.ScreenwriterLastNameMinimumLengthValidationMessage)]
         [DisplayName(DisplayConstants.LastNameDisplayName)]
         public string LastName { get; set; }
     }

@@ -11,7 +11,7 @@ namespace Subsogator.Web.Models.Directors.BindingModels
     {
         [Required]
         [StringLength(25, MinimumLength = 2,
-    ErrorMessage = ValidationConstants.DirectorFirstNameMinimumLengthValidationMessage)]
+            ErrorMessage = ValidationConstants.DirectorFirstNameMinimumLengthValidationMessage)]
         [DisplayName(DisplayConstants.FirstNameDisplayName)]
         public string FirstName { get; set; }
 

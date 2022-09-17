@@ -1,0 +1,42 @@
+﻿@model Subsogator.Web.Models.Screenwriters.ViewModels.ScreenwriterDetailsViewModel
+
+@{
+    ViewData["Title"] = "Screenwriter Details";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div>
+    <h4>Screenwriter</h4>
+    <hr />
+    <dl class="row bg-secondary">
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(screenwriter => screenwriter.FirstName)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(screenwriter => screenwriter.FirstName)
+        </dd>
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(screenwriter => screenwriter.LastName)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(screenwriter => screenwriter.LastName)
+        </dd>
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(screenwriter => screenwriter.CreatedOn)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(screenwriter => screenwriter.CreatedOn)
+        </dd>
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(screenwriter => screenwriter.ModifiedOn)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(screenwriter => screenwriter.ModifiedOn)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back To Screenwriters List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Screenwriter</a>
+</div>

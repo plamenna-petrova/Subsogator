@@ -16,9 +16,9 @@ namespace Subsogator.Web.Controllers
 {
     public class ActorsController : BaseController
     {
-        private readonly IUnitOfWork _unitOfWork;
-
         private readonly IActorService _actorService;
+
+        private readonly IUnitOfWork _unitOfWork;
 
         public ActorsController(IActorService actorService, IUnitOfWork unitOfWork)
         {

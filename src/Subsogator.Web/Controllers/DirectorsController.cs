@@ -17,9 +17,9 @@ namespace Subsogator.Web.Controllers
 {
     public class DirectorsController : BaseController
     {
-        private readonly IUnitOfWork _unitOfWork;
-
         private readonly IDirectorService _directorService;
+
+        private readonly IUnitOfWork _unitOfWork;
 
         public DirectorsController(IDirectorService directorService, IUnitOfWork unitOfWork)
         {
