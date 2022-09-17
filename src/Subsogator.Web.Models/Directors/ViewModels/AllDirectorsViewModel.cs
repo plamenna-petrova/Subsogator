@@ -2,12 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Subsogator.Web.Models.Actors.ViewModels
+namespace Subsogator.Web.Models.Directors.ViewModels
 {
-    public class AllActorsViewModel
+    public class AllDirectorsViewModel
     {
         public string Id { get; set; }
 

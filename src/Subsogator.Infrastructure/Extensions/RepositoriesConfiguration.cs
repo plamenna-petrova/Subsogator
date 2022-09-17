@@ -13,6 +13,7 @@ namespace Subsogator.Infrastructure.Extensions
         {
             serviceCollection.AddScoped<IActorRepository, ActorRepository>();
             serviceCollection.AddScoped<ICountryRepository, CountryRepository>();
+            serviceCollection.AddScoped<IDirectorRepository, DirectorRepository>();
         }
     }
 }

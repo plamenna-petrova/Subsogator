@@ -2,15 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Subsogator.Web.Models.Actors.ViewModels
+namespace Subsogator.Web.Models.Directors.ViewModels
 {
-    public class AllActorsViewModel
+    public class DeleteDirectorViewModel
     {
-        public string Id { get; set; }
-
         [DisplayName(DisplayConstants.FirstNameDisplayName)]
         public string FirstName { get; set; }
 

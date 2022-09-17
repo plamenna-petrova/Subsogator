@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Subsogator.Web.Models.Directors.ViewModels.AllDirectorsViewModel>
+
+@{
+    ViewData["Title"] = "Directors List";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Director</a>
+</p>
+@if (TempData["DirectorSuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["DirectorSuccessMessage"]
+    </div>
+}
+<table class="table table-bordered table-dark table-striped table-hover mt-3">
+    <thead class="thead-light">
+        <tr class="text-center">
+            <th>
+                @Html.DisplayNameFor(director => director.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(director => director.LastName)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var director in Model)
+        {
+            <tr class="text-center">
+                <td>
+                    @Html.DisplayFor(directorModelItem => director.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(directorModelItem => director.LastName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@director.Id" class="btn btn-light">Edit</a>
+                    <a asp-action="Details" asp-route-id="@director.Id" class="btn btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@director.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

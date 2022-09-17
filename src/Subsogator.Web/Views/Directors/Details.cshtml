@@ -1,0 +1,42 @@
+﻿@model Subsogator.Web.Models.Directors.ViewModels.DirectorDetailsViewModel
+
+@{
+    ViewData["Title"] = "Director Details";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div>
+    <h4>Director</h4>
+    <hr />
+    <dl class="row bg-secondary">
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(director => director.FirstName)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(director => director.FirstName)
+        </dd>
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(director => director.LastName)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(director => director.LastName)
+        </dd>
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(director => director.CreatedOn)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(director => director.CreatedOn)
+        </dd>
+        <dt class="col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(director => director.ModifiedOn)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(director => director.ModifiedOn)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back To Directors List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Director</a>
+</div>

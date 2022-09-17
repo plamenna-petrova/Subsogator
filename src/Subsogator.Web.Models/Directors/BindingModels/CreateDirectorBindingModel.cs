@@ -5,15 +5,19 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Subsogator.Web.Models.Actors.ViewModels
+namespace Subsogator.Web.Models.Directors.BindingModels
 {
-    public class AllActorsViewModel
+    public class CreateDirectorBindingModel
     {
-        public string Id { get; set; }
-
+        [Required]
+        [StringLength(25, MinimumLength = 2,
+    ErrorMessage = ValidationConstants.DirectorFirstNameMinimumLengthValidationMessage)]
         [DisplayName(DisplayConstants.FirstNameDisplayName)]
         public string FirstName { get; set; }
 
+        [Required]
+        [StringLength(25, MinimumLength = 2,
+            ErrorMessage = ValidationConstants.DirectorLastNameMinimumLengthValidationMessage)]
         [DisplayName(DisplayConstants.LastNameDisplayName)]
         public string LastName { get; set; }
     }

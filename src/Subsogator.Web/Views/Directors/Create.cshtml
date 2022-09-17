@@ -1,0 +1,42 @@
+﻿@model Subsogator.Web.Models.Directors.BindingModels.CreateDirectorBindingModel
+
+@{
+    ViewData["Title"] = "Create New Director";
+}
+
+<h3>@ViewData["Title"]</h3>
+<hr />
+@if (TempData["DirectorErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["DirectorErrorMessage"]
+    </div>
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to Directors List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

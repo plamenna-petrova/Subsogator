@@ -14,5 +14,11 @@ namespace Subsogator.Common.GlobalConstants
 
         public const string CountryNameMinimumLengthValidationMessage = "The country name " +
             "cannot be shorter than 2 symbols";
+
+        public const string DirectorFirstNameMinimumLengthValidationMessage = "The first name of the " +
+            "director cannot be shorter than 2 symbols";
+
+        public const string DirectorLastNameMinimumLengthValidationMessage = "The last name of the " +
+             "director cannot be shorter than 2 symbols";
     }
 }
