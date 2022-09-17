@@ -12,16 +12,16 @@ namespace Subsogator.Business.Services.Directors
 {
     public class DirectorService: IDirectorService
     {
-        private readonly IDirectorRepository _actorRepository;
+        private readonly IDirectorRepository _directorRepository;
 
-        public DirectorService(IDirectorRepository actorRepository)
+        public DirectorService(IDirectorRepository directorRepository)
         {
-            _actorRepository = actorRepository;
+            _directorRepository = directorRepository;
         }
 
         public IEnumerable<AllDirectorsViewModel> GetAllDirectors()
         {
-            List<AllDirectorsViewModel> allDirectors = _actorRepository
+            List<AllDirectorsViewModel> allDirectors = _directorRepository
                  .GetAllAsNoTracking()
                  .Select(a => new AllDirectorsViewModel
                  {
@@ -34,9 +34,9 @@ namespace Subsogator.Business.Services.Directors
             return allDirectors;
         }
 
-        public DirectorDetailsViewModel GetDirectorDetails(string actorId)
+        public DirectorDetailsViewModel GetDirectorDetails(string directorId)
         {
-            var singleDirector = FindDirector(actorId);
+            var singleDirector = FindDirector(directorId);
 
             if (singleDirector == null)
             {
@@ -57,91 +57,91 @@ namespace Subsogator.Business.Services.Directors
 
         public bool CreateDirector(CreateDirectorBindingModel createDirectorBindingModel)
         {
-            Director actorToCreate = new Director
+            Director directorToCreate = new Director
             {
                 FirstName = createDirectorBindingModel.FirstName,
                 LastName = createDirectorBindingModel.LastName,
             };
 
-            var allDirectors = _actorRepository.GetAllAsNoTracking();
+            var allDirectors = _directorRepository.GetAllAsNoTracking();
 
-            if (_actorRepository.Exists(allDirectors, actorToCreate))
+            if (_directorRepository.Exists(allDirectors, directorToCreate))
             {
                 return false;
             }
 
-            _actorRepository.Add(actorToCreate);
+            _directorRepository.Add(directorToCreate);
 
             return true;
         }
 
-        public EditDirectorBindingModel GetDirectorEditingDetails(string actorId)
+        public EditDirectorBindingModel GetDirectorEditingDetails(string directorId)
         {
-            var actorToEdit = FindDirector(actorId);
+            var directorToEdit = FindDirector(directorId);
 
-            if (actorToEdit == null)
+            if (directorToEdit == null)
             {
                 return null;
             }
 
-            var actorToEditDetails = new EditDirectorBindingModel
+            var directorToEditDetails = new EditDirectorBindingModel
             {
-                Id = actorToEdit.Id,
-                FirstName = actorToEdit.FirstName,
-                LastName = actorToEdit.LastName
+                Id = directorToEdit.Id,
+                FirstName = directorToEdit.FirstName,
+                LastName = directorToEdit.LastName
             };
 
-            return actorToEditDetails;
+            return directorToEditDetails;
         }
 
         public bool EditDirector(EditDirectorBindingModel editDirectorBindingModel)
         {
-            var actorToUpdate = FindDirector(editDirectorBindingModel.Id);
+            var directorToUpdate = FindDirector(editDirectorBindingModel.Id);
 
-            actorToUpdate.FirstName = editDirectorBindingModel.FirstName;
-            actorToUpdate.LastName = editDirectorBindingModel.LastName;
+            directorToUpdate.FirstName = editDirectorBindingModel.FirstName;
+            directorToUpdate.LastName = editDirectorBindingModel.LastName;
 
-            var filteredDirectors = _actorRepository
+            var filteredDirectors = _directorRepository
                 .GetAllAsNoTracking()
-                .Where(a => !a.Id.Equals(actorToUpdate.Id))
+                .Where(a => !a.Id.Equals(directorToUpdate.Id))
                 .AsQueryable();
 
-            if (_actorRepository.Exists(filteredDirectors, actorToUpdate))
+            if (_directorRepository.Exists(filteredDirectors, directorToUpdate))
             {
                 return false;
             }
 
-            _actorRepository.Update(actorToUpdate);
+            _directorRepository.Update(directorToUpdate);
 
             return true;
         }
 
-        public DeleteDirectorViewModel GetDirectorDeletionDetails(string actorId)
+        public DeleteDirectorViewModel GetDirectorDeletionDetails(string directorId)
         {
-            var actorToDelete = FindDirector(actorId);
+            var directorToDelete = FindDirector(directorId);
 
-            if (actorToDelete == null)
+            if (directorToDelete == null)
             {
                 return null;
             }
 
-            var actorToDeleteDetails = new DeleteDirectorViewModel
+            var directorToDeleteDetails = new DeleteDirectorViewModel
             {
-                FirstName = actorToDelete.FirstName,
-                LastName = actorToDelete.LastName
+                FirstName = directorToDelete.FirstName,
+                LastName = directorToDelete.LastName
             };
 
-            return actorToDeleteDetails;
+            return directorToDeleteDetails;
         }
 
-        public void DeleteDirector(Director actor)
+        public void DeleteDirector(Director director)
         {
-            _actorRepository.Delete(actor);
+            _directorRepository.Delete(director);
         }
 
-        public Director FindDirector(string actorId)
+        public Director FindDirector(string directorId)
         {
-            return _actorRepository.GetById(actorId);
+            return _directorRepository.GetById(directorId);
         }
     }
 }
