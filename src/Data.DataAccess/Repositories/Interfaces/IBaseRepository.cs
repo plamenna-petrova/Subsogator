@@ -23,5 +23,7 @@ namespace Data.DataAccess.Repositories
         void Update(TEntity entity);
 
         void Delete(string id);
+
+        bool Exists(IQueryable<TEntity> entities, TEntity entityToFind);
     }
 }

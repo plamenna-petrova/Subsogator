@@ -20,43 +20,50 @@ namespace Subsogator.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection serviceCollection)
         {
-            services.AddDbContext<ApplicationDbContext>();
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            serviceCollection.AddDbContext<ApplicationDbContext>();
+
+            serviceCollection.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
-            services.AddRazorPages();
+
+            serviceCollection.AddControllersWithViews();
+
+            serviceCollection.AddRazorPages();
+
+            serviceCollection.RegisterRepositories();
+
+            serviceCollection.RegisterServiceLayer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder applicationBuilder, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                applicationBuilder.UseDeveloperExceptionPage();
 
-                app.UseDatabaseErrorPage();
+                applicationBuilder.UseDatabaseErrorPage();
 
-                app.MigrateDatabase(logger);
+                applicationBuilder.MigrateDatabase(logger);
 
-                app.ApplyDatabaseSeeding(logger);
+                applicationBuilder.ApplyDatabaseSeeding(logger);
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                applicationBuilder.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                applicationBuilder.UseHsts();
             }
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            applicationBuilder.UseHttpsRedirection();
+            applicationBuilder.UseStaticFiles();
 
-            app.UseRouting();
+            applicationBuilder.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            applicationBuilder.UseAuthentication();
+            applicationBuilder.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            applicationBuilder.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",

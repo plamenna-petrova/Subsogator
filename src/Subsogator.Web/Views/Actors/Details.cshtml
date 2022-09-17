@@ -1,42 +1,41 @@
-﻿@model Data.DataModels.Entities.Actor
+﻿@model Subsogator.Web.Models.Actors.ViewModels.ActorDetailsViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Actor Details";
 }
 
-<h1>Details</h1>
+<h1>@ViewData["Title"]</h1>
 
 <div>
     <h4>Actor</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
+    <dl class="row bg-secondary">
+        <dt class = "col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(actor => actor.FirstName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
+        <dd class = "col-sm-10 text-white">
+            @Html.DisplayFor(actor => actor.FirstName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
+        <dt class = "col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(actor => actor.LastName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
+        <dd class = "col-sm-10 text-white">
+            @Html.DisplayFor(actor => actor.LastName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedOn)
+        <dt class = "col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(actor => actor.CreatedOn)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedOn)
+        <dd class = "col-sm-10 text-white">
+            @Html.DisplayFor(actor => actor.CreatedOn)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedOn)
+        <dt class = "col-sm-2 text-dark bg-light">
+            @Html.DisplayNameFor(actor => actor.ModifiedOn)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedOn)
+        <dd class = "col-sm-10 text-white">
+            @Html.DisplayFor(actor => actor.ModifiedOn)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back To Actors List</a>
 </div>

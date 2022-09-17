@@ -8,13 +8,20 @@ namespace Data.DataAccess.Seeding
 {
     public class EntitiesSeeder : ISeeder
     {
-        public void SeedDatabase(ApplicationDbContext applicationDbContext)
+        public bool SeedDatabase(ApplicationDbContext applicationDbContext)
         {
             if (applicationDbContext.Subtitles.Any())
             {
-                return;
+                return false;
             }
 
+            this.ExecutePartialSeeders(applicationDbContext);
+
+            return false;
+        }
+
+        private void ExecutePartialSeeders(ApplicationDbContext applicationDbContext)
+        {
             foreach (var actorToSeed in ActorSeeder.ActorSeedingArray)
             {
                 applicationDbContext.Actors.Add(actorToSeed);

@@ -12,16 +12,17 @@ namespace Subsogator.Infrastructure.Extensions
 {
     public static class DatabaseMigrationManager
     {
-        public static void MigrateDatabase<T>(this IApplicationBuilder app, ILogger<T> logger)
+        public static void MigrateDatabase<T>(this IApplicationBuilder applicationBuilder, ILogger<T> logger)
         {
             try
             {
-                using (var serviceScope = app.ApplicationServices.CreateScope())
+                using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
                 {
                     using (var applicationDbContext = serviceScope.ServiceProvider
                         .GetRequiredService<ApplicationDbContext>())
                     {
-                        IEnumerable<string> pendingMigrations = applicationDbContext.Database.GetPendingMigrations();
+                        IEnumerable<string> pendingMigrations = applicationDbContext
+                            .Database.GetPendingMigrations();
 
                         bool anyPendingMigrations = pendingMigrations.Any();
 
@@ -32,7 +33,8 @@ namespace Subsogator.Infrastructure.Extensions
                         }
                         else
                         {
-                            logger.LogInformation($"No pending migrations need to be applied");
+                            logger.LogInformation($"No pending migrations need " +
+                                $"to be applied to the database");
                         }
                     }
                 }

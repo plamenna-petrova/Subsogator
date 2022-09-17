@@ -11,11 +11,11 @@ namespace Subsogator.Infrastructure.Extensions
 {
     public static class ApplicationDbContextSeeder
     {
-        public static void ApplyDatabaseSeeding<T>(this IApplicationBuilder app, ILogger<T> logger)
+        public static void ApplyDatabaseSeeding<T>(this IApplicationBuilder applicationBuilder, ILogger<T> logger)
         {
             try
             {
-                using (var serviceScope = app.ApplicationServices.CreateScope())
+                using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
                 {
                     using (var applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
                     {
@@ -26,8 +26,14 @@ namespace Subsogator.Infrastructure.Extensions
 
                         foreach (var seeder in seeders)
                         {
-                            seeder.SeedDatabase(applicationDbContext);
-                            logger.LogInformation($"Seeder {seeder.GetType().Name} done.");
+                            if (seeder.SeedDatabase(applicationDbContext))
+                            {
+                                logger.LogInformation($"Seeder {seeder.GetType().Name} done.");
+                            } 
+                            else
+                            {
+                                logger.LogInformation($"Nothing new to seed");
+                            }
                         }
                     }
                 }

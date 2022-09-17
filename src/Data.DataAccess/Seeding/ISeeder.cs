@@ -6,6 +6,6 @@ namespace Data.DataAccess.Seeding
 {
     public interface ISeeder
     {
-        void SeedDatabase(ApplicationDbContext applicationDbContext);
+        bool SeedDatabase(ApplicationDbContext applicationDbContext);
     }
 }

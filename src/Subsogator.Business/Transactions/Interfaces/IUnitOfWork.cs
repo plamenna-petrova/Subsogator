@@ -6,6 +6,6 @@ namespace Subsogator.Business.Transactions.Interfaces
 {
     public interface IUnitOfWork
     {
-        bool CommitChanges();
+        bool CommitSaveChanges();
     }
 }

@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data.DataAccess\Data.DataAccess.csproj" />
+    <ProjectReference Include="..\Subsogator.Business\Subsogator.Business.csproj" />
   </ItemGroup>
 
 </Project>

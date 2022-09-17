@@ -15,9 +15,9 @@ namespace Data.DataAccess
 {
     public class ApplicationDbContext: DbContext
     {
-        IConfigurationBuilder configurationBuilder;
+        IConfigurationBuilder _configurationBuilder;
 
-        IConfigurationRoot configurationRoot;
+        IConfigurationRoot _configurationRoot;
 
         public ApplicationDbContext()
         {
@@ -56,13 +56,15 @@ namespace Data.DataAccess
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
         {
             string secretsJSONFullPath = ConnectionConstants.DatabaseConnectionString;
-            this.configurationBuilder = new ConfigurationBuilder()
+            _configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Path.Join(secretsJSONFullPath))
                 .AddJsonFile(ConnectionConstants.SecretsJSONFileName);
-            this.configurationRoot = configurationBuilder.Build();
+            _configurationRoot = _configurationBuilder.Build();
             dbContextOptionsBuilder
                 .UseSqlServer(
-                    configurationRoot.GetSection(ConnectionConstants.SecretsJSONConnectionStringSection).Value
+                    _configurationRoot.GetSection(
+                        ConnectionConstants.SecretsJSONConnectionStringSection
+                    ).Value
                 );
         }
 

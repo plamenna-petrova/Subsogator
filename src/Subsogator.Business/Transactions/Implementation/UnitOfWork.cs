@@ -8,16 +8,18 @@ namespace Subsogator.Business.Transactions.Implementation
 {
     public class UnitOfWork: IUnitOfWork
     {
-        private readonly ApplicationDbContext applicatioDbContext;
+        private readonly ApplicationDbContext _applicatioDbContext;
 
         public UnitOfWork(ApplicationDbContext applicationDbContext)
         {
-            this.applicatioDbContext = applicationDbContext;
+            _applicatioDbContext = applicationDbContext;
         }
 
-        public bool CommitChanges()
+        public bool CommitSaveChanges()
         {
-            if (applicatioDbContext.SaveChanges() > 0)
+            int rowsAffected = _applicatioDbContext.SaveChanges();
+
+            if (rowsAffected > 0)
             {
                 return true;
             }

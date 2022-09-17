@@ -13,9 +13,9 @@ namespace Data.DataAccess.Repositories.Implementation
     {
         public BaseRepository(ApplicationDbContext applicationDbContext)
         {
-            this.ApplicationDbContext = applicationDbContext
+            ApplicationDbContext = applicationDbContext
                     ?? throw new ArgumentNullException(nameof(applicationDbContext));
-            this.DbSet = this.ApplicationDbContext.Set<TEntity>();
+            DbSet = ApplicationDbContext.Set<TEntity>();
         }
 
         protected ApplicationDbContext ApplicationDbContext { get; set; }
@@ -24,45 +24,43 @@ namespace Data.DataAccess.Repositories.Implementation
 
         public virtual IQueryable<TEntity> GetAll()
         {
-            return this.DbSet;
+            return DbSet;
         }
 
         public virtual IQueryable<TEntity> GetAllAsNoTracking()
         {
-            return this.DbSet.AsNoTracking();
+            return DbSet.AsNoTracking();
         }
 
         public virtual IQueryable<TEntity> GetAllByCondition(Expression<Func<TEntity, bool>> filter)
         {
-            return this.DbSet.Where(filter);
+            return DbSet.Where(filter);
         }
 
         public virtual TEntity GetById(string id)
         {
-            return this.DbSet.Find(id);
+            return DbSet.Find(id);
         }
 
         public virtual void Add(TEntity entity)
         {
-            this.DbSet.Add(entity);
+            DbSet.Add(entity);
         }
 
         public virtual void Update(TEntity entity)
         {
-            var entityToUpdate = this.GetById(entity.Id);
-
-            if (entityToUpdate == null)
+            if (entity == null)
             {
                 throw new ArgumentNullException($"The object of type {typeof(TEntity)} " +
                     $"with id: {entity.Id} does not exist");
             }
 
-            this.DbSet.Update(entity);
+            DbSet.Update(entity);
         }
 
-        public void Delete(string id)
+        public virtual void Delete(string id)
         {
-            var entityToDelete = this.GetById(id);
+            var entityToDelete = GetById(id);
 
             if (entityToDelete == null)
             {
@@ -70,12 +68,17 @@ namespace Data.DataAccess.Repositories.Implementation
                     $"with id: {id} does not exist");
             }
 
-            this.DbSet.Remove(entityToDelete);
+            DbSet.Remove(entityToDelete);
+        }
+
+        public virtual bool Exists(IQueryable<TEntity> entities, TEntity entityToFind)
+        {
+            return entities.Any(e => e == entityToFind);
         }
 
         public void Dispose()
         {
-            this.DisposeApplicationDbContext(true);
+            DisposeApplicationDbContext(true);
             GC.SuppressFinalize(this);
         }
 
@@ -83,7 +86,7 @@ namespace Data.DataAccess.Repositories.Implementation
         {
             if (disposing)
             {
-                this.ApplicationDbContext?.Dispose();
+                ApplicationDbContext?.Dispose();
             }
         }
     }
