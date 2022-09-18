@@ -1,13 +1,11 @@
-﻿using Data.DataAccess.Repositories.Implementation;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Subsogator.Web.Models.Actors.ViewModels;
 using Data.DataAccess.Repositories.Interfaces;
 using Subsogator.Web.Models.Actors.BindingModels;
 using Data.DataModels.Entities;
-using Subsogator.Business.Transactions.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Subsogator.Web.Models.FilmProductions.ViewModels;
 
 namespace Subsogator.Business.Services.Actors
 {
@@ -18,19 +16,57 @@ namespace Subsogator.Business.Services.Actors
         public ActorService(IActorRepository actorRepository)
         {
             _actorRepository = actorRepository;
+
         }
 
         public IEnumerable<AllActorsViewModel> GetAllActors()
         {
-           List<AllActorsViewModel> allActors = _actorRepository
+            //var allActorsFromDB = _actorRepository
+            //    .GetAllAsNoTracking()
+            //    .Include(a => a.FilmProductionActors)
+            //        .ThenInclude(fp => fp.FilmProduction)
+            //    .ToList();
+
+            //var allActorsWithRelatedData = new List<AllActorsViewModel>();
+
+            //foreach (var actorInDB in allActorsFromDB)
+            //{
+            //    var actorWithRelatedData = new AllActorsViewModel 
+            //    {
+            //        Id = actorInDB.FirstName,
+            //        FirstName = actorInDB.FirstName,
+            //        LastName = actorInDB.LastName
+            //    };
+
+            //    foreach (var filmProductionActor in actorInDB.FilmProductionActors)
+            //    {
+            //        var filmProductionOfAnActor = new FilmProductionConciseInformationViewModel
+            //        {
+            //            Title = filmProductionActor.FilmProduction.Title
+            //        };
+
+            //        actorWithRelatedData.RelatedFilmProductions.Add(filmProductionOfAnActor);
+            //    }
+
+            //    allActorsWithRelatedData.Add(actorWithRelatedData);
+            //}
+
+            List<AllActorsViewModel> allActors = _actorRepository
                 .GetAllAsNoTracking()
-                .Select(a => new AllActorsViewModel
-                {
-                    Id = a.Id,
-                    FirstName = a.FirstName,
-                    LastName = a.LastName
-                })
-                .ToList();
+                    .Select(a => new AllActorsViewModel
+                    {
+                        Id = a.Id,
+                        FirstName = a.FirstName,
+                        LastName = a.LastName,
+                        RelatedFilmProductions = a.FilmProductionActors
+                            .Where(fa => fa.ActorId == a.Id)
+                            .Select(fa => new FilmProductionConciseInformationViewModel
+                            {
+                                Title = fa.FilmProduction.Title
+                            })
+                            .ToList()
+                    })
+                    .ToList();
 
             return allActors;
         }

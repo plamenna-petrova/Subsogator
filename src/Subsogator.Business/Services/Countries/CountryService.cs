@@ -1,5 +1,7 @@
-﻿using Data.DataAccess.Repositories.Interfaces;
+﻿using Data.DataAccess;
+using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
+using Microsoft.EntityFrameworkCore;
 using Subsogator.Web.Models.Countries.BindingModels;
 using Subsogator.Web.Models.Countries.ViewModels;
 using System;
@@ -11,10 +13,13 @@ namespace Subsogator.Business.Services.Countries
 {
     public class CountryService: ICountryService
     {
+        private readonly ApplicationDbContext _applicationDbContext;
+
         private readonly ICountryRepository _countryRepository;
 
-        public CountryService(ICountryRepository countryRepository)
+        public CountryService(ICountryRepository countryRepository, ApplicationDbContext applicationDbContext)
         {
+            _applicationDbContext = applicationDbContext;
             _countryRepository = countryRepository;
         }
 

@@ -1,4 +1,6 @@
-﻿using Subsogator.Common.GlobalConstants;
+﻿using Data.DataModels.Entities;
+using Subsogator.Common.GlobalConstants;
+using Subsogator.Web.Models.FilmProductions.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,5 +18,8 @@ namespace Subsogator.Web.Models.Actors.ViewModels
 
         [DisplayName(DisplayConstants.LastNameDisplayName)]
         public string LastName { get; set; }
+
+        public List<FilmProductionConciseInformationViewModel> RelatedFilmProductions { get; set; }
+            = new List<FilmProductionConciseInformationViewModel>();
     }
 }

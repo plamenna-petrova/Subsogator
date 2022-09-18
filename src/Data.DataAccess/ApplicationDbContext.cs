@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Data.DataAccess
 {
-    public class ApplicationDbContext: DbContext
+    public class ApplicationDbContext : DbContext
     {
         IConfigurationBuilder _configurationBuilder;
 
@@ -25,7 +25,7 @@ namespace Data.DataAccess
 
         }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base() 
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base()
         {
 
         }
@@ -61,12 +61,16 @@ namespace Data.DataAccess
                 .SetBasePath(Path.Join(secretsJSONFullPath))
                 .AddJsonFile(ConnectionConstants.SecretsJSONFileName);
             _configurationRoot = _configurationBuilder.Build();
-            dbContextOptionsBuilder
-                .UseSqlServer(
-                    _configurationRoot.GetSection(
-                        ConnectionConstants.SecretsJSONConnectionStringSection
+
+            if (!dbContextOptionsBuilder.IsConfigured)
+            {
+                dbContextOptionsBuilder
+                    .UseSqlServer(
+                        _configurationRoot.GetSection(
+                            ConnectionConstants.SecretsJSONConnectionStringSection
                     ).Value
                 );
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
