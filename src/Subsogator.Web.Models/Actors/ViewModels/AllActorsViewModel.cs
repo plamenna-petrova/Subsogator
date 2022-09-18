@@ -19,7 +19,6 @@ namespace Subsogator.Web.Models.Actors.ViewModels
         [DisplayName(DisplayConstants.LastNameDisplayName)]
         public string LastName { get; set; }
 
-        public List<FilmProductionConciseInformationViewModel> RelatedFilmProductions { get; set; }
-            = new List<FilmProductionConciseInformationViewModel>();
+        public IEnumerable<FilmProductionConciseInformationViewModel> RelatedFilmProductions { get; set; }
     }
 }

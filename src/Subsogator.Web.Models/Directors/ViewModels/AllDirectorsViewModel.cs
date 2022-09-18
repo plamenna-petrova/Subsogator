@@ -1,4 +1,5 @@
 ﻿using Subsogator.Common.GlobalConstants;
+using Subsogator.Web.Models.FilmProductions.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,5 +16,7 @@ namespace Subsogator.Web.Models.Directors.ViewModels
 
         [DisplayName(DisplayConstants.LastNameDisplayName)]
         public string LastName { get; set; }
+
+        public IEnumerable<FilmProductionConciseInformationViewModel> RelatedFilmProductions { get; set; }
     }
 }

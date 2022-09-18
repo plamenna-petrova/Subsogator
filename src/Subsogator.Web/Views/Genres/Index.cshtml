@@ -22,6 +22,9 @@
                 @Html.DisplayNameFor(genre => genre.Name)
             </th>
             <th>
+                Related Film Productions
+            </th>
+            <th>
                 Actions
             </th>
         </tr>
@@ -32,6 +35,14 @@
             <tr class="text-center">
                 <td>
                     @Html.DisplayFor(genreModelItem => genre.Name)
+                </td>
+                <td>
+                    <ul>
+                        @foreach (var filmProduction in genre.RelatedFilmProductions)
+                        {
+                            <li>@filmProduction.Title</li>
+                        }
+                    </ul>
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@genre.Id" class="btn btn-light">Edit</a>

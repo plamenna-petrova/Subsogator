@@ -25,6 +25,9 @@
                 @Html.DisplayNameFor(screenwriter => screenwriter.LastName)
             </th>
             <th>
+                Related Film Productions
+            </th>
+            <th>
                 Actions
             </th>
         </tr>
@@ -38,6 +41,14 @@
                 </td>
                 <td>
                     @Html.DisplayFor(screenwriterModelItem => screenwriter.LastName)
+                </td>
+                <td>
+                    <ul>
+                        @foreach (var filmProduction in screenwriter.RelatedFilmProductions)
+                        {
+                            <li>@filmProduction.Title</li>
+                        }
+                    </ul>
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@screenwriter.Id" class="btn btn-light">Edit</a>

@@ -1,5 +1,7 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
+using Microsoft.EntityFrameworkCore;
+using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Web.Models.Screenwriters.BindingModels;
 using Subsogator.Web.Models.Screenwriters.ViewModels;
 using System;
@@ -26,7 +28,13 @@ namespace Subsogator.Business.Services.Screenwriters
                  {
                      Id = s.Id,
                      FirstName = s.FirstName,
-                     LastName = s.LastName
+                     LastName = s.LastName,
+                     RelatedFilmProductions = s.FilmProductionScreenwriters
+                        .Where(fs => fs.ScreenwriterId == s.Id)
+                        .Select(fs => new FilmProductionConciseInformationViewModel 
+                        {
+                            Title = fs.FilmProduction.Title
+                        })
                  })
                  .ToList();
 
@@ -35,7 +43,11 @@ namespace Subsogator.Business.Services.Screenwriters
 
         public ScreenwriterDetailsViewModel GetScreenwriterDetails(string screenwriterId)
         {
-            var singleScreenwriter = FindScreenwriter(screenwriterId);
+            var singleScreenwriter = _screenwriterRepository
+                  .GetAllByCondition(s => s.Id == screenwriterId)
+                    .Include(s => s.FilmProductionScreenwriters)
+                      .ThenInclude(fs => fs.FilmProduction)
+                        .FirstOrDefault();
 
             if (singleScreenwriter is null)
             {
@@ -48,7 +60,15 @@ namespace Subsogator.Business.Services.Screenwriters
                 FirstName = singleScreenwriter.FirstName,
                 LastName = singleScreenwriter.LastName,
                 CreatedOn = singleScreenwriter.CreatedOn,
-                ModifiedOn = singleScreenwriter.ModifiedOn
+                ModifiedOn = singleScreenwriter.ModifiedOn,
+                RelatedFilmProductions = singleScreenwriter.FilmProductionScreenwriters
+                    .Where(fs => fs.ScreenwriterId == singleScreenwriter.Id)
+                    .Select(fs => new FilmProductionDetailedInformationViewModel
+                    {
+                        Title = fs.FilmProduction.Title,
+                        Duration = fs.FilmProduction.Duration,
+                        ReleaseDate = fs.FilmProduction.ReleaseDate
+                    })
             };
 
             return singleScreenwriterDetails;

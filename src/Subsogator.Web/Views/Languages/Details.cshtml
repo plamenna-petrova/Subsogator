@@ -7,7 +7,6 @@
 <h3>@ViewData["Title"]</h3>
 
 <div>
-    <h4>Language</h4>
     <hr />
     <dl class="row bg-secondary">
         <dt class="col-sm-2 text-dark bg-light">
@@ -31,6 +30,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Language</a>
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-dark">Edit Language</a>
 </div>

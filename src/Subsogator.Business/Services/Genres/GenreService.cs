@@ -1,11 +1,13 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
+using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Web.Models.Genres.BindingModels;
 using Subsogator.Web.Models.Genres.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Subsogator.Business.Services.Genres
 {
@@ -25,7 +27,13 @@ namespace Subsogator.Business.Services.Genres
                 .Select(g => new AllGenresViewModel
                 {
                     Id = g.Id,
-                    Name = g.Name
+                    Name = g.Name,
+                    RelatedFilmProductions = g.FilmProductionGenres
+                        .Where(fg => fg.GenreId == g.Id)
+                        .Select(fg => new FilmProductionConciseInformationViewModel 
+                        {
+                            Title = fg.FilmProduction.Title
+                        })
                 })
                 .ToList();
 
@@ -34,7 +42,11 @@ namespace Subsogator.Business.Services.Genres
 
         public GenreDetailsViewModel GetGenreDetails(string genreId)
         {
-            var singleGenre = FindGenre(genreId);
+            var singleGenre = _genreRepository
+                   .GetAllByCondition(g => g.Id == genreId)
+                      .Include(g => g.FilmProductionGenres)
+                        .ThenInclude(fg => fg.FilmProduction)
+                            .FirstOrDefault();
 
             if (singleGenre is null)
             {
@@ -46,7 +58,15 @@ namespace Subsogator.Business.Services.Genres
                 Id = singleGenre.Id,
                 Name = singleGenre.Name,
                 CreatedOn = singleGenre.CreatedOn,
-                ModifiedOn = singleGenre.ModifiedOn
+                ModifiedOn = singleGenre.ModifiedOn,
+                RelatedFilmProductions = singleGenre.FilmProductionGenres
+                    .Where(fg => fg.GenreId == singleGenre.Id)
+                    .Select(fg => new FilmProductionDetailedInformationViewModel 
+                    {
+                        Title = fg.FilmProduction.Title,
+                        Duration = fg.FilmProduction.Duration,
+                        ReleaseDate = fg.FilmProduction.ReleaseDate
+                    })
             };
 
             return singleGenreDetails;

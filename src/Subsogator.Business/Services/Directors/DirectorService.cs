@@ -1,8 +1,10 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
+using Microsoft.EntityFrameworkCore;
 using Subsogator.Web.Models.Directors;
 using Subsogator.Web.Models.Directors.BindingModels;
 using Subsogator.Web.Models.Directors.ViewModels;
+using Subsogator.Web.Models.FilmProductions.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ using System.Text;
 
 namespace Subsogator.Business.Services.Directors
 {
-    public class DirectorService: IDirectorService
+    public class DirectorService : IDirectorService
     {
         private readonly IDirectorRepository _directorRepository;
 
@@ -27,7 +29,13 @@ namespace Subsogator.Business.Services.Directors
                  {
                      Id = d.Id,
                      FirstName = d.FirstName,
-                     LastName = d.LastName
+                     LastName = d.LastName,
+                     RelatedFilmProductions = d.FilmProductionDirectors
+                            .Where(fd => fd.DirectorId == d.Id)
+                            .Select(fd => new FilmProductionConciseInformationViewModel
+                            {
+                                Title = fd.FilmProduction.Title
+                            })
                  })
                  .ToList();
 
@@ -36,7 +44,11 @@ namespace Subsogator.Business.Services.Directors
 
         public DirectorDetailsViewModel GetDirectorDetails(string directorId)
         {
-            var singleDirector = FindDirector(directorId);
+            var singleDirector = _directorRepository
+                .GetAllByCondition(d => d.Id == directorId)
+                   .Include(d => d.FilmProductionDirectors)
+                      .ThenInclude(fd => fd.FilmProduction)
+                         .FirstOrDefault();
 
             if (singleDirector is null)
             {
@@ -49,7 +61,15 @@ namespace Subsogator.Business.Services.Directors
                 FirstName = singleDirector.FirstName,
                 LastName = singleDirector.LastName,
                 CreatedOn = singleDirector.CreatedOn,
-                ModifiedOn = singleDirector.ModifiedOn
+                ModifiedOn = singleDirector.ModifiedOn,
+                RelatedFilmProductions = singleDirector.FilmProductionDirectors
+                    .Where(fd => fd.DirectorId == singleDirector.Id)
+                    .Select(fd => new FilmProductionDetailedInformationViewModel
+                    {
+                        Title = fd.FilmProduction.Title,
+                        Duration = fd.FilmProduction.Duration,
+                        ReleaseDate = fd.FilmProduction.ReleaseDate
+                    })
             };
 
             return singleDirectorDetails;

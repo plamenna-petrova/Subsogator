@@ -21,36 +21,6 @@ namespace Subsogator.Business.Services.Actors
 
         public IEnumerable<AllActorsViewModel> GetAllActors()
         {
-            //var allActorsFromDB = _actorRepository
-            //    .GetAllAsNoTracking()
-            //    .Include(a => a.FilmProductionActors)
-            //        .ThenInclude(fp => fp.FilmProduction)
-            //    .ToList();
-
-            //var allActorsWithRelatedData = new List<AllActorsViewModel>();
-
-            //foreach (var actorInDB in allActorsFromDB)
-            //{
-            //    var actorWithRelatedData = new AllActorsViewModel 
-            //    {
-            //        Id = actorInDB.FirstName,
-            //        FirstName = actorInDB.FirstName,
-            //        LastName = actorInDB.LastName
-            //    };
-
-            //    foreach (var filmProductionActor in actorInDB.FilmProductionActors)
-            //    {
-            //        var filmProductionOfAnActor = new FilmProductionConciseInformationViewModel
-            //        {
-            //            Title = filmProductionActor.FilmProduction.Title
-            //        };
-
-            //        actorWithRelatedData.RelatedFilmProductions.Add(filmProductionOfAnActor);
-            //    }
-
-            //    allActorsWithRelatedData.Add(actorWithRelatedData);
-            //}
-
             List<AllActorsViewModel> allActors = _actorRepository
                 .GetAllAsNoTracking()
                     .Select(a => new AllActorsViewModel
@@ -64,7 +34,6 @@ namespace Subsogator.Business.Services.Actors
                             {
                                 Title = fa.FilmProduction.Title
                             })
-                            .ToList()
                     })
                     .ToList();
 
@@ -73,7 +42,16 @@ namespace Subsogator.Business.Services.Actors
 
         public ActorDetailsViewModel GetActorDetails(string actorId)
         {
-            var singleActor = FindActor(actorId);
+            var singleActor = _actorRepository
+                .GetAllByCondition(a => a.Id == actorId)
+                    .Include(a => a.FilmProductionActors)
+                        .ThenInclude(fa => fa.FilmProduction)
+                            .FirstOrDefault();
+
+            foreach (var fp in singleActor.FilmProductionActors)
+            {
+                var t = fp.FilmProduction;
+            }
 
             if (singleActor is null)
             {
@@ -86,8 +64,19 @@ namespace Subsogator.Business.Services.Actors
                 FirstName = singleActor.FirstName,
                 LastName = singleActor.LastName,
                 CreatedOn = singleActor.CreatedOn,
-                ModifiedOn = singleActor.ModifiedOn
+                ModifiedOn = singleActor.ModifiedOn,
+                RelatedFilmProductions = singleActor.FilmProductionActors
+                    .Where(fa => fa.ActorId == singleActor.Id)
+                    .Select(fa => new FilmProductionDetailedInformationViewModel
+                    {
+                        Title = fa.FilmProduction.Title,
+                        Duration = fa.FilmProduction.Duration,
+                        ReleaseDate = fa.FilmProduction.ReleaseDate
+                    })
+                    .ToList()
             };
+
+            var singleActorFilmProductions = singleActorDetails.RelatedFilmProductions;
 
             return singleActorDetails;
         }
