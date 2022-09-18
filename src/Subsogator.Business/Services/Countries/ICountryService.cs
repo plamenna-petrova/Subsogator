@@ -9,7 +9,9 @@ namespace Subsogator.Business.Services.Countries
 {
     public interface ICountryService
     {
-        IEnumerable<AllCountriesViewModel> GetAllCountries();
+        List<Country> GetAllCountries();
+
+        IEnumerable<AllCountriesViewModel> GetAllCountriesWithRelatedData();
 
         CountryDetailsViewModel GetCountryDetails(string countryId);
 

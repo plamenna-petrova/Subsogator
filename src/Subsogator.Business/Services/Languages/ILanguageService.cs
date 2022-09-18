@@ -9,7 +9,9 @@ namespace Subsogator.Business.Services.Languages
 {
     public interface ILanguageService
     {
-        IEnumerable<AllLanguagesViewModel> GetAllLanguages();
+        List<Language> GetAllLanguages();
+
+        IEnumerable<AllLanguagesViewModel> GetAllLanguagesWithRelatedData();
 
         LanguageDetailsViewModel GetLanguageDetails(string languageId);
 

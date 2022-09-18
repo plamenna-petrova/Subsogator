@@ -48,11 +48,6 @@ namespace Subsogator.Business.Services.Actors
                         .ThenInclude(fa => fa.FilmProduction)
                             .FirstOrDefault();
 
-            foreach (var fp in singleActor.FilmProductionActors)
-            {
-                var t = fp.FilmProduction;
-            }
-
             if (singleActor is null)
             {
                 return null;
@@ -75,8 +70,6 @@ namespace Subsogator.Business.Services.Actors
                     })
                     .ToList()
             };
-
-            var singleActorFilmProductions = singleActorDetails.RelatedFilmProductions;
 
             return singleActorDetails;
         }

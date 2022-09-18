@@ -37,7 +37,8 @@ namespace Subsogator.Web.Controllers
         // GET: Languages
         public ViewResult Index()
         {
-            IEnumerable<AllLanguagesViewModel> allLanguagesViewModel = _languageService.GetAllLanguages();
+            IEnumerable<AllLanguagesViewModel> allLanguagesViewModel = _languageService
+                .GetAllLanguagesWithRelatedData();
 
             return View(allLanguagesViewModel);
         }

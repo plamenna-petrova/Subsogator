@@ -37,7 +37,8 @@ namespace Subsogator.Web.Controllers
         // GET: Countries
         public ViewResult Index()
         {
-            IEnumerable<AllCountriesViewModel> allCountriesViewModel = _countryService.GetAllCountries();
+            IEnumerable<AllCountriesViewModel> allCountriesViewModel = _countryService
+                .GetAllCountriesWithRelatedData();
 
             return View(allCountriesViewModel);
         }

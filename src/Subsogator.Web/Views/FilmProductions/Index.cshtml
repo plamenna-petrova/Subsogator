@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Subsogator.Web.Models.FilmProductions.ViewModels.AllFilmProductionsViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h3>Film Productions List</h3>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Film Production</a>
+</p>
+@if (TempData["FilmProductionSuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["FilmProductionSuccessMessage"]
+    </div>
+}
+<table class="table table-bordered table-dark table-striped table-hover mt-3">
+    <thead class="thead-light">
+        <tr class="text-center">
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Duration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReleaseDate)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var filmProduction in Model)
+        {
+            <tr class="text-center">
+                <td>
+                    @Html.DisplayFor(filmProductionModelItem => filmProduction.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(filmProductionModelItem => filmProduction.Duration)
+                </td>
+                <td>
+                    @filmProduction.ReleaseDate.ToShortDateString()
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@filmProduction.Id" class="btn btn-light">Edit</a>
+                    <a asp-action="Details" asp-route-id="@filmProduction.Id" class="btn btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@filmProduction.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

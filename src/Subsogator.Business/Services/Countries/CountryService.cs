@@ -24,7 +24,12 @@ namespace Subsogator.Business.Services.Countries
             _countryRepository = countryRepository;
         }
 
-        public IEnumerable<AllCountriesViewModel> GetAllCountries()
+        public List<Country> GetAllCountries()
+        {
+            return _countryRepository.GetAllAsNoTracking().ToList();
+        }
+
+        public IEnumerable<AllCountriesViewModel> GetAllCountriesWithRelatedData()
         {
             List<AllCountriesViewModel> allCountries = _countryRepository
                 .GetAllAsNoTracking()

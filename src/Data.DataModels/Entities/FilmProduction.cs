@@ -1,6 +1,7 @@
 ﻿using Data.DataModels.Abstraction;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,12 +18,21 @@ namespace Data.DataModels.Entities
             FilmProductionScreenwriters = new HashSet<FilmProductionScreenwriter>();
         }
 
+        [Required]
+        [MinLength(2)]
+        [MaxLength(30)]
         public string Title { get; set; }
 
+        [Required]
+        [Range(45, 240)]
         public int Duration { get; set; }
 
+        [Required]
         public DateTime ReleaseDate { get; set; }
 
+        [Required]
+        [MinLength(20)]
+        [MaxLength(500)]
         public string PlotSummary { get; set; }
 
         public virtual Subtitles Subtitles { get; set; }

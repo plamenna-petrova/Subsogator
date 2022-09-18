@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Subsogator.Business.Services.Actors;
 using Subsogator.Business.Services.Countries;
 using Subsogator.Business.Services.Directors;
+using Subsogator.Business.Services.FilmProductions;
 using Subsogator.Business.Services.Genres;
 using Subsogator.Business.Services.Languages;
 using Subsogator.Business.Services.Screenwriters;
@@ -26,6 +27,7 @@ namespace Subsogator.Infrastructure.Extensions
             serviceCollection.AddTransient<IGenreService, GenreService>();
             serviceCollection.AddTransient<ILanguageService, LanguageService>();
             serviceCollection.AddTransient<IScreenwriterService, ScreenwriterService>();
+            serviceCollection.AddTransient<IFilmProductionService, FilmProductionService>();
         }
     }
 }

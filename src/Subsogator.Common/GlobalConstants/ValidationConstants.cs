@@ -32,5 +32,14 @@ namespace Subsogator.Common.GlobalConstants
 
         public const string ScreenwriterLastNameMinimumLengthValidationMessage = "The last name of the " +
              "screenwriter cannot be shorter than 2 symbols";
+
+        public const string FilmProductionTitleMinimumLengthValidationMessage = "The title of the " +
+            "film production cannot be shorter than 2 symbols";
+
+        public const string FilmProductionDurationRangeValidationMessage = "The duration of the " +
+            "film production must be in the range 45 - 240 minutes";
+
+        public const string FilmProductionPlotSummaryMinimumLengthValidationMessage = "The the plot summary " +
+            "film production cannot be shorter than 20 symbols";
     }
 }

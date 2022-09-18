@@ -65,7 +65,8 @@ namespace Subsogator.Web.Controllers
                 return View(createScreenwriterBindingModel);
             }
 
-            bool isNewScreenwriterCreated = _screenwriterService.CreateScreenwriter(createScreenwriterBindingModel);
+            bool isNewScreenwriterCreated = _screenwriterService
+                .CreateScreenwriter(createScreenwriterBindingModel);
 
             if (!isNewScreenwriterCreated)
             {

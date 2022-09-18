@@ -18,7 +18,12 @@ namespace Subsogator.Business.Services.Languages
             _languageRepository = languageRepository;
         }
 
-        public IEnumerable<AllLanguagesViewModel> GetAllLanguages()
+        public List<Language> GetAllLanguages()
+        {
+            return _languageRepository.GetAllAsNoTracking().ToList();
+        }
+
+        public IEnumerable<AllLanguagesViewModel> GetAllLanguagesWithRelatedData()
         {
             List<AllLanguagesViewModel> allLanguages = _languageRepository
                 .GetAllAsNoTracking()
