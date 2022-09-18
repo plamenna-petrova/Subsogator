@@ -11,6 +11,7 @@ using Subsogator.Web.Models.Countries.ViewModels;
 using Subsogator.Business.Services.Countries;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Countries.BindingModels;
+using Microsoft.Extensions.Logging;
 
 namespace Subsogator.Web.Controllers
 {
@@ -20,10 +21,17 @@ namespace Subsogator.Web.Controllers
 
         private readonly IUnitOfWork _unitOfWork;
 
-        public CountriesController(ICountryService countryService, IUnitOfWork unitOfWork)
+        private readonly ILogger _logger;
+
+        public CountriesController(
+            ICountryService countryService, 
+            IUnitOfWork unitOfWork,
+            ILogger<CountriesController> logger
+        )
         {
             _countryService = countryService;
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         // GET: Countries
@@ -159,19 +167,33 @@ namespace Subsogator.Web.Controllers
 
             _countryService.DeleteCountry(countryToConfirmDeletion);
 
-            bool isCountryDeleted = _unitOfWork.CommitSaveChanges();
-
-            if (!isCountryDeleted)
+            try 
             {
+                bool isCountryDeleted = _unitOfWork.CommitSaveChanges();
+
+                if (!isCountryDeleted)
+                {
+                    TempData["CountryErrorMessage"] = $"Error, couldn't delete the country " +
+                        $"{countryToConfirmDeletion.Name}!";
+                    return RedirectToAction(nameof(Delete));
+                }
+
+                TempData["CountrySuccessMessage"] = $"Country {countryToConfirmDeletion.Name} " +
+                    $"deleted successfully!";
+
+                return RedirectToIndexActionInCurrentController();
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                _logger.LogError("Exception: " + dbUpdateException.Message + "\n" + "Inner Exception :" +
+                    dbUpdateException.InnerException.Message ?? "");
+
                 TempData["CountryErrorMessage"] = $"Error, couldn't delete the country " +
-                    $"{countryToConfirmDeletion.Name}!";
+                    $"{countryToConfirmDeletion.Name}! Check the " +
+                    $"country relationship status!";
+
                 return RedirectToAction(nameof(Delete));
             }
-
-            TempData["CountrySuccessMessage"] = $"Country {countryToConfirmDeletion.Name} " +
-                $"deleted successfully!";
-
-            return RedirectToIndexActionInCurrentController();
         }
     }
 }

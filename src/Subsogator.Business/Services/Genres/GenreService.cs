@@ -36,7 +36,7 @@ namespace Subsogator.Business.Services.Genres
         {
             var singleGenre = FindGenre(genreId);
 
-            if (singleGenre == null)
+            if (singleGenre is null)
             {
                 return null;
             }
@@ -75,7 +75,7 @@ namespace Subsogator.Business.Services.Genres
         {
             var genreToEdit = FindGenre(genreId);
 
-            if (genreToEdit == null)
+            if (genreToEdit is null)
             {
                 return null;
             }
@@ -113,7 +113,7 @@ namespace Subsogator.Business.Services.Genres
         {
             var genreToDelete = FindGenre(genreId);
 
-            if (genreToDelete == null)
+            if (genreToDelete is null)
             {
                 return null;
             }

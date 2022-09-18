@@ -34,7 +34,7 @@ namespace Subsogator.Business.Services.Languages
         {
             var singleLanguage = FindLanguage(languageId);
 
-            if (singleLanguage == null)
+            if (singleLanguage is null)
             {
                 return null;
             }
@@ -73,7 +73,7 @@ namespace Subsogator.Business.Services.Languages
         {
             var languageToEdit = FindLanguage(languageId);
 
-            if (languageToEdit == null)
+            if (languageToEdit is null)
             {
                 return null;
             }
@@ -111,7 +111,7 @@ namespace Subsogator.Business.Services.Languages
         {
             var languageToDelete = FindLanguage(languageId);
 
-            if (languageToDelete == null)
+            if (languageToDelete is null)
             {
                 return null;
             }

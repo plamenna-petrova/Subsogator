@@ -37,7 +37,7 @@ namespace Subsogator.Business.Services.Screenwriters
         {
             var singleScreenwriter = FindScreenwriter(screenwriterId);
 
-            if (singleScreenwriter == null)
+            if (singleScreenwriter is null)
             {
                 return null;
             }
@@ -78,7 +78,7 @@ namespace Subsogator.Business.Services.Screenwriters
         {
             var screenwriterToEdit = FindScreenwriter(screenwriterId);
 
-            if (screenwriterToEdit == null)
+            if (screenwriterToEdit is null)
             {
                 return null;
             }
@@ -119,7 +119,7 @@ namespace Subsogator.Business.Services.Screenwriters
         {
             var screenwriterToDelete = FindScreenwriter(screenwriterId);
 
-            if (screenwriterToDelete == null)
+            if (screenwriterToDelete is null)
             {
                 return null;
             }

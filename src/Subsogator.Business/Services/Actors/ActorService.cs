@@ -39,7 +39,7 @@ namespace Subsogator.Business.Services.Actors
         {
             var singleActor = FindActor(actorId);
 
-            if (singleActor == null)
+            if (singleActor is null)
             {
                 return null;
             }
@@ -80,7 +80,7 @@ namespace Subsogator.Business.Services.Actors
         {
             var actorToEdit = FindActor(actorId);
 
-            if (actorToEdit == null)
+            if (actorToEdit is null)
             {
                 return null;
             }
@@ -121,7 +121,7 @@ namespace Subsogator.Business.Services.Actors
         {
             var actorToDelete = FindActor(actorId);
 
-            if (actorToDelete == null)
+            if (actorToDelete is null)
             {
                 return null;
             }

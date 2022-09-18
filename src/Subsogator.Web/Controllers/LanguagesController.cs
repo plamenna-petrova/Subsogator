@@ -11,6 +11,7 @@ using Subsogator.Business.Services.Languages;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Languages.ViewModels;
 using Subsogator.Web.Models.Languages.BindingModels;
+using Microsoft.Extensions.Logging;
 
 namespace Subsogator.Web.Controllers
 {
@@ -20,10 +21,17 @@ namespace Subsogator.Web.Controllers
 
         private readonly IUnitOfWork _unitOfWork;
 
-        public LanguagesController(ILanguageService languageService, IUnitOfWork unitOfWork)
+        private readonly ILogger _logger;
+
+        public LanguagesController(
+            ILanguageService languageService, 
+            IUnitOfWork unitOfWork, 
+            ILogger<LanguagesController> logger
+        )
         {
             _languageService = languageService;
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         // GET: Languages
@@ -157,19 +165,33 @@ namespace Subsogator.Web.Controllers
 
             _languageService.DeleteLanguage(languageToConfirmDeletion);
 
-            bool isLanguageDeleted = _unitOfWork.CommitSaveChanges();
-
-            if (!isLanguageDeleted)
+            try 
             {
+                bool isLanguageDeleted = _unitOfWork.CommitSaveChanges();
+
+                if (!isLanguageDeleted)
+                {
+                    TempData["LanguageErrorMessage"] = $"Error, couldn't delete the language " +
+                        $"{languageToConfirmDeletion.Name}!";
+                    return RedirectToAction(nameof(Delete));
+                }
+
+                TempData["LanguageSuccessMessage"] = $"Language {languageToConfirmDeletion.Name} " +
+                    $"deleted successfully!";
+
+                return RedirectToIndexActionInCurrentController();
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                _logger.LogError("Exception: " + dbUpdateException.Message + "\n" + "Inner Exception :" +
+                    dbUpdateException.InnerException.Message ?? "");
+
                 TempData["LanguageErrorMessage"] = $"Error, couldn't delete the language " +
-                    $"{languageToConfirmDeletion.Name}!";
+                    $"{languageToConfirmDeletion.Name}! Check the " +
+                    $"language relationship status!";
+
                 return RedirectToAction(nameof(Delete));
             }
-
-            TempData["LanguageSuccessMessage"] = $"Language {languageToConfirmDeletion.Name} " +
-                $"deleted successfully!";
-
-            return RedirectToIndexActionInCurrentController();
         }
     }
 }

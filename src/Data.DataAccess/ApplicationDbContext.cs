@@ -1,6 +1,7 @@
 ﻿using Data.DataModels.Entities;
 using Data.DataModels.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using Subsogator.Common.GlobalConstants;
 using System;
@@ -88,15 +89,17 @@ namespace Data.DataAccess
 
         private void ApplyEntityChanges()
         {
-            var changeTrackerEntries = this.ChangeTracker.Entries()
+            var changeTrackerEntries = ChangeTracker.Entries()
                .Where(
                     x => x.Entity is IAuditInfo &&
-                    (x.State == EntityState.Added || x.State == EntityState.Modified)
-                );
+                    x.State != EntityState.Unchanged
+                )
+               .Select(e => e)
+               .ToList();
 
             foreach (var changeTrackerEntry in changeTrackerEntries)
             {
-                var auditableEntity = (IAuditInfo) changeTrackerEntry.Entity;
+                var auditableEntity = changeTrackerEntry.Entity as IAuditInfo;
 
                 switch (changeTrackerEntry.State)
                 {

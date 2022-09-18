@@ -38,7 +38,7 @@ namespace Subsogator.Business.Services.Directors
         {
             var singleDirector = FindDirector(directorId);
 
-            if (singleDirector == null)
+            if (singleDirector is null)
             {
                 return null;
             }
@@ -79,7 +79,7 @@ namespace Subsogator.Business.Services.Directors
         {
             var directorToEdit = FindDirector(directorId);
 
-            if (directorToEdit == null)
+            if (directorToEdit is null)
             {
                 return null;
             }
@@ -120,7 +120,7 @@ namespace Subsogator.Business.Services.Directors
         {
             var directorToDelete = FindDirector(directorId);
 
-            if (directorToDelete == null)
+            if (directorToDelete is null)
             {
                 return null;
             }

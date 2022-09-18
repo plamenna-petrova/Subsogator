@@ -36,7 +36,7 @@ namespace Subsogator.Business.Services.Countries
         {
             var singleCountry = FindCountry(countryId);
 
-            if (singleCountry == null)
+            if (singleCountry is null)
             {
                 return null;
             }
@@ -75,7 +75,7 @@ namespace Subsogator.Business.Services.Countries
         {
             var countryToEdit = FindCountry(countryId);
 
-            if (countryToEdit == null)
+            if (countryToEdit is null)
             {
                 return null;
             }
@@ -113,7 +113,7 @@ namespace Subsogator.Business.Services.Countries
         {
             var countryToDelete = FindCountry(countryId);
 
-            if (countryToDelete == null)
+            if (countryToDelete is null)
             {
                 return null;
             }
