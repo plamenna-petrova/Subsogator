@@ -4,6 +4,7 @@ using Data.DataModels.Entities;
 using Microsoft.EntityFrameworkCore;
 using Subsogator.Web.Models.Countries.BindingModels;
 using Subsogator.Web.Models.Countries.ViewModels;
+using Subsogator.Web.Models.FilmProductions.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,12 @@ namespace Subsogator.Business.Services.Countries
                 .Select(c => new AllCountriesViewModel
                 {
                     Id = c.Id,
-                    Name = c.Name
+                    Name = c.Name,
+                    RelatedFilmProductions = c.FilmProductions
+                        .Select(fp => new FilmProductionConciseInformationViewModel
+                        {
+                            Title = fp.Title
+                        })
                 })
                 .ToList();
 
@@ -39,7 +45,10 @@ namespace Subsogator.Business.Services.Countries
 
         public CountryDetailsViewModel GetCountryDetails(string countryId)
         {
-            var singleCountry = FindCountry(countryId);
+            var singleCountry = _countryRepository
+                  .GetAllByCondition(c => c.Id == countryId)
+                    .Include(c => c.FilmProductions)
+                      .FirstOrDefault();
 
             if (singleCountry is null)
             {
@@ -51,7 +60,14 @@ namespace Subsogator.Business.Services.Countries
                 Id = singleCountry.Id,
                 Name = singleCountry.Name,
                 CreatedOn = singleCountry.CreatedOn,
-                ModifiedOn = singleCountry.ModifiedOn
+                ModifiedOn = singleCountry.ModifiedOn,
+                RelatedFilmProductions = singleCountry.FilmProductions
+                    .Select(fp => new FilmProductionDetailedInformationViewModel 
+                    { 
+                        Title = fp.Title,
+                        Duration = fp.Duration,
+                        ReleaseDate = fp.ReleaseDate
+                    })
             };
 
             return singleCountryDetails;

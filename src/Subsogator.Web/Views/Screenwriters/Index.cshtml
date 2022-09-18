@@ -44,9 +44,16 @@
                 </td>
                 <td>
                     <ul>
-                        @foreach (var filmProduction in screenwriter.RelatedFilmProductions)
+                        @if (screenwriter.RelatedFilmProductions.Count() > 0)
                         {
-                            <li>@filmProduction.Title</li>
+                            @foreach (var filmProduction in screenwriter.RelatedFilmProductions)
+                            {
+                                <li>@filmProduction.Title</li>
+                            }
+                        }
+                        else
+                        {
+                            <li>No Related Film Productions</li>
                         }
                     </ul>
                 </td>

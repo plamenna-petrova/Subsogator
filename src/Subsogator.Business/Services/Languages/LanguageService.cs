@@ -1,5 +1,7 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
+using Microsoft.EntityFrameworkCore;
+using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Web.Models.Languages.BindingModels;
 using Subsogator.Web.Models.Languages.ViewModels;
 using System.Collections.Generic;
@@ -23,7 +25,12 @@ namespace Subsogator.Business.Services.Languages
                 .Select(l => new AllLanguagesViewModel
                 {
                     Id = l.Id,
-                    Name = l.Name
+                    Name = l.Name,
+                    RelatedFilmProductions = l.FilmProductions
+                        .Select(fp => new FilmProductionConciseInformationViewModel 
+                        {
+                            Title = fp.Title
+                        })
                 })
                 .ToList();
 
@@ -32,7 +39,10 @@ namespace Subsogator.Business.Services.Languages
 
         public LanguageDetailsViewModel GetLanguageDetails(string languageId)
         {
-            var singleLanguage = FindLanguage(languageId);
+            var singleLanguage = _languageRepository
+                  .GetAllByCondition(l => l.Id == languageId)
+                    .Include(l => l.FilmProductions)
+                       .FirstOrDefault();
 
             if (singleLanguage is null)
             {
@@ -44,7 +54,14 @@ namespace Subsogator.Business.Services.Languages
                 Id = singleLanguage.Id,
                 Name = singleLanguage.Name,
                 CreatedOn = singleLanguage.CreatedOn,
-                ModifiedOn = singleLanguage.ModifiedOn
+                ModifiedOn = singleLanguage.ModifiedOn,
+                RelatedFilmProductions = singleLanguage.FilmProductions
+                    .Select(fp => new FilmProductionDetailedInformationViewModel 
+                    {
+                        Title = fp.Title,
+                        Duration = fp.Duration,
+                        ReleaseDate = fp.ReleaseDate
+                    })
             };
 
             return singleLanguageDetails;

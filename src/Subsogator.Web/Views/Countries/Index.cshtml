@@ -22,6 +22,9 @@
                 @Html.DisplayNameFor(country => country.Name)
             </th>
             <th>
+                Related Film Productions
+            </th>
+            <th>
                 Actions
             </th>
         </tr>
@@ -32,6 +35,21 @@
             <tr class="text-center">
                 <td>
                     @Html.DisplayFor(countryModelItem => country.Name)
+                </td>
+                <td>
+                    <ul>
+                        @if (country.RelatedFilmProductions.Count() > 0)
+                        {
+                            @foreach (var filmProduction in country.RelatedFilmProductions)
+                            {
+                                <li>@filmProduction.Title</li>
+                            }
+                        }
+                        else
+                        {
+                            <li>No Related Film Productions</li>
+                        }
+                    </ul>
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@country.Id" class="btn btn-light">Edit</a>

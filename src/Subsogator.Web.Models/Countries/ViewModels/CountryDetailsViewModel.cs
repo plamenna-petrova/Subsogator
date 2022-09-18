@@ -1,4 +1,5 @@
 ﻿using Subsogator.Common.GlobalConstants;
+using Subsogator.Web.Models.FilmProductions.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,5 +20,7 @@ namespace Subsogator.Web.Models.Countries.ViewModels
         [DisplayName(DisplayConstants.ModifiedOnDisplayName)]
         [DisplayFormat(NullDisplayText = DisplayConstants.NullModifiedOnEntryDisplayName)]
         public DateTime? ModifiedOn { get; set; }
+
+        public IEnumerable<FilmProductionDetailedInformationViewModel> RelatedFilmProductions { get; set; }
     }
 }

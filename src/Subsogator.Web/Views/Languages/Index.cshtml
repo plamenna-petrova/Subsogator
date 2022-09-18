@@ -22,6 +22,9 @@
                 @Html.DisplayNameFor(language => language.Name)
             </th>
             <th>
+                Related Film Productions
+            </th>
+            <th>
                 Actions
             </th>
         </tr>
@@ -32,6 +35,21 @@
             <tr class="text-center">
                 <td>
                     @Html.DisplayFor(languageModelItem => language.Name)
+                </td>
+                <td>
+                    <ul>
+                        @if (language.RelatedFilmProductions.Count() > 0)
+                        {
+                            @foreach (var filmProduction in language.RelatedFilmProductions)
+                            {
+                                <li>@filmProduction.Title</li>
+                            }
+                        }
+                        else
+                        {
+                            <li>No Related Film Productions</li>
+                        }
+                    </ul>
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@language.Id" class="btn btn-light">Edit</a>
