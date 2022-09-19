@@ -166,33 +166,21 @@ namespace Subsogator.Web.Controllers
 
             _languageService.DeleteLanguage(languageToConfirmDeletion);
 
-            try 
+            bool isLanguageDeleted = _unitOfWork.CommitSaveChanges();
+
+            if (!isLanguageDeleted)
             {
-                bool isLanguageDeleted = _unitOfWork.CommitSaveChanges();
-
-                if (!isLanguageDeleted)
-                {
-                    TempData["LanguageErrorMessage"] = $"Error, couldn't delete the language " +
-                        $"{languageToConfirmDeletion.Name}!";
-                    return RedirectToAction(nameof(Delete));
-                }
-
-                TempData["LanguageSuccessMessage"] = $"Language {languageToConfirmDeletion.Name} " +
-                    $"deleted successfully!";
-
-                return RedirectToIndexActionInCurrentController();
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                _logger.LogError("Exception: " + dbUpdateException.Message + "\n" + "Inner Exception :" +
-                    dbUpdateException.InnerException.Message ?? "");
-
                 TempData["LanguageErrorMessage"] = $"Error, couldn't delete the language " +
-                    $"{languageToConfirmDeletion.Name}! Check the " +
-                    $"language relationship status!";
+                      $"{languageToConfirmDeletion.Name}! Check the " +
+                      $"language relationship status!";
 
                 return RedirectToAction(nameof(Delete));
             }
+
+            TempData["LanguageSuccessMessage"] = $"Language {languageToConfirmDeletion.Name} " +
+                $"deleted successfully!";
+
+            return RedirectToIndexActionInCurrentController();
         }
     }
 }

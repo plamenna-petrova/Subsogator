@@ -96,7 +96,7 @@ namespace Subsogator.Business.Services.Actors
 
         public EditActorBindingModel GetActorEditingDetails(string actorId)
         {
-            var actorToEdit = FindActor(actorId);
+            var actorToEdit = _actorRepository.GetById(actorId);
 
             if (actorToEdit is null)
             {

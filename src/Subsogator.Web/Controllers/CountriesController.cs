@@ -24,7 +24,7 @@ namespace Subsogator.Web.Controllers
         private readonly ILogger _logger;
 
         public CountriesController(
-            ICountryService countryService, 
+            ICountryService countryService,
             IUnitOfWork unitOfWork,
             ILogger<CountriesController> logger
         )
@@ -116,7 +116,7 @@ namespace Subsogator.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EditCountryBindingModel editCountryBindingModel)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return View(editCountryBindingModel);
             }
@@ -127,6 +127,7 @@ namespace Subsogator.Web.Controllers
             {
                 TempData["CountryErrorMessage"] = $"Error, the country " +
                     $"{editCountryBindingModel.Name} already exists";
+
                 return View(editCountryBindingModel);
             }
 
@@ -136,6 +137,7 @@ namespace Subsogator.Web.Controllers
             {
                 TempData["CountryErrorMessage"] = $"Error, couldn't save " +
                     $"the current country update!";
+
                 return View(editCountryBindingModel);
             }
 
@@ -168,33 +170,22 @@ namespace Subsogator.Web.Controllers
 
             _countryService.DeleteCountry(countryToConfirmDeletion);
 
-            try 
+            bool isCountryDeleted = _unitOfWork.CommitSaveChanges();
+
+            if (!isCountryDeleted)
             {
-                bool isCountryDeleted = _unitOfWork.CommitSaveChanges();
-
-                if (!isCountryDeleted)
-                {
-                    TempData["CountryErrorMessage"] = $"Error, couldn't delete the country " +
-                        $"{countryToConfirmDeletion.Name}!";
-                    return RedirectToAction(nameof(Delete));
-                }
-
-                TempData["CountrySuccessMessage"] = $"Country {countryToConfirmDeletion.Name} " +
-                    $"deleted successfully!";
-
-                return RedirectToIndexActionInCurrentController();
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                _logger.LogError("Exception: " + dbUpdateException.Message + "\n" + "Inner Exception :" +
-                    dbUpdateException.InnerException.Message ?? "");
-
                 TempData["CountryErrorMessage"] = $"Error, couldn't delete the country " +
                     $"{countryToConfirmDeletion.Name}! Check the " +
                     $"country relationship status!";
 
                 return RedirectToAction(nameof(Delete));
             }
+
+            TempData["CountrySuccessMessage"] = $"Country {countryToConfirmDeletion.Name} " +
+                $"deleted successfully!";
+
+            return RedirectToIndexActionInCurrentController();
+
         }
     }
 }

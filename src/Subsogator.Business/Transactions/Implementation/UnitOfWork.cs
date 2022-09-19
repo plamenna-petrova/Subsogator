@@ -1,4 +1,6 @@
 ﻿using Data.DataAccess;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Subsogator.Business.Transactions.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,21 +12,34 @@ namespace Subsogator.Business.Transactions.Implementation
     {
         private readonly ApplicationDbContext _applicatioDbContext;
 
-        public UnitOfWork(ApplicationDbContext applicationDbContext)
+        private readonly ILogger _logger;
+
+        public UnitOfWork(ApplicationDbContext applicationDbContext, ILogger<UnitOfWork> logger)
         {
             _applicatioDbContext = applicationDbContext;
+            _logger = logger;
         }
 
         public bool CommitSaveChanges()
         {
-            int rowsAffected = _applicatioDbContext.SaveChanges();
-
-            if (rowsAffected > 0)
+            try
             {
-                return true;
-            }
+                int rowsAffected = _applicatioDbContext.SaveChanges();
 
-            return false;
+                if (rowsAffected > 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (DbUpdateException dbUpdateException) 
+            {
+                _logger.LogError("Exception: " + dbUpdateException.Message + "\n" + "Inner Exception :" +
+                    dbUpdateException.InnerException.Message ?? "");
+
+                return false;
+            }
         }
     }
 }

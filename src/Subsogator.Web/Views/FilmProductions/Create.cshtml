@@ -4,13 +4,13 @@
     ViewData["Title"] = "Create New Film Production";
 }
 
-<h3>@ViewData["Titlte"]</h3>
+<h3>@ViewData["Title"]</h3>
 
 <hr />
-@if (TempData["CountryErrorMessage"] != null)
+@if (TempData["FilmProductionErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
-        @TempData["CountryErrorMessage"]
+        @TempData["FilmProductionErrorMessage"]
     </div>
 }
 <div class="row">
@@ -53,7 +53,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {

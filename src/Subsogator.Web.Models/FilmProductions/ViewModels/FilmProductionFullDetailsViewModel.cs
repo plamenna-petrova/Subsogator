@@ -15,5 +15,9 @@ namespace Subsogator.Web.Models.FilmProductions.ViewModels
         public DateTime ReleaseDate { get; set; }
 
         public string PlotSummary { get; set; }
+
+        public string CountryName { get; set; }
+
+        public string LanguageName { get; set; }
     }
 }

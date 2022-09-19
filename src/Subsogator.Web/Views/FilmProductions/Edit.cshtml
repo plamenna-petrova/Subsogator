@@ -1,17 +1,24 @@
-﻿@model Data.DataModels.Entities.FilmProduction
+﻿@model Subsogator.Web.Models.FilmProductions.BindingModels.EditFilmProductionBindingModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Film Production";
 }
 
-<h1>Edit</h1>
+<h3>@ViewData["Title"]</h3>
 
-<h4>FilmProduction</h4>
+<h4>Film Production</h4>
 <hr />
+@if (TempData["FilmProductionErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["FilmProductionErrorMessage"]
+    </div>
+}
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -33,25 +40,14 @@
                 <span asp-validation-for="PlotSummary" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CountryId" class="control-label"></label>
-                <select asp-for="CountryId" class="form-control" asp-items="ViewBag.CountryId"></select>
+                <label class="control-label">Country</label>
+                <select asp-for="CountryId" class="form-control" asp-items="ViewBag.CountryByName"></select>
                 <span asp-validation-for="CountryId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LanguageId" class="control-label"></label>
-                <select asp-for="LanguageId" class="form-control" asp-items="ViewBag.LanguageId"></select>
+                <label class="control-label">Language</label>
+                <select asp-for="LanguageId" class="form-control" asp-items="ViewBag.LanguageByName"></select>
                 <span asp-validation-for="LanguageId" class="text-danger"></span>
-            </div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="CreatedOn" class="control-label"></label>
-                <input asp-for="CreatedOn" class="form-control" />
-                <span asp-validation-for="CreatedOn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ModifiedOn" class="control-label"></label>
-                <input asp-for="ModifiedOn" class="form-control" />
-                <span asp-validation-for="ModifiedOn" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -61,7 +57,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {

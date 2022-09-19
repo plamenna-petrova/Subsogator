@@ -51,7 +51,9 @@ namespace TestConsole
 
                     if (applicationDbContext.Genres.Any(g => g.Name == newGenre.Name))
                     {
-                        var sciFiGenre = applicationDbContext.Genres.Where(g => g.Name == newGenre.Name).SingleOrDefault();
+                        var sciFiGenre = applicationDbContext.Genres
+                                .Where(g => g.Name == newGenre.Name)
+                                .SingleOrDefault();
                         applicationDbContext.Remove(sciFiGenre);
                     }
 
@@ -62,7 +64,9 @@ namespace TestConsole
                         Expression<Func<Genre, bool>> genreRemovalPedicate = g => g.Name == x.Name;
                         if (applicationDbContext.Genres.Any(genreRemovalPedicate))
                         {
-                            var genreToRemove = applicationDbContext.Genres.Where(genreRemovalPedicate).SingleOrDefault();
+                            var genreToRemove = applicationDbContext.Genres
+                                .Where(genreRemovalPedicate)
+                                .SingleOrDefault();
                             applicationDbContext.Genres.Remove(genreToRemove);
                         }
                     });
@@ -91,7 +95,8 @@ namespace TestConsole
                         Console.WriteLine($"Genre: {abbreviatedGenre}");
                     }
 
-                    Expression<Func<Genre, bool>> exampleGenresPredicate = g => g.Name.ToLower().StartsWith("a");
+                    Expression<Func<Genre, bool>> exampleGenresPredicate = g => 
+                        g.Name.ToLower().StartsWith("a");
 
                     Expression<Func<Genre, GenreDetailsModel>> exampleGenresSelector =
                         g => new GenreDetailsModel()

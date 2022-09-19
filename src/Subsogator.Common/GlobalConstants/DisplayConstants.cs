@@ -15,5 +15,9 @@ namespace Subsogator.Common.GlobalConstants
         public const string ModifiedOnDisplayName = "Modified On";
 
         public const string NullModifiedOnEntryDisplayName = "Not Yet Modified";
+
+        public const string FilmProductionReleaseDateDisplayName = "Release Data";
+
+        public const string FilmProductionPlotSummaryDisplayName = "Plot Summary";
     }
 }

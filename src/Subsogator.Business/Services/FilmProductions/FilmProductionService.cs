@@ -1,5 +1,6 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
+using Microsoft.EntityFrameworkCore;
 using Subsogator.Web.Models.Countries.ViewModels;
 using Subsogator.Web.Models.FilmProductions.BindingModels;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
@@ -46,7 +47,11 @@ namespace Subsogator.Business.Services.FilmProductions
 
         public FilmProductionFullDetailsViewModel GetFilmProductionDetails(string filmProductionId)
         {
-            var singleFilmProduction = FindFilmProduction(filmProductionId);
+            var singleFilmProduction = _filmProductionRepository
+                    .GetAllByCondition(fp => fp.Id == filmProductionId)
+                        .Include(fp => fp.Country)
+                            .Include(fp => fp.Language)
+                                .FirstOrDefault();
 
             if (singleFilmProduction is null)
             {
@@ -58,7 +63,10 @@ namespace Subsogator.Business.Services.FilmProductions
                 Id = singleFilmProduction.Id,
                 Title = singleFilmProduction.Title,
                 Duration = singleFilmProduction.Duration,
-                ReleaseDate = singleFilmProduction.ReleaseDate
+                ReleaseDate = singleFilmProduction.ReleaseDate,
+                PlotSummary = singleFilmProduction.PlotSummary,
+                CountryName = singleFilmProduction.Country.Name,
+                LanguageName = singleFilmProduction.Language.Name
             };
 
             return singleFilmProductionDetails;
@@ -94,7 +102,9 @@ namespace Subsogator.Business.Services.FilmProductions
                 Title = filmProductionToEdit.Title,
                 Duration = filmProductionToEdit.Duration,
                 ReleaseDate = filmProductionToEdit.ReleaseDate,
-                PlotSummary = filmProductionToEdit.PlotSummary
+                PlotSummary = filmProductionToEdit.PlotSummary,
+                CountryId = filmProductionToEdit.CountryId,
+                LanguageId = filmProductionToEdit.LanguageId
             };
 
             return filmProductionToEditDetails;
@@ -110,6 +120,8 @@ namespace Subsogator.Business.Services.FilmProductions
             filmProductionToUpdate.Duration = editFilmProductionBindingModel.Duration;
             filmProductionToUpdate.ReleaseDate = editFilmProductionBindingModel.ReleaseDate;
             filmProductionToUpdate.PlotSummary = editFilmProductionBindingModel.PlotSummary;
+            filmProductionToUpdate.CountryId = editFilmProductionBindingModel.CountryId;
+            filmProductionToUpdate.LanguageId = editFilmProductionBindingModel.LanguageId;
 
             _filmProductionRepository.Update(filmProductionToUpdate);
         }

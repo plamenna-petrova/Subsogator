@@ -58,23 +58,17 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: FilmProductions/Details/5
-        public async Task<IActionResult> Details(string id)
+        public IActionResult Details(string id)
         {
-            if (id == null)
+            FilmProductionFullDetailsViewModel filmProductionFullDetailsViewModel = _filmProductionService
+                    .GetFilmProductionDetails(id);
+
+            if (filmProductionFullDetailsViewModel == null)
             {
                 return NotFound();
             }
 
-            var filmProduction = await _context.FilmProductions
-                .Include(f => f.Country)
-                .Include(f => f.Language)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (filmProduction == null)
-            {
-                return NotFound();
-            }
-
-            return View(filmProduction);
+            return View(filmProductionFullDetailsViewModel);
         }
 
         // GET: FilmProductions/Create
@@ -101,135 +95,148 @@ namespace Subsogator.Web.Controllers
 
             _filmProductionService.CreateFilmProduction(createFilmProductionBindingModel);
 
-            try
+            bool isNewFilmProductionSavedToDatabase = _unitOfWork.CommitSaveChanges();
+
+            if (!isNewFilmProductionSavedToDatabase)
             {
-                bool isNewFilmProductionSavedToDatabase = _unitOfWork.CommitSaveChanges();
+                var allCountriesForSelectList = _countryService.GetAllCountries();
+                var allLanguagesForSelectList = _languageService.GetAllLanguages();
 
-                if (!isNewFilmProductionSavedToDatabase)
-                {
-                    var allCountriesForSelectList = _countryService.GetAllCountries();
-                    var allLanguagesForSelectList = _languageService.GetAllLanguages();
+                ViewData["CountryByName"] = new SelectList(
+                            allCountriesForSelectList, "Id", "Name",
+                            createFilmProductionBindingModel.CountryId
+                        );
+                ViewData["LanguageByName"] = new SelectList(
+                            allLanguagesForSelectList, "Id", "Name",
+                            createFilmProductionBindingModel.LanguageId
+                        );
 
-                    ViewData["CountryByName"] = new SelectList(
-                                allCountriesForSelectList, "Id", "Name",
-                                createFilmProductionBindingModel.CountryId
-                            );
-                    ViewData["LanguageByName"] = new SelectList(
-                                allLanguagesForSelectList, "Id", "Name",
-                                createFilmProductionBindingModel.LanguageId
-                            );
+                TempData["FilmProductionErrorMessage"] = $"Error, couldn't save the new film production" +
+                    $"{createFilmProductionBindingModel.Title}!";
 
-                    return View(createFilmProductionBindingModel);
-                }
-
-                TempData["CountrySuccessMessage"] = $"Film Production " +
-                        $"{createFilmProductionBindingModel.Title} " +
-                    $"created successfully!";
-
-                return RedirectToIndexActionInCurrentController();
+                return View(createFilmProductionBindingModel);
             }
-            catch (DbUpdateException dbUpdateException)
-            {
-                _logger.LogError("Exception: " + dbUpdateException.Message + "\n" + "Inner Exception :" +
-                    dbUpdateException.InnerException.Message ?? "");
 
-                TempData["LanguageErrorMessage"] = $"Error, couldn't save the new film production " +
-                    $"{createFilmProductionBindingModel.Title}! Check the " +
-                    $"language relationship status!";
+            TempData["FilmProductionSuccessMessage"] = $"Film Production " +
+                    $"{createFilmProductionBindingModel.Title} " +
+                $"created successfully!";
 
-                return RedirectToAction(nameof(Create));
-            }
+            return RedirectToIndexActionInCurrentController();
         }
 
         // GET: FilmProductions/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public IActionResult Edit(string id)
         {
-            if (id == null)
+            EditFilmProductionBindingModel editFilmProductionBindingModel = _filmProductionService
+                    .GetFilmProductionEditingDetails(id);
+
+            if (editFilmProductionBindingModel == null)
             {
                 return NotFound();
             }
 
-            var filmProduction = await _context.FilmProductions.FindAsync(id);
-            if (filmProduction == null)
-            {
-                return NotFound();
-            }
-            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Id", filmProduction.CountryId);
-            ViewData["LanguageId"] = new SelectList(_context.Languages, "Id", "Id", filmProduction.LanguageId);
-            return View(filmProduction);
+            var allCountriesForSelectList = _countryService.GetAllCountries();
+            var allLanguagesForSelectList = _languageService.GetAllLanguages();
+
+            ViewData["CountryByName"] = new SelectList(
+                    allCountriesForSelectList, "Id", "Name",
+                    editFilmProductionBindingModel.CountryId
+                );
+            ViewData["LanguageByName"] = new SelectList(
+                    allLanguagesForSelectList, "Id", "Name",
+                    editFilmProductionBindingModel.LanguageId
+                );
+
+            return View(editFilmProductionBindingModel);
         }
 
         // POST: FilmProductions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Title,Duration,ReleaseDate,PlotSummary,CountryId,LanguageId,Id,CreatedOn,ModifiedOn")] FilmProduction filmProduction)
+        public IActionResult Edit(EditFilmProductionBindingModel editFilmProductionBindingModel)
         {
-            if (id != filmProduction.Id)
+            var allCountriesForSelectList = _countryService.GetAllCountries();
+            var allLanguagesForSelectList = _languageService.GetAllLanguages();
+
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                ViewData["CountryByName"] = new SelectList(
+                        allCountriesForSelectList, "Id", "Name",
+                        editFilmProductionBindingModel.CountryId
+                    );
+                ViewData["LanguageByName"] = new SelectList(
+                        allLanguagesForSelectList, "Id", "Name",
+                        editFilmProductionBindingModel.LanguageId
+                    );
+
+                return View(editFilmProductionBindingModel);
             }
 
-            if (ModelState.IsValid)
+            _filmProductionService.EditFilmProduction(editFilmProductionBindingModel);
+
+            bool isCurrentFilmProductionSavedToDatabase = _unitOfWork.CommitSaveChanges();
+
+            if (!isCurrentFilmProductionSavedToDatabase)
             {
-                try
-                {
-                    _context.Update(filmProduction);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FilmProductionExists(filmProduction.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                ViewData["CountryByName"] = new SelectList(
+                        allCountriesForSelectList, "Id", "Name",
+                        editFilmProductionBindingModel.CountryId
+                    );
+                ViewData["LanguageByName"] = new SelectList(
+                        allLanguagesForSelectList, "Id", "Name",
+                        editFilmProductionBindingModel.LanguageId
+                    );
+
+                TempData["FilmProductionErrorMessage"] = $"Error, couldn't save " +
+                    $"the current film production update!";
+
+                return View(editFilmProductionBindingModel);
             }
-            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Id", filmProduction.CountryId);
-            ViewData["LanguageId"] = new SelectList(_context.Languages, "Id", "Id", filmProduction.LanguageId);
-            return View(filmProduction);
+
+            TempData["FilmProductionSuccessMessage"] = $"Film Production " +
+                $"{editFilmProductionBindingModel.Title} saved successfully!";
+
+            return RedirectToIndexActionInCurrentController();
         }
 
         // GET: FilmProductions/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public IActionResult Delete(string id)
         {
-            if (id == null)
+            DeleteFilmProductionViewModel deleteFilmProductionViewModel = _filmProductionService
+                    .GetFilmProductionDeletionDetails(id);
+
+            if (deleteFilmProductionViewModel == null)
             {
                 return NotFound();
             }
 
-            var filmProduction = await _context.FilmProductions
-                .Include(f => f.Country)
-                .Include(f => f.Language)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (filmProduction == null)
-            {
-                return NotFound();
-            }
-
-            return View(filmProduction);
+            return View(deleteFilmProductionViewModel);
         }
 
         // POST: FilmProductions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public IActionResult ConfirmDeletion(string id)
         {
-            var filmProduction = await _context.FilmProductions.FindAsync(id);
-            _context.FilmProductions.Remove(filmProduction);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            var filmProductionToConfirmDeletion = _filmProductionService.FindFilmProduction(id);
 
-        private bool FilmProductionExists(string id)
-        {
-            return _context.FilmProductions.Any(e => e.Id == id);
+            _filmProductionService.DeleteFilmProduction(filmProductionToConfirmDeletion);
+
+            bool isFilmProductionDeleted = _unitOfWork.CommitSaveChanges();
+
+            if (!isFilmProductionDeleted)
+            {
+                TempData["FilmProductionErrorMessage"] = $"Error, couldn't delete the film production " +
+                     $"{filmProductionToConfirmDeletion.Title}! Check the " +
+                         $"film production relationship status!";
+
+                return RedirectToAction(nameof(Delete));
+            }
+
+            TempData["FilmProductionSuccessMessage"] = $"Film Production {filmProductionToConfirmDeletion.Title} " +
+                $"deleted successfully!";
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
