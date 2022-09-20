@@ -27,17 +27,18 @@ namespace Subsogator.Business.Services.Languages
         {
             List<AllLanguagesViewModel> allLanguages = _languageRepository
                 .GetAllAsNoTracking()
-                .Select(l => new AllLanguagesViewModel
-                {
-                    Id = l.Id,
-                    Name = l.Name,
-                    RelatedFilmProductions = l.FilmProductions
-                        .Select(fp => new FilmProductionConciseInformationViewModel 
+                    .OrderBy(l => l.Name)
+                        .Select(l => new AllLanguagesViewModel
                         {
-                            Title = fp.Title
+                            Id = l.Id,
+                            Name = l.Name,
+                            RelatedFilmProductions = l.FilmProductions
+                                .Select(fp => new FilmProductionConciseInformationViewModel 
+                                {
+                                    Title = fp.Title
+                                })
                         })
-                })
-                .ToList();
+                        .ToList();
 
             return allLanguages;
         }

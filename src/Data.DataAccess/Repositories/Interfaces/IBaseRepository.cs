@@ -8,7 +8,7 @@ using System.Text;
 namespace Data.DataAccess.Repositories
 {
     public interface IBaseRepository<TEntity>: IDisposable
-        where TEntity: BaseEntity
+        where TEntity: class
     {
         IQueryable<TEntity> GetAll();
 

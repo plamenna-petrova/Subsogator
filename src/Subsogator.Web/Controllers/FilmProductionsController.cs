@@ -29,15 +29,12 @@ namespace Subsogator.Web.Controllers
 
         private readonly ILogger _logger;
 
-        private readonly ApplicationDbContext _context;
-
         public FilmProductionsController(
             IFilmProductionService filmProductionService,
             ICountryService countryService,
             ILanguageService languageService,
             IUnitOfWork unitOfWork,
-            ILogger<FilmProductionsController> logger,
-            ApplicationDbContext context
+            ILogger<FilmProductionsController> logger
         )
         {
             _filmProductionService = filmProductionService;
@@ -45,14 +42,21 @@ namespace Subsogator.Web.Controllers
             _languageService = languageService;
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _context = context;
         }
 
         // GET: FilmProductions
         public IActionResult Index()
         {
-            IEnumerable<AllFilmProductionsViewModel> allFilmProductionsViewModel = _filmProductionService
-                .GetAllFilmProductions();
+            IEnumerable<AllFilmProductionsViewModel> allFilmProductionsViewModel = 
+                _filmProductionService
+                    .GetAllFilmProductions();
+
+            bool isAllFilmProductionsViewModelEmpty = allFilmProductionsViewModel.Count() == 0;
+
+            if (isAllFilmProductionsViewModelEmpty)
+            {
+                return NotFound();
+            }
 
             return View(allFilmProductionsViewModel);
         }
@@ -60,7 +64,8 @@ namespace Subsogator.Web.Controllers
         // GET: FilmProductions/Details/5
         public IActionResult Details(string id)
         {
-            FilmProductionFullDetailsViewModel filmProductionFullDetailsViewModel = _filmProductionService
+            FilmProductionFullDetailsViewModel filmProductionFullDetailsViewModel =
+                _filmProductionService
                     .GetFilmProductionDetails(id);
 
             if (filmProductionFullDetailsViewModel == null)
@@ -86,7 +91,9 @@ namespace Subsogator.Web.Controllers
         // POST: FilmProductions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateFilmProductionBindingModel createFilmProductionBindingModel)
+        public IActionResult Create(CreateFilmProductionBindingModel 
+            createFilmProductionBindingModel
+        )
         {
             if (!ModelState.IsValid)
             {
@@ -111,7 +118,8 @@ namespace Subsogator.Web.Controllers
                             createFilmProductionBindingModel.LanguageId
                         );
 
-                TempData["FilmProductionErrorMessage"] = $"Error, couldn't save the new film production" +
+                TempData["FilmProductionErrorMessage"] = $"Error, " +
+                    $"couldn't save the new film production" +
                     $"{createFilmProductionBindingModel.Title}!";
 
                 return View(createFilmProductionBindingModel);
@@ -226,14 +234,16 @@ namespace Subsogator.Web.Controllers
 
             if (!isFilmProductionDeleted)
             {
-                TempData["FilmProductionErrorMessage"] = $"Error, couldn't delete the film production " +
+                TempData["FilmProductionErrorMessage"] = $"Error, couldn't " +
+                    $"delete the film production " +
                      $"{filmProductionToConfirmDeletion.Title}! Check the " +
                          $"film production relationship status!";
 
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["FilmProductionSuccessMessage"] = $"Film Production {filmProductionToConfirmDeletion.Title} " +
+            TempData["FilmProductionSuccessMessage"] = $"Film Production " +
+                $"{filmProductionToConfirmDeletion.Title} " +
                 $"deleted successfully!";
 
             return RedirectToAction(nameof(Index));

@@ -35,7 +35,8 @@ namespace Subsogator.Business.Transactions.Implementation
             }
             catch (DbUpdateException dbUpdateException) 
             {
-                _logger.LogError("Exception: " + dbUpdateException.Message + "\n" + "Inner Exception :" +
+                _logger.LogError("Exception: " + dbUpdateException.Message + 
+                            "\n" + "Inner Exception :" +
                     dbUpdateException.InnerException.Message ?? "");
 
                 return false;

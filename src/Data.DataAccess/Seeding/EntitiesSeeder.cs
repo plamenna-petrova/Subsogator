@@ -17,7 +17,7 @@ namespace Data.DataAccess.Seeding
 
             ExecutePartialSeeders(applicationDbContext);
 
-            return false;
+            return true;
         }
 
         private void ExecutePartialSeeders(ApplicationDbContext applicationDbContext)
@@ -67,7 +67,8 @@ namespace Data.DataAccess.Seeding
 
             foreach (var filmProductionToSeed in FilmProductionSeeder.FilmProductionSeedingArray)
             {
-                applicationDbContext.FilmProductions.Add(filmProductionToSeed);
+                applicationDbContext
+                    .FilmProductions.Add(filmProductionToSeed);
             }
 
             applicationDbContext.SaveChanges();
@@ -76,7 +77,8 @@ namespace Data.DataAccess.Seeding
                 in FilmProductionActorSeeder.FilmProductionActorSeedingArray
             )
             {
-                applicationDbContext.FilmProductionActors.Add(filmProductionActorsToSeed);
+                applicationDbContext.FilmProductionActors
+                    .Add(filmProductionActorsToSeed);
             }
 
             applicationDbContext.SaveChanges();
@@ -85,7 +87,8 @@ namespace Data.DataAccess.Seeding
                 in FilmProductionDirectorSeeder.FilmProductionDirectorSeedingArray
             )
             {
-                applicationDbContext.FilmProductionDirectors.Add(filmProductionDirectorsToSeed);
+                applicationDbContext.FilmProductionDirectors
+                    .Add(filmProductionDirectorsToSeed);
             }
 
             applicationDbContext.SaveChanges();
@@ -94,7 +97,8 @@ namespace Data.DataAccess.Seeding
                 in FilmProductionGenreSeeder.FilmProductionGenreSeedingArray
             )
             {
-                applicationDbContext.FilmProductionGenres.Add(filmProductionGenresToSeed);
+                applicationDbContext.FilmProductionGenres
+                    .Add(filmProductionGenresToSeed);
             }
 
             applicationDbContext.SaveChanges();
@@ -103,7 +107,8 @@ namespace Data.DataAccess.Seeding
                 in FilmProductionScreenwriterSeeder.FilmProductionScreenwriterSeedingArray
             )
             {
-                applicationDbContext.FilmProductionScreenwriters.Add(filmProductionScreenwritersToSeed);
+                applicationDbContext.FilmProductionScreenwriters
+                    .Add(filmProductionScreenwritersToSeed);
             }
 
             applicationDbContext.SaveChanges();

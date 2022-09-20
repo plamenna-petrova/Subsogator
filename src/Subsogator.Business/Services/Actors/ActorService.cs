@@ -23,19 +23,20 @@ namespace Subsogator.Business.Services.Actors
         {
             List<AllActorsViewModel> allActors = _actorRepository
                 .GetAllAsNoTracking()
-                    .Select(a => new AllActorsViewModel
-                    {
-                        Id = a.Id,
-                        FirstName = a.FirstName,
-                        LastName = a.LastName,
-                        RelatedFilmProductions = a.FilmProductionActors
-                            .Where(fa => fa.ActorId == a.Id)
-                            .Select(fa => new FilmProductionConciseInformationViewModel
-                            {
-                                Title = fa.FilmProduction.Title
-                            })
-                    })
-                    .ToList();
+                    .OrderBy(a => a.FirstName)
+                        .Select(a => new AllActorsViewModel
+                        {
+                            Id = a.Id,
+                            FirstName = a.FirstName,
+                            LastName = a.LastName,
+                            RelatedFilmProductions = a.FilmProductionActors
+                                .Where(fa => fa.ActorId == a.Id)
+                                .Select(fa => new FilmProductionConciseInformationViewModel
+                                {
+                                    Title = fa.FilmProduction.Title
+                                })
+                        })
+                        .ToList();
 
             return allActors;
         }

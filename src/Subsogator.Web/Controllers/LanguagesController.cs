@@ -35,10 +35,17 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: Languages
-        public ViewResult Index()
+        public IActionResult Index()
         {
             IEnumerable<AllLanguagesViewModel> allLanguagesViewModel = _languageService
                 .GetAllLanguagesWithRelatedData();
+
+            bool isAllLanguagesViewModelEmpty = allLanguagesViewModel.Count() == 0;
+
+            if (isAllLanguagesViewModelEmpty)
+            {
+                return NotFound();
+            }
 
             return View(allLanguagesViewModel);
         }
@@ -46,7 +53,8 @@ namespace Subsogator.Web.Controllers
         // GET: Languages/Details/5
         public IActionResult Details(string id)
         {
-            LanguageDetailsViewModel languageDetailsViewModel = _languageService.GetLanguageDetails(id);
+            LanguageDetailsViewModel languageDetailsViewModel = _languageService
+                .GetLanguageDetails(id);
 
             if (languageDetailsViewModel == null)
             {
@@ -72,7 +80,8 @@ namespace Subsogator.Web.Controllers
                 return View(createLanguageBindingModel);
             }
 
-            bool isNewLanguageCreated = _languageService.CreateLanguage(createLanguageBindingModel);
+            bool isNewLanguageCreated = _languageService
+                .CreateLanguage(createLanguageBindingModel);
 
             if (!isNewLanguageCreated)
             {

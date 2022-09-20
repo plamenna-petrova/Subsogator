@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Subsogator.Business.Services.Genres
 {
-    public class GenreService: IGenreService
+    public class GenreService : IGenreService
     {
         private readonly IGenreRepository _genreRepository;
 
@@ -24,18 +24,19 @@ namespace Subsogator.Business.Services.Genres
         {
             List<AllGenresViewModel> allGenres = _genreRepository
                 .GetAllAsNoTracking()
-                .Select(g => new AllGenresViewModel
-                {
-                    Id = g.Id,
-                    Name = g.Name,
-                    RelatedFilmProductions = g.FilmProductionGenres
-                        .Where(fg => fg.GenreId == g.Id)
-                        .Select(fg => new FilmProductionConciseInformationViewModel 
+                    .OrderBy(g => g.Name)
+                        .Select(g => new AllGenresViewModel
                         {
-                            Title = fg.FilmProduction.Title
+                            Id = g.Id,
+                            Name = g.Name,
+                            RelatedFilmProductions = g.FilmProductionGenres
+                                .Where(fg => fg.GenreId == g.Id)
+                                .Select(fg => new FilmProductionConciseInformationViewModel
+                                {
+                                    Title = fg.FilmProduction.Title
+                                })
                         })
-                })
-                .ToList();
+                        .ToList();
 
             return allGenres;
         }
@@ -61,7 +62,7 @@ namespace Subsogator.Business.Services.Genres
                 ModifiedOn = singleGenre.ModifiedOn,
                 RelatedFilmProductions = singleGenre.FilmProductionGenres
                     .Where(fg => fg.GenreId == singleGenre.Id)
-                    .Select(fg => new FilmProductionDetailedInformationViewModel 
+                    .Select(fg => new FilmProductionDetailedInformationViewModel
                     {
                         Title = fg.FilmProduction.Title,
                         Duration = fg.FilmProduction.Duration,

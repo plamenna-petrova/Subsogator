@@ -9,7 +9,7 @@ using System.Text;
 namespace Data.DataAccess.Repositories.Implementation
 {
     public abstract class BaseRepository<TEntity>: IBaseRepository<TEntity>
-        where TEntity: BaseEntity
+        where TEntity: class
     {
         public BaseRepository(ApplicationDbContext applicationDbContext)
         {
@@ -49,12 +49,6 @@ namespace Data.DataAccess.Repositories.Implementation
 
         public virtual void Update(TEntity entity)
         {
-            if (entity == null)
-            {
-                throw new ArgumentNullException($"The object of type {typeof(TEntity)} " +
-                    $"with id: {entity.Id} does not exist");
-            }
-
             DbSet.Update(entity);
         }
 

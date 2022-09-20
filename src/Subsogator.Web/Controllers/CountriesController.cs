@@ -35,10 +35,17 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: Countries
-        public ViewResult Index()
+        public IActionResult Index()
         {
             IEnumerable<AllCountriesViewModel> allCountriesViewModel = _countryService
                 .GetAllCountriesWithRelatedData();
+
+            bool isAllCountriesViewModelEmpty = allCountriesViewModel.Count() == 0;
+
+            if (isAllCountriesViewModelEmpty)
+            {
+                return NotFound();
+            }
 
             return View(allCountriesViewModel);
         }
@@ -46,7 +53,8 @@ namespace Subsogator.Web.Controllers
         // GET: Countries/Details/5
         public IActionResult Details(string id)
         {
-            CountryDetailsViewModel countryDetailsViewModel = _countryService.GetCountryDetails(id);
+            CountryDetailsViewModel countryDetailsViewModel = _countryService
+                .GetCountryDetails(id);
 
             if (countryDetailsViewModel == null)
             {

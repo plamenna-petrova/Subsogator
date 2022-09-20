@@ -33,17 +33,18 @@ namespace Subsogator.Business.Services.Countries
         {
             List<AllCountriesViewModel> allCountries = _countryRepository
                 .GetAllAsNoTracking()
-                .Select(c => new AllCountriesViewModel
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    RelatedFilmProductions = c.FilmProductions
-                        .Select(fp => new FilmProductionConciseInformationViewModel
-                        {
-                            Title = fp.Title
+                    .OrderBy(c => c.Name)
+                    .Select(c => new AllCountriesViewModel
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        RelatedFilmProductions = c.FilmProductions
+                            .Select(fp => new FilmProductionConciseInformationViewModel
+                            {
+                                Title = fp.Title
+                            })
                         })
-                })
-                .ToList();
+                    .ToList();
 
             return allCountries;
         }

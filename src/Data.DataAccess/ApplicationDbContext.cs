@@ -25,9 +25,10 @@ namespace Data.DataAccess
 
         }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base()
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions) 
+            : base(dbContextOptions)
         {
-
+           
         }
 
         public virtual DbSet<Actor> Actors { get; set; }
@@ -56,14 +57,14 @@ namespace Data.DataAccess
 
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
         {
-            string secretsJSONFullPath = ConnectionConstants.DatabaseConnectionString;
-            _configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(Path.Join(secretsJSONFullPath))
-                .AddJsonFile(ConnectionConstants.SecretsJSONFileName);
-            _configurationRoot = _configurationBuilder.Build();
-
             if (!dbContextOptionsBuilder.IsConfigured)
             {
+                string secretsJSONFullPath = ConnectionConstants.DatabaseConnectionString;
+                _configurationBuilder = new ConfigurationBuilder()
+                    .SetBasePath(Path.Join(secretsJSONFullPath))
+                    .AddJsonFile(ConnectionConstants.SecretsJSONFileName);
+                _configurationRoot = _configurationBuilder.Build();
+
                 dbContextOptionsBuilder
                     .UseSqlServer(
                         _configurationRoot.GetSection(

@@ -27,9 +27,16 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: Genres
-        public ViewResult Index()
+        public IActionResult Index()
         {
             IEnumerable<AllGenresViewModel> allGenresViewModel = _genreService.GetAllGenres();
+
+            bool isAllGenresViewModelEmpty = allGenresViewModel.Count() == 0;
+
+            if (isAllGenresViewModelEmpty)
+            {
+                return NotFound();
+            }
 
             return View(allGenresViewModel);
         }

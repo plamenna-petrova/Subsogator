@@ -6,7 +6,9 @@ using System.Text;
 
 namespace Data.DataAccess.Repositories.Interfaces
 {
-    public interface IActorRepository: ICrewMemberRepository<Actor>
+    public interface ICrewMemberRepository<TCrewMemberEntity> 
+        : IBaseRepository<TCrewMemberEntity> 
+        where TCrewMemberEntity : CrewMember
     {
 
     }

@@ -12,6 +12,7 @@ using Subsogator.Business.Services.Directors;
 using Subsogator.Web.Models.Directors;
 using Subsogator.Web.Models.Directors.ViewModels;
 using Subsogator.Web.Models.Directors.BindingModels;
+using Subsogator.Common.GlobalConstants;
 
 namespace Subsogator.Web.Controllers
 {
@@ -28,9 +29,17 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: Directors
-        public ViewResult Index()
+        public IActionResult Index()
         {
-            IEnumerable<AllDirectorsViewModel> allDirectorsViewModel = _directorService.GetAllDirectors();
+            IEnumerable<AllDirectorsViewModel> allDirectorsViewModel = _directorService
+                .GetAllDirectors();
+
+            bool isAllDirectorsViewModelEmpty = allDirectorsViewModel.Count() == 0;
+
+            if (isAllDirectorsViewModelEmpty)
+            {
+                return NotFound();
+            }
 
             return View(allDirectorsViewModel);
         }
@@ -38,7 +47,8 @@ namespace Subsogator.Web.Controllers
         // GET: Directors/Details/5
         public IActionResult Details(string id)
         {
-            DirectorDetailsViewModel directorDetailsViewModel = _directorService.GetDirectorDetails(id);
+            DirectorDetailsViewModel directorDetailsViewModel = _directorService
+                .GetDirectorDetails(id);
 
             if (directorDetailsViewModel == null)
             {
@@ -68,9 +78,12 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewDirectorCreated)
             {
-                TempData["DirectorErrorMessage"] = $"Error, the director" +
-                    $"{createDirectorBindingModel.FirstName}" +
-                    $"{createDirectorBindingModel.LastName} already exists";
+                TempData["DirectorErrorMessage"] = string.Format(
+                        NotificationMessages.ExistingCrewMemberEntityErrorMessage,
+                        "director", $"{createDirectorBindingModel.FirstName}",
+                        $"{createDirectorBindingModel.LastName}"
+                    );
+
                 return View(createDirectorBindingModel);
             }
 
@@ -78,13 +91,18 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewDirectorSavedToDatabase)
             {
-                TempData["DirectorErrorMessage"] = "Error, couldn't save the new" +
-                    "director record";
+                TempData["DirectorErrorMessage"] = string.Format(
+                     NotificationMessages.NewRecordFailedSaveErrorMessage, "director"
+                    );
+
                 return View(createDirectorBindingModel);
             }
 
-            TempData["DirectorSuccessMessage"] = $"Director {createDirectorBindingModel.FirstName} " +
-                $"{createDirectorBindingModel.LastName} created successfully!";
+            TempData["DirectorSuccessMessage"] = string.Format(
+                    NotificationMessages.CrewMemberEntityCreationSuccessMessage,
+                    "Director", $"{createDirectorBindingModel.FirstName}",
+                    $"{createDirectorBindingModel.LastName}"
+                );
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -117,9 +135,12 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentDirectorEdited)
             {
-                TempData["DirectorErrorMessage"] = $"Error, the director " +
-                $"{editDirectorBindingModel.FirstName} " +
-                    $"{editDirectorBindingModel.LastName} already exists";
+                TempData["DirectorErrorMessage"] = string.Format(
+                    NotificationMessages.ExistingCrewMemberEntityErrorMessage,
+                        "director", $"{editDirectorBindingModel.FirstName}",
+                        $"{editDirectorBindingModel.LastName}"
+                    );
+
                 return View(editDirectorBindingModel);
             }
 
@@ -127,13 +148,19 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentDirectorUpdateSavedToDatabase)
             {
-                TempData["DirectorErrorMessage"] = "Error, couldn't save the current" +
-                    "director update";
+                TempData["DirectorErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedUpdateSaveErrorMessage,
+                    "director"
+                  );
+
                 return View(editDirectorBindingModel);
             }
 
-            TempData["DirectorSuccessMessage"] = $"Director {editDirectorBindingModel.FirstName} " +
-                $"{editDirectorBindingModel.LastName} saved successfully!";
+            TempData["DirectorSuccessMessage"] = string.Format(
+                   NotificationMessages.CrewMemberEntityUpdateSuccessMessage,
+                   "director", $"{editDirectorBindingModel.FirstName}",
+                   $"{editDirectorBindingModel.LastName}"
+                );
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -165,12 +192,19 @@ namespace Subsogator.Web.Controllers
 
             if (!isDirectorDeleted)
             {
-                TempData["DirectorErrorMessage"] = "Error, couldn't delete the director!";
+                TempData["DirectorErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedDeletionErrorMessage,
+                    "director"
+                   );
+
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["DirectorSuccessMessage"] = $"Director {directorToConfirmDeletion.FirstName} " +
-                $"{directorToConfirmDeletion.LastName} deleted successfully!";
+            TempData["DirectorSuccessMessage"] = string.Format(
+                    NotificationMessages.CrewMemberEntityDeletionSuccessMessage,
+                    "director", $"{directorToConfirmDeletion.FirstName}",
+                    $"{directorToConfirmDeletion.LastName}"
+                  );
 
             return RedirectToIndexActionInCurrentController();
         }

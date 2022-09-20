@@ -33,19 +33,24 @@ namespace Subsogator.Business.Services.FilmProductions
                         ReleaseDate = fp.ReleaseDate,
                         RelatedCountry = new CountryConciseInformationViewModel
                         {
-                            Name = fp.Language.Name
+                            Name = fp.Country.Name
                         },
                         RelatedLanguage = new LanguageConciseInformationViewModel
                         {
                             Name = fp.Language.Name
                         }
                     })
-                    .ToList();
+                    .OrderBy(afpvm => afpvm.Title)
+                        .ThenBy(afpvm => afpvm.RelatedCountry.Name)
+                            .ThenByDescending(afpvm => afpvm.RelatedLanguage.Name)
+                                .ToList();
 
             return allFilmProductions;
         }
 
-        public FilmProductionFullDetailsViewModel GetFilmProductionDetails(string filmProductionId)
+        public FilmProductionFullDetailsViewModel GetFilmProductionDetails(
+            string filmProductionId
+        )
         {
             var singleFilmProduction = _filmProductionRepository
                     .GetAllByCondition(fp => fp.Id == filmProductionId)
@@ -72,7 +77,9 @@ namespace Subsogator.Business.Services.FilmProductions
             return singleFilmProductionDetails;
         }
 
-        public void CreateFilmProduction(CreateFilmProductionBindingModel createFilmProductionBindingModel)
+        public void CreateFilmProduction(
+            CreateFilmProductionBindingModel createFilmProductionBindingModel
+        )
         {
             FilmProduction filmProductionToCreate = new FilmProduction
             {
@@ -87,7 +94,9 @@ namespace Subsogator.Business.Services.FilmProductions
             _filmProductionRepository.Add(filmProductionToCreate);
         }
 
-        public EditFilmProductionBindingModel GetFilmProductionEditingDetails(string filmProductionId)
+        public EditFilmProductionBindingModel GetFilmProductionEditingDetails(
+            string filmProductionId
+        )
         {
             var filmProductionToEdit = FindFilmProduction(filmProductionId);
 
@@ -110,7 +119,9 @@ namespace Subsogator.Business.Services.FilmProductions
             return filmProductionToEditDetails;
         }
 
-        public void EditFilmProduction(EditFilmProductionBindingModel editFilmProductionBindingModel)
+        public void EditFilmProduction(EditFilmProductionBindingModel 
+            editFilmProductionBindingModel
+        )
         {
             var filmProductionToUpdate = FindFilmProduction(editFilmProductionBindingModel.Id);
 
@@ -126,7 +137,9 @@ namespace Subsogator.Business.Services.FilmProductions
             _filmProductionRepository.Update(filmProductionToUpdate);
         }
 
-        public DeleteFilmProductionViewModel GetFilmProductionDeletionDetails(string filmProductionId)
+        public DeleteFilmProductionViewModel GetFilmProductionDeletionDetails(
+            string filmProductionId
+        )
         {
             var filmProductionToDelete = FindFilmProduction(filmProductionId);
 

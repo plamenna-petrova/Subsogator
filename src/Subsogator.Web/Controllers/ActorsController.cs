@@ -11,6 +11,7 @@ using Subsogator.Business.Services.Actors;
 using Subsogator.Web.Models.Actors.ViewModels;
 using Subsogator.Web.Models.Actors.BindingModels;
 using Subsogator.Business.Transactions.Interfaces;
+using Subsogator.Common.GlobalConstants;
 
 namespace Subsogator.Web.Controllers
 {
@@ -27,9 +28,16 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: Actors
-        public ViewResult Index()
+        public IActionResult Index()
         {
             IEnumerable<AllActorsViewModel> allActorsViewModel = _actorService.GetAllActors();
+
+            bool isAllActorsViewModelEmpty = allActorsViewModel.Count() == 0;
+
+            if (isAllActorsViewModelEmpty)
+            {
+                return NotFound();
+            }
 
             return View(allActorsViewModel);
         }
@@ -67,9 +75,12 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewActorCreated)
             {
-                TempData["ActorErrorMessage"] = $"Error, the actor" +
-                    $"{createActorBindingModel.FirstName}" +
-                    $"{createActorBindingModel.LastName} already exists";
+                TempData["ActorErrorMessage"] = string.Format(
+                        NotificationMessages.ExistingCrewMemberEntityErrorMessage,
+                        "actor", $"{createActorBindingModel.FirstName}",
+                        $"{createActorBindingModel.LastName}"
+                    );
+
                 return View(createActorBindingModel);
             }
 
@@ -77,13 +88,18 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewActorSavedToDatabase)
             {
-                TempData["ActorErrorMessage"] = "Error, couldn't save the new" +
-                    "actor record";
+                TempData["ActorErrorMessage"] = string.Format(
+                    NotificationMessages.NewRecordFailedSaveErrorMessage, "actor"
+                );
+
                 return View(createActorBindingModel);
             }
 
-            TempData["ActorSuccessMessage"] = $"Actor {createActorBindingModel.FirstName} " +
-                $"{createActorBindingModel.LastName} created successfully!";
+            TempData["ActorSuccessMessage"] = string.Format(
+                    NotificationMessages.CrewMemberEntityCreationSuccessMessage,
+                    "Actor", $"{createActorBindingModel.FirstName}",
+                    $"{createActorBindingModel.LastName}"
+                );
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -116,9 +132,12 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentActorEdited)
             {
-                TempData["ActorErrorMessage"] = $"Error, the actor " +
-                $"{editActorBindingModel.FirstName} " +
-                    $"{editActorBindingModel.LastName} already exists";
+                TempData["ActorErrorMessage"] = string.Format(
+                    NotificationMessages.ExistingCrewMemberEntityErrorMessage,
+                        "actor", $"{editActorBindingModel.FirstName}",
+                        $"{editActorBindingModel.LastName}"
+                    );
+
                 return View(editActorBindingModel);
             }
 
@@ -126,13 +145,19 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentActorUpdateSavedToDatabase)
             {
-                TempData["ActorErrorMessage"] = "Error, couldn't save the current" +
-                    "actor update";
+                TempData["ActorErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedUpdateSaveErrorMessage,
+                    "actor"
+                  );
+
                 return View(editActorBindingModel);
             }
 
-            TempData["ActorSuccessMessage"] = $"Actor {editActorBindingModel.FirstName} " +
-                $"{editActorBindingModel.LastName} saved successfully!";
+            TempData["ActorSuccessMessage"] = string.Format(
+                   NotificationMessages.CrewMemberEntityUpdateSuccessMessage,
+                   "actor", $"{editActorBindingModel.FirstName}",
+                   $"{editActorBindingModel.LastName}"
+                );
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -164,12 +189,19 @@ namespace Subsogator.Web.Controllers
 
             if (!isActorDeleted)
             {
-                TempData["ActorErrorMessage"] = "Error, couldn't delete the actor!";
+                TempData["ActorErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedDeletionErrorMessage,
+                    "actor"
+                   );
+
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["ActorSuccessMessage"] = $"Actor {actorToConfirmDeletion.FirstName} " +
-                $"{actorToConfirmDeletion.LastName} deleted successfully!";
+            TempData["ActorSuccessMessage"] = string.Format(
+                    NotificationMessages.CrewMemberEntityDeletionSuccessMessage,
+                    "actor", $"{actorToConfirmDeletion.FirstName}", 
+                    $"{actorToConfirmDeletion.LastName}"
+                  );
 
             return RedirectToIndexActionInCurrentController();
         }

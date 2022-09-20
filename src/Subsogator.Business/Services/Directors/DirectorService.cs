@@ -25,19 +25,20 @@ namespace Subsogator.Business.Services.Directors
         {
             List<AllDirectorsViewModel> allDirectors = _directorRepository
                  .GetAllAsNoTracking()
-                 .Select(d => new AllDirectorsViewModel
-                 {
-                     Id = d.Id,
-                     FirstName = d.FirstName,
-                     LastName = d.LastName,
-                     RelatedFilmProductions = d.FilmProductionDirectors
-                            .Where(fd => fd.DirectorId == d.Id)
-                            .Select(fd => new FilmProductionConciseInformationViewModel
-                            {
-                                Title = fd.FilmProduction.Title
-                            })
-                 })
-                 .ToList();
+                    .OrderBy(d => d.FirstName)
+                        .Select(d => new AllDirectorsViewModel
+                        {
+                            Id = d.Id,
+                            FirstName = d.FirstName,
+                            LastName = d.LastName,
+                            RelatedFilmProductions = d.FilmProductionDirectors
+                                .Where(fd => fd.DirectorId == d.Id)
+                                .Select(fd => new FilmProductionConciseInformationViewModel
+                                {
+                                    Title = fd.FilmProduction.Title
+                                })
+                        })
+                        .ToList();
 
             return allDirectors;
         }

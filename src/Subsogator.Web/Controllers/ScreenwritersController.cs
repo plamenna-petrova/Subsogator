@@ -11,6 +11,7 @@ using Subsogator.Business.Services.Screenwriters;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Screenwriters.ViewModels;
 using Subsogator.Web.Models.Screenwriters.BindingModels;
+using Subsogator.Common.GlobalConstants;
 
 namespace Subsogator.Web.Controllers
 {
@@ -20,17 +21,28 @@ namespace Subsogator.Web.Controllers
 
         private readonly IUnitOfWork _unitOfWork;
 
-        public ScreenwritersController(IScreenwriterService screenwriterService, IUnitOfWork unitOfWork)
+        public ScreenwritersController(
+            IScreenwriterService screenwriterService,
+            IUnitOfWork unitOfWork
+        )
         {
             _unitOfWork = unitOfWork;
             _screenwriterService = screenwriterService;
         }
 
         // GET: Screenwriters
-        public ViewResult Index()
+        public IActionResult Index()
         {
-            IEnumerable<AllScreenwritersViewModel> allScreenwritersViewModel = _screenwriterService
-                .GetAllScreenwriters();
+            IEnumerable<AllScreenwritersViewModel> allScreenwritersViewModel =
+                _screenwriterService
+                    .GetAllScreenwriters();
+
+            bool isAllScreenwritersViewModelEmpty = allScreenwritersViewModel.Count() == 0;
+
+            if (isAllScreenwritersViewModelEmpty)
+            {
+                return NotFound();
+            }
 
             return View(allScreenwritersViewModel);
         }
@@ -70,9 +82,12 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewScreenwriterCreated)
             {
-                TempData["ScreenwriterErrorMessage"] = $"Error, the screenwriter" +
-                    $"{createScreenwriterBindingModel.FirstName}" +
-                    $"{createScreenwriterBindingModel.LastName} already exists";
+                TempData["ScreenwriterErrorMessage"] = string.Format(
+                       NotificationMessages.ExistingCrewMemberEntityErrorMessage,
+                       "screenwriter", $"{createScreenwriterBindingModel.FirstName}",
+                       $"{createScreenwriterBindingModel.LastName}"
+                   );
+
                 return View(createScreenwriterBindingModel);
             }
 
@@ -80,13 +95,18 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewScreenwriterSavedToDatabase)
             {
-                TempData["ScreenwriterErrorMessage"] = "Error, couldn't save the new" +
-                    "screenwriter record";
+                TempData["ScreenwriterErrorMessage"] = string.Format(
+                    NotificationMessages.NewRecordFailedSaveErrorMessage, "screenwriter"
+                );
+
                 return View(createScreenwriterBindingModel);
             }
 
-            TempData["ScreenwriterSuccessMessage"] = $"Screenwriter {createScreenwriterBindingModel.FirstName} " +
-                $"{createScreenwriterBindingModel.LastName} created successfully!";
+            TempData["ScreenwriterSuccessMessage"] = string.Format(
+                    NotificationMessages.CrewMemberEntityCreationSuccessMessage,
+                    "Screenwriter", $"{createScreenwriterBindingModel.FirstName}",
+                    $"{createScreenwriterBindingModel.LastName}"
+                );
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -120,9 +140,12 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentScreenwriterEdited)
             {
-                TempData["ScreenwriterErrorMessage"] = $"Error, the screenwriter " +
-                $"{editScreenwriterBindingModel.FirstName} " +
-                    $"{editScreenwriterBindingModel.LastName} already exists";
+                TempData["ScreenwriterErrorMessage"] = string.Format(
+                    NotificationMessages.ExistingCrewMemberEntityErrorMessage,
+                        "screenwriter", $"{editScreenwriterBindingModel.FirstName}",
+                        $"{editScreenwriterBindingModel.LastName}"
+                    );
+
                 return View(editScreenwriterBindingModel);
             }
 
@@ -130,13 +153,19 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentScreenwriterUpdateSavedToDatabase)
             {
-                TempData["ScreenwriterErrorMessage"] = "Error, couldn't save the current" +
-                    "screenwriter update";
+                TempData["ScreenwriterErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedUpdateSaveErrorMessage,
+                    "screenwriter"
+                  );
+
                 return View(editScreenwriterBindingModel);
             }
 
-            TempData["ScreenwriterSuccessMessage"] = $"Screenwriter {editScreenwriterBindingModel.FirstName} " +
-                $"{editScreenwriterBindingModel.LastName} saved successfully!";
+            TempData["ScreenwriterSuccessMessage"] = string.Format(
+                   NotificationMessages.CrewMemberEntityUpdateSuccessMessage,
+                   "screenwriter", $"{editScreenwriterBindingModel.FirstName}",
+                   $"{editScreenwriterBindingModel.LastName}"
+                );
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -160,7 +189,8 @@ namespace Subsogator.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {
-            Screenwriter screenwriterToConfirmDeletion = _screenwriterService.FindScreenwriter(id);
+            Screenwriter screenwriterToConfirmDeletion = _screenwriterService
+                .FindScreenwriter(id);
 
             _screenwriterService.DeleteScreenwriter(screenwriterToConfirmDeletion);
 
@@ -168,12 +198,19 @@ namespace Subsogator.Web.Controllers
 
             if (!isScreenwriterDeleted)
             {
-                TempData["ScreenwriterErrorMessage"] = "Error, couldn't delete the screenwriter!";
+                TempData["ScreenwriterErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedDeletionErrorMessage,
+                    "screenwriter"
+                   );
+
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["ScreenwriterSuccessMessage"] = $"Screenwriter {screenwriterToConfirmDeletion.FirstName} " +
-                $"{screenwriterToConfirmDeletion.LastName} deleted successfully!";
+            TempData["ScreenwriterSuccessMessage"] = string.Format(
+                    NotificationMessages.CrewMemberEntityDeletionSuccessMessage,
+                    "screenwriter", $"{screenwriterToConfirmDeletion.FirstName}",
+                    $"{screenwriterToConfirmDeletion.LastName}"
+                  );
 
             return RedirectToIndexActionInCurrentController();
         }

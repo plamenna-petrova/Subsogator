@@ -74,7 +74,9 @@ namespace Subsogator.Business.Services.Screenwriters
             return singleScreenwriterDetails;
         }
 
-        public bool CreateScreenwriter(CreateScreenwriterBindingModel createScreenwriterBindingModel)
+        public bool CreateScreenwriter(
+            CreateScreenwriterBindingModel createScreenwriterBindingModel
+        )
         {
             Screenwriter screenwriterToCreate = new Screenwriter
             {
