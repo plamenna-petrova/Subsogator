@@ -11,6 +11,7 @@ using Subsogator.Business.Services.Genres;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Genres.ViewModels;
 using Subsogator.Web.Models.Genres.BindingModels;
+using Subsogator.Common.GlobalConstants;
 
 namespace Subsogator.Web.Controllers
 {
@@ -74,21 +75,27 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewGenreCreated)
             {
-                TempData["GenreErrorMessage"] = $"Error, the genre " +
-                    $"{createGenreBindingModel.Name} already exists!";
+                TempData["GenreErrorMessage"] = string.Format(NotificationMessages
+                    .ExistingRecordErrorMessage, "genre",
+                        createGenreBindingModel.Name);
+
+                return View(createGenreBindingModel);
             }
 
             bool isNewGenreSavedToDatabase = _unitOfWork.CommitSaveChanges();
 
             if (!isNewGenreSavedToDatabase)
             {
-                TempData["GenreErrorMessage"] = "Error, couldn't save the new " +
-                    "genre record!";
+                TempData["GenreErrorMessage"] = string.Format(
+                    NotificationMessages.NewRecordFailedSaveErrorMessage,
+                    "genre");
+
                 return View(createGenreBindingModel);
             }
 
-            TempData["GenreSuccessMessage"] = $"Genre {createGenreBindingModel.Name} " +
-                $"created successfully!";
+            TempData["GenreSuccessMessage"] = string.Format(
+                NotificationMessages.RecordCreationSuccessMessage,
+                "Genre", $"{createGenreBindingModel.Name}");
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -121,8 +128,10 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentGenreEdited)
             {
-                TempData["GenreErrorMessage"] = $"Error, the genre " +
-                    $"{editGenreBindingModel.Name} already exists";
+                TempData["GenreErrorMessage"] = string.Format(NotificationMessages
+                    .ExistingRecordErrorMessage, "genre",
+                        editGenreBindingModel.Name);
+
                 return View(editGenreBindingModel);
             }
 
@@ -130,13 +139,16 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentGenreUpdateSavedToDatabase)
             {
-                TempData["GenreErrorMessage"] = $"Error, couldn't save " +
-                    $"the current genre update!";
+                TempData["GenreErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedUpdateSaveErrorMessage,
+                        "genre");
+
                 return View(editGenreBindingModel);
             }
 
-            TempData["GenreSuccessMessage"] = $"Genre {editGenreBindingModel.Name} " +
-                $"saved successfully!";
+            TempData["GenreSuccessMessage"] = string.Format(NotificationMessages
+                .RecordUpdateSuccessMessage, "Genre",
+                $"{editGenreBindingModel.Name}");
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -168,13 +180,16 @@ namespace Subsogator.Web.Controllers
 
             if (!isGenreDeleted)
             {
-                TempData["GenreErrorMessage"] = $"Error, couldn't delete the genre " +
-                    $"{genreToConfirmDeletion.Name}!";
+                TempData["GenreErrorMessage"] =
+                    string.Format(NotificationMessages.RecordFailedDeletionErrorMessage, "genre") +
+                    $"{genreToConfirmDeletion.Name}";
+
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["GenreSuccessMessage"] = $"Genre {genreToConfirmDeletion.Name} " +
-                $"deleted successfully!";
+            TempData["GenreSuccessMessage"] = string.Format(
+                NotificationMessages.RecordDeletionSuccessMessage,
+                "Genre", $"{genreToConfirmDeletion.Name}");
 
             return RedirectToIndexActionInCurrentController();
         }

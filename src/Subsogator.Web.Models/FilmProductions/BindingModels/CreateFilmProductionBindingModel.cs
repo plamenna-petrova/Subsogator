@@ -16,11 +16,11 @@ namespace Subsogator.Web.Models.FilmProductions.BindingModels
 
         [Required]
         [Range(45, 240, ErrorMessage = ValidationConstants.FilmProductionDurationRangeValidationMessage)]
-        public int Duration { get; set; }
+        public int? Duration { get; set; }
 
         [Required]
         [DisplayName(DisplayConstants.FilmProductionReleaseDateDisplayName)]
-        public DateTime ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
 
         [Required]
         [StringLength(500, MinimumLength = 2, 

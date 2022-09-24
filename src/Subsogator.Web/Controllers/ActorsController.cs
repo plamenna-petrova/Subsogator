@@ -76,8 +76,8 @@ namespace Subsogator.Web.Controllers
             if (!isNewActorCreated)
             {
                 TempData["ActorErrorMessage"] = string.Format(
-                        NotificationMessages.ExistingCrewMemberEntityErrorMessage,
-                        "actor", $"{createActorBindingModel.FirstName}",
+                        NotificationMessages.ExistingRecordErrorMessage,
+                        "actor", $"{createActorBindingModel.FirstName} " +
                         $"{createActorBindingModel.LastName}"
                     );
 
@@ -96,9 +96,8 @@ namespace Subsogator.Web.Controllers
             }
 
             TempData["ActorSuccessMessage"] = string.Format(
-                    NotificationMessages.CrewMemberEntityCreationSuccessMessage,
-                    "Actor", $"{createActorBindingModel.FirstName}",
-                    $"{createActorBindingModel.LastName}"
+                    NotificationMessages.RecordCreationSuccessMessage,
+                    "Actor", $"{createActorBindingModel.FirstName} {createActorBindingModel.LastName}"
                 );
 
             return RedirectToIndexActionInCurrentController();
@@ -133,9 +132,8 @@ namespace Subsogator.Web.Controllers
             if (!isCurrentActorEdited)
             {
                 TempData["ActorErrorMessage"] = string.Format(
-                    NotificationMessages.ExistingCrewMemberEntityErrorMessage,
-                        "actor", $"{editActorBindingModel.FirstName}",
-                        $"{editActorBindingModel.LastName}"
+                        NotificationMessages.ExistingRecordErrorMessage,
+                        "actor", $"{editActorBindingModel.FirstName} {editActorBindingModel.LastName}"
                     );
 
                 return View(editActorBindingModel);
@@ -154,9 +152,8 @@ namespace Subsogator.Web.Controllers
             }
 
             TempData["ActorSuccessMessage"] = string.Format(
-                   NotificationMessages.CrewMemberEntityUpdateSuccessMessage,
-                   "actor", $"{editActorBindingModel.FirstName}",
-                   $"{editActorBindingModel.LastName}"
+                   NotificationMessages.RecordUpdateSuccessMessage,
+                   "Actor", $"{editActorBindingModel.FirstName} {editActorBindingModel.LastName}"
                 );
 
             return RedirectToIndexActionInCurrentController();
@@ -192,15 +189,15 @@ namespace Subsogator.Web.Controllers
                 TempData["ActorErrorMessage"] = string.Format(
                     NotificationMessages.RecordFailedDeletionErrorMessage,
                     "actor"
-                   );
+                   ) + $"{actorToConfirmDeletion.FirstName} " +
+                   $"{actorToConfirmDeletion.LastName}";
 
                 return RedirectToAction(nameof(Delete));
             }
 
             TempData["ActorSuccessMessage"] = string.Format(
-                    NotificationMessages.CrewMemberEntityDeletionSuccessMessage,
-                    "actor", $"{actorToConfirmDeletion.FirstName}", 
-                    $"{actorToConfirmDeletion.LastName}"
+                    NotificationMessages.RecordDeletionSuccessMessage,
+                    "actor", $"{actorToConfirmDeletion.FirstName} {actorToConfirmDeletion.LastName}"
                   );
 
             return RedirectToIndexActionInCurrentController();

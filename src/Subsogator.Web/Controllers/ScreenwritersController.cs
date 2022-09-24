@@ -83,8 +83,8 @@ namespace Subsogator.Web.Controllers
             if (!isNewScreenwriterCreated)
             {
                 TempData["ScreenwriterErrorMessage"] = string.Format(
-                       NotificationMessages.ExistingCrewMemberEntityErrorMessage,
-                       "screenwriter", $"{createScreenwriterBindingModel.FirstName}",
+                       NotificationMessages.ExistingRecordErrorMessage,
+                       "screenwriter", $"{createScreenwriterBindingModel.FirstName} " +
                        $"{createScreenwriterBindingModel.LastName}"
                    );
 
@@ -103,8 +103,8 @@ namespace Subsogator.Web.Controllers
             }
 
             TempData["ScreenwriterSuccessMessage"] = string.Format(
-                    NotificationMessages.CrewMemberEntityCreationSuccessMessage,
-                    "Screenwriter", $"{createScreenwriterBindingModel.FirstName}",
+                    NotificationMessages.RecordCreationSuccessMessage,
+                    "Screenwriter", $"{createScreenwriterBindingModel.FirstName} " +
                     $"{createScreenwriterBindingModel.LastName}"
                 );
 
@@ -141,8 +141,8 @@ namespace Subsogator.Web.Controllers
             if (!isCurrentScreenwriterEdited)
             {
                 TempData["ScreenwriterErrorMessage"] = string.Format(
-                    NotificationMessages.ExistingCrewMemberEntityErrorMessage,
-                        "screenwriter", $"{editScreenwriterBindingModel.FirstName}",
+                    NotificationMessages.ExistingRecordErrorMessage,
+                        "screenwriter", $"{editScreenwriterBindingModel.FirstName} " +
                         $"{editScreenwriterBindingModel.LastName}"
                     );
 
@@ -162,8 +162,8 @@ namespace Subsogator.Web.Controllers
             }
 
             TempData["ScreenwriterSuccessMessage"] = string.Format(
-                   NotificationMessages.CrewMemberEntityUpdateSuccessMessage,
-                   "screenwriter", $"{editScreenwriterBindingModel.FirstName}",
+                   NotificationMessages.RecordUpdateSuccessMessage,
+                   "screenwriter", $"{editScreenwriterBindingModel.FirstName} " +
                    $"{editScreenwriterBindingModel.LastName}"
                 );
 
@@ -201,14 +201,15 @@ namespace Subsogator.Web.Controllers
                 TempData["ScreenwriterErrorMessage"] = string.Format(
                     NotificationMessages.RecordFailedDeletionErrorMessage,
                     "screenwriter"
-                   );
+                   ) + $"{screenwriterToConfirmDeletion.FirstName} " +
+                   $"{screenwriterToConfirmDeletion.LastName}";
 
                 return RedirectToAction(nameof(Delete));
             }
 
             TempData["ScreenwriterSuccessMessage"] = string.Format(
-                    NotificationMessages.CrewMemberEntityDeletionSuccessMessage,
-                    "screenwriter", $"{screenwriterToConfirmDeletion.FirstName}",
+                    NotificationMessages.RecordDeletionSuccessMessage,
+                    "screenwriter", $"{screenwriterToConfirmDeletion.FirstName} " +
                     $"{screenwriterToConfirmDeletion.LastName}"
                   );
 

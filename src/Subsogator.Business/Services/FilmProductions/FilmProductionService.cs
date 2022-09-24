@@ -84,8 +84,8 @@ namespace Subsogator.Business.Services.FilmProductions
             FilmProduction filmProductionToCreate = new FilmProduction
             {
                 Title = createFilmProductionBindingModel.Title,
-                Duration = createFilmProductionBindingModel.Duration,
-                ReleaseDate = createFilmProductionBindingModel.ReleaseDate,
+                Duration = (int) createFilmProductionBindingModel.Duration,
+                ReleaseDate = (DateTime) createFilmProductionBindingModel.ReleaseDate,
                 PlotSummary = createFilmProductionBindingModel.PlotSummary,
                 CountryId = createFilmProductionBindingModel.CountryId,
                 LanguageId = createFilmProductionBindingModel.LanguageId

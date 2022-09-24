@@ -79,8 +79,8 @@ namespace Subsogator.Web.Controllers
             if (!isNewDirectorCreated)
             {
                 TempData["DirectorErrorMessage"] = string.Format(
-                        NotificationMessages.ExistingCrewMemberEntityErrorMessage,
-                        "director", $"{createDirectorBindingModel.FirstName}",
+                        NotificationMessages.ExistingRecordErrorMessage,
+                        "director", $"{createDirectorBindingModel.FirstName} " +
                         $"{createDirectorBindingModel.LastName}"
                     );
 
@@ -99,8 +99,8 @@ namespace Subsogator.Web.Controllers
             }
 
             TempData["DirectorSuccessMessage"] = string.Format(
-                    NotificationMessages.CrewMemberEntityCreationSuccessMessage,
-                    "Director", $"{createDirectorBindingModel.FirstName}",
+                    NotificationMessages.RecordCreationSuccessMessage,
+                    "Director", $"{createDirectorBindingModel.FirstName} " +
                     $"{createDirectorBindingModel.LastName}"
                 );
 
@@ -136,8 +136,8 @@ namespace Subsogator.Web.Controllers
             if (!isCurrentDirectorEdited)
             {
                 TempData["DirectorErrorMessage"] = string.Format(
-                    NotificationMessages.ExistingCrewMemberEntityErrorMessage,
-                        "director", $"{editDirectorBindingModel.FirstName}",
+                    NotificationMessages.ExistingRecordErrorMessage,
+                        "director", $"{editDirectorBindingModel.FirstName} " +
                         $"{editDirectorBindingModel.LastName}"
                     );
 
@@ -157,9 +157,8 @@ namespace Subsogator.Web.Controllers
             }
 
             TempData["DirectorSuccessMessage"] = string.Format(
-                   NotificationMessages.CrewMemberEntityUpdateSuccessMessage,
-                   "director", $"{editDirectorBindingModel.FirstName}",
-                   $"{editDirectorBindingModel.LastName}"
+                   NotificationMessages.RecordUpdateSuccessMessage,
+                   "Director", $"{editDirectorBindingModel.FirstName} {editDirectorBindingModel.LastName}"
                 );
 
             return RedirectToIndexActionInCurrentController();
@@ -195,15 +194,15 @@ namespace Subsogator.Web.Controllers
                 TempData["DirectorErrorMessage"] = string.Format(
                     NotificationMessages.RecordFailedDeletionErrorMessage,
                     "director"
-                   );
+                   ) + $"{directorToConfirmDeletion.FirstName} " +
+                   $"{directorToConfirmDeletion.LastName}";
 
                 return RedirectToAction(nameof(Delete));
             }
 
             TempData["DirectorSuccessMessage"] = string.Format(
-                    NotificationMessages.CrewMemberEntityDeletionSuccessMessage,
-                    "director", $"{directorToConfirmDeletion.FirstName}",
-                    $"{directorToConfirmDeletion.LastName}"
+                    NotificationMessages.RecordDeletionSuccessMessage,
+                    "director", $"{directorToConfirmDeletion.FirstName} {directorToConfirmDeletion.LastName}"
                   );
 
             return RedirectToIndexActionInCurrentController();

@@ -12,6 +12,7 @@ using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Languages.ViewModels;
 using Subsogator.Web.Models.Languages.BindingModels;
 using Microsoft.Extensions.Logging;
+using Subsogator.Common.GlobalConstants;
 
 namespace Subsogator.Web.Controllers
 {
@@ -85,21 +86,27 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewLanguageCreated)
             {
-                TempData["LanguageErrorMessage"] = $"Error, the language " +
-                    $"{createLanguageBindingModel.Name} already exists!";
+                TempData["LanguageErrorMessage"] = string.Format(NotificationMessages
+                    .ExistingRecordErrorMessage, "language",
+                        createLanguageBindingModel.Name);
+
+                return View(createLanguageBindingModel);
             }
 
             bool isNewLanguageSavedToDatabase = _unitOfWork.CommitSaveChanges();
 
             if (!isNewLanguageSavedToDatabase)
             {
-                TempData["LanguageErrorMessage"] = "Error, couldn't save the new " +
-                    "language record!";
+                TempData["LanguageErrorMessage"] = string.Format(
+                    NotificationMessages.NewRecordFailedSaveErrorMessage,
+                    "language");
+
                 return View(createLanguageBindingModel);
             }
 
-            TempData["LanguageSuccessMessage"] = $"Language {createLanguageBindingModel.Name} " +
-                $"created successfully!";
+            TempData["LanguageSuccessMessage"] = string.Format(
+                NotificationMessages.RecordCreationSuccessMessage,
+                "Language", $"{createLanguageBindingModel.Name}");
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -132,8 +139,10 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentLanguageEdited)
             {
-                TempData["LanguageErrorMessage"] = $"Error, the language " +
-                    $"{editLanguageBindingModel.Name} already exists";
+                TempData["LanguageErrorMessage"] = string.Format(NotificationMessages
+                    .ExistingRecordErrorMessage, "language",
+                        editLanguageBindingModel.Name);
+
                 return View(editLanguageBindingModel);
             }
 
@@ -141,13 +150,16 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentLanguageUpdateSavedToDatabase)
             {
-                TempData["LanguageErrorMessage"] = $"Error, couldn't save " +
-                    $"the current language update!";
+                TempData["LanguageErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedUpdateSaveErrorMessage,
+                        "language");
+
                 return View(editLanguageBindingModel);
             }
 
-            TempData["LanguageSuccessMessage"] = $"Language {editLanguageBindingModel.Name} " +
-                $"saved successfully!";
+            TempData["LanguageSuccessMessage"] = string.Format(NotificationMessages
+                .RecordUpdateSuccessMessage, "Language",
+                $"{editLanguageBindingModel.Name}");
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -179,15 +191,18 @@ namespace Subsogator.Web.Controllers
 
             if (!isLanguageDeleted)
             {
-                TempData["LanguageErrorMessage"] = $"Error, couldn't delete the language " +
-                      $"{languageToConfirmDeletion.Name}! Check the " +
-                      $"language relationship status!";
+                string failedDeletionMessage = NotificationMessages.RecordFailedDeletionErrorMessage;
+
+                TempData["LanguageErrorMessage"] = 
+                    string.Format(failedDeletionMessage, "language") + $"{languageToConfirmDeletion.Name}!"
+                    + "Check the language relationship status!";
 
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["LanguageSuccessMessage"] = $"Language {languageToConfirmDeletion.Name} " +
-                $"deleted successfully!";
+            TempData["LanguageSuccessMessage"] = string.Format(
+                NotificationMessages.RecordDeletionSuccessMessage,
+                "Language", $"{languageToConfirmDeletion.Name}");
 
             return RedirectToIndexActionInCurrentController();
         }

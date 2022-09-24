@@ -14,6 +14,7 @@ using Subsogator.Business.Services.Languages;
 using Subsogator.Web.Models.FilmProductions.BindingModels;
 using Subsogator.Business.Transactions.Interfaces;
 using Microsoft.Extensions.Logging;
+using Subsogator.Common.GlobalConstants;
 
 namespace Subsogator.Web.Controllers
 {
@@ -85,7 +86,7 @@ namespace Subsogator.Web.Controllers
             ViewData["CountryByName"] = new SelectList(allCountriesForSelectList, "Id", "Name");
             ViewData["LanguageByName"] = new SelectList(allLanguagesForSelectList, "Id", "Name");
 
-            return View();
+            return View(new CreateFilmProductionBindingModel());
         }
 
         // POST: FilmProductions/Create
@@ -118,16 +119,16 @@ namespace Subsogator.Web.Controllers
                             createFilmProductionBindingModel.LanguageId
                         );
 
-                TempData["FilmProductionErrorMessage"] = $"Error, " +
-                    $"couldn't save the new film production" +
-                    $"{createFilmProductionBindingModel.Title}!";
+                TempData["FilmProductionErrorMessage"] = string.Format(
+                    NotificationMessages.NewRecordFailedSaveErrorMessage,
+                    "film production");
 
                 return View(createFilmProductionBindingModel);
             }
 
-            TempData["FilmProductionSuccessMessage"] = $"Film Production " +
-                    $"{createFilmProductionBindingModel.Title} " +
-                $"created successfully!";
+            TempData["FilmProductionSuccessMessage"] = string.Format(
+                NotificationMessages.RecordCreationSuccessMessage,
+                "Film Production", $"{createFilmProductionBindingModel.Title}");
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -195,14 +196,16 @@ namespace Subsogator.Web.Controllers
                         editFilmProductionBindingModel.LanguageId
                     );
 
-                TempData["FilmProductionErrorMessage"] = $"Error, couldn't save " +
-                    $"the current film production update!";
+                TempData["FilmProductionErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedUpdateSaveErrorMessage,
+                        "film production");
 
                 return View(editFilmProductionBindingModel);
             }
 
-            TempData["FilmProductionSuccessMessage"] = $"Film Production " +
-                $"{editFilmProductionBindingModel.Title} saved successfully!";
+            TempData["FilmProductionSuccessMessage"] = string.Format(NotificationMessages
+                .RecordUpdateSuccessMessage, "Film Production",
+                $"{editFilmProductionBindingModel.Title}");
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -234,17 +237,19 @@ namespace Subsogator.Web.Controllers
 
             if (!isFilmProductionDeleted)
             {
-                TempData["FilmProductionErrorMessage"] = $"Error, couldn't " +
-                    $"delete the film production " +
-                     $"{filmProductionToConfirmDeletion.Title}! Check the " +
-                         $"film production relationship status!";
+                string failedDeletionMessage = NotificationMessages.RecordFailedDeletionErrorMessage;
+
+                TempData["FilmProductionErrorMessage"] =
+                    string.Format(failedDeletionMessage, "film production") + 
+                    $"{filmProductionToConfirmDeletion.Title}!"
+                    + "Check the film production relationship status!";
 
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["FilmProductionSuccessMessage"] = $"Film Production " +
-                $"{filmProductionToConfirmDeletion.Title} " +
-                $"deleted successfully!";
+            TempData["FilmProductionSuccessMessage"] = string.Format(
+                NotificationMessages.RecordDeletionSuccessMessage,
+                "Language", $"{filmProductionToConfirmDeletion.Title}");
 
             return RedirectToAction(nameof(Index));
         }

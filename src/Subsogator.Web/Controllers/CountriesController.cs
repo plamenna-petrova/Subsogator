@@ -12,6 +12,7 @@ using Subsogator.Business.Services.Countries;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Countries.BindingModels;
 using Microsoft.Extensions.Logging;
+using Subsogator.Common.GlobalConstants;
 
 namespace Subsogator.Web.Controllers
 {
@@ -84,21 +85,27 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewCountryCreated)
             {
-                TempData["CountryErrorMessage"] = $"Error, the country " +
-                    $"{createCountryBindingModel.Name} already exists!";
+                TempData["CountryErrorMessage"] = string.Format(NotificationMessages
+                    .ExistingRecordErrorMessage, "country",
+                        createCountryBindingModel.Name);
+
+                return View(createCountryBindingModel);
             }
 
             bool isNewCountrySavedToDatabase = _unitOfWork.CommitSaveChanges();
 
             if (!isNewCountrySavedToDatabase)
             {
-                TempData["CountryErrorMessage"] = "Error, couldn't save the new " +
-                    "country record!";
+                TempData["CountryErrorMessage"] = string.Format(
+                    NotificationMessages.NewRecordFailedSaveErrorMessage, 
+                    "country");
+
                 return View(createCountryBindingModel);
             }
 
-            TempData["CountrySuccessMessage"] = $"Country {createCountryBindingModel.Name} " +
-                $"created successfully!";
+            TempData["CountrySuccessMessage"] = string.Format(
+                NotificationMessages.RecordCreationSuccessMessage, 
+                "Country", $"{createCountryBindingModel.Name}");
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -118,8 +125,6 @@ namespace Subsogator.Web.Controllers
         }
 
         // POST: Countries/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EditCountryBindingModel editCountryBindingModel)
@@ -133,8 +138,9 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentCountryEdited)
             {
-                TempData["CountryErrorMessage"] = $"Error, the country " +
-                    $"{editCountryBindingModel.Name} already exists";
+                TempData["CountryErrorMessage"] = string.Format(NotificationMessages
+                    .ExistingRecordErrorMessage, "country",
+                        editCountryBindingModel.Name);
 
                 return View(editCountryBindingModel);
             }
@@ -143,14 +149,16 @@ namespace Subsogator.Web.Controllers
 
             if (!isCurrentCountryUpdateSavedToDatabase)
             {
-                TempData["CountryErrorMessage"] = $"Error, couldn't save " +
-                    $"the current country update!";
+                TempData["CountryErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedUpdateSaveErrorMessage, 
+                    "country");
 
                 return View(editCountryBindingModel);
             }
 
-            TempData["CountrySuccessMessage"] = $"Country {editCountryBindingModel.Name} " +
-                $"saved successfully!";
+            TempData["CountrySuccessMessage"] = string.Format(NotificationMessages
+                .RecordUpdateSuccessMessage, "Country",
+                $"{editCountryBindingModel.Name}");
 
             return RedirectToIndexActionInCurrentController();
         }
@@ -182,15 +190,18 @@ namespace Subsogator.Web.Controllers
 
             if (!isCountryDeleted)
             {
-                TempData["CountryErrorMessage"] = $"Error, couldn't delete the country " +
-                    $"{countryToConfirmDeletion.Name}! Check the " +
-                    $"country relationship status!";
+                string failedDeletionMessage = NotificationMessages.RecordFailedDeletionErrorMessage;
+
+                TempData["CountryErrorMessage"] =
+                    string.Format(failedDeletionMessage, "country") + $"{countryToConfirmDeletion.Name}!"
+                    + "Check the country relationship status!";
 
                 return RedirectToAction(nameof(Delete));
             }
 
-            TempData["CountrySuccessMessage"] = $"Country {countryToConfirmDeletion.Name} " +
-                $"deleted successfully!";
+            TempData["CountrySuccessMessage"] = string.Format(
+                NotificationMessages.RecordDeletionSuccessMessage, 
+                "Country", $"{countryToConfirmDeletion.Name}");
 
             return RedirectToIndexActionInCurrentController();
 
