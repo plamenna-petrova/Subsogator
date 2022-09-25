@@ -33,7 +33,6 @@ namespace Subsogator.Business.Services.Actors
         {
             List<AllActorsViewModel> allActors = _actorRepository
                 .GetAllAsNoTracking()
-                    .OrderBy(a => a.FirstName)
                         .Select(a => new AllActorsViewModel
                         {
                             Id = a.Id,
@@ -60,26 +59,26 @@ namespace Subsogator.Business.Services.Actors
             //            .ThenInclude(fa => fa.FilmProduction)
             //                .FirstOrDefault();
 
-            var lazyLoadedActor = _actorRepository
+            var lazilyLoadedActor = _actorRepository
                                     .GetAllByCondition(a => a.Id == actorId)
                                         .FirstOrDefault();
 
             var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking();
 
-            if (lazyLoadedActor is null)
+            if (lazilyLoadedActor is null)
             {
                 return null;
             }
 
             var singleActorDetails = new ActorDetailsViewModel
             {
-                Id = lazyLoadedActor.Id,
-                FirstName = lazyLoadedActor.FirstName,
-                LastName = lazyLoadedActor.LastName,
-                CreatedOn = lazyLoadedActor.CreatedOn,
-                ModifiedOn = lazyLoadedActor.ModifiedOn,
-                RelatedFilmProductions = lazyLoadedActor.FilmProductionActors
-                    .Where(fa => fa.ActorId == lazyLoadedActor.Id)
+                Id = lazilyLoadedActor.Id,
+                FirstName = lazilyLoadedActor.FirstName,
+                LastName = lazilyLoadedActor.LastName,
+                CreatedOn = lazilyLoadedActor.CreatedOn,
+                ModifiedOn = lazilyLoadedActor.ModifiedOn,
+                RelatedFilmProductions = lazilyLoadedActor.FilmProductionActors
+                    .Where(fa => fa.ActorId == lazilyLoadedActor.Id)
                     .OrderBy(fa => fa.FilmProduction.Title)
                     .Select(fa => new FilmProductionDetailedInformationViewModel
                     {

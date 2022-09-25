@@ -98,8 +98,8 @@ namespace Data.DataAccess
         {
             var changeTrackerEntries = ChangeTracker.Entries()
                .Where(
-                    x => x.Entity is IAuditInfo &&
-                    x.State != EntityState.Unchanged
+                    e => e.Entity is IAuditInfo &&
+                    e.State != EntityState.Unchanged
                 )
                .Select(e => e)
                .ToList();

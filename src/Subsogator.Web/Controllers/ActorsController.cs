@@ -13,6 +13,7 @@ using Subsogator.Web.Models.Actors.BindingModels;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Common.GlobalConstants;
 using Subsogator.Business.Services.FilmProductions;
+using Subsogator.Web.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -29,7 +30,7 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: Actors
-        public IActionResult Index()
+        public IActionResult Index(string sortOrder, string currentFilter, string searchTerm, int? pageNumber)
         {
             IEnumerable<AllActorsViewModel> allActorsViewModel = _actorService.GetAllActors();
 
@@ -40,7 +41,46 @@ namespace Subsogator.Web.Controllers
                 return NotFound();
             }
 
-            return View(allActorsViewModel);
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["ActorFirstNameSort"] = string.IsNullOrEmpty(sortOrder)
+                ? "actor_first_name_descending"
+                : "";
+            ViewData["ActorLastNameSort"] = sortOrder == "actor_last_name_ascending"
+                ? "actor_last_name_descending"
+                : "actor_last_name_ascending";
+
+            if (searchTerm != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchTerm = currentFilter;
+            }
+
+            ViewData["ActorSearchFilter"] = searchTerm;
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                allActorsViewModel = allActorsViewModel.Where(avm =>
+                                        avm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
+                                        avm.LastName.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            allActorsViewModel = sortOrder switch
+            {
+                "actor_first_name_descending" => allActorsViewModel.OrderByDescending(avm => avm.FirstName),
+                "actor_last_name_ascending" => allActorsViewModel.OrderBy(avm => avm.LastName),
+                "actor_last_name_descending" => allActorsViewModel.OrderByDescending(avm => avm.LastName),
+                _ => allActorsViewModel.OrderBy(avm => avm.FirstName)
+            };
+
+            int pageSize = 3;
+
+            var paginatedList = PaginatedList<AllActorsViewModel>
+                .Create(allActorsViewModel, pageNumber ?? 1, pageSize);
+            
+            return View(paginatedList);
         }
 
         // GET: Actors/Details/5
@@ -59,7 +99,7 @@ namespace Subsogator.Web.Controllers
         // GET: Actors/Create
         public ViewResult Create()
         {
-  
+
             return View(_actorService.GetActorCreatingDetails());
         }
 
@@ -67,7 +107,7 @@ namespace Subsogator.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(
-            CreateActorBindingModel createActorBindingModel, 
+            CreateActorBindingModel createActorBindingModel,
             string[] selectedFilmProductions
          )
         {

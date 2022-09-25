@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Subsogator.Web.Models.Actors.ViewModels.AllActorsViewModel>
+﻿@model PaginatedList<Subsogator.Web.Models.Actors.ViewModels.AllActorsViewModel>
 
 @{
     ViewData["Title"] = "Actors List";
@@ -15,14 +15,32 @@
         @TempData["ActorSuccessMessage"]
     </div>
 }
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            <b>Search by actor names: </b> 
+            <input type="text" name="SearchTerm" value="@ViewData["ActorSearchFilter"]" />
+            <input type="submit" value="Search" class="btn btn-success" />
+            <a asp-action="Index" class="btn btn-primary">Reset</a>
+        </p>
+    </div>
+</form>
+
 <table class="table table-bordered table-dark table-striped table-hover mt-3">
     <thead class="thead-light">
         <tr class="text-center">
             <th>
-                @Html.DisplayNameFor(actor => actor.FirstName)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ActorFirstNameSort"]" 
+                   asp-route-currentFilter="@ViewData["ActorSearchFilter"]">
+                    @Html.DisplayNameFor(actor => actor.ViewModel.FirstName)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(actor => actor.LastName)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["ActorLastNameSort"]"
+                   asp-route-currentFilter="@ViewData["ActorSearchFilter"]">
+                    @Html.DisplayNameFor(actor => actor.ViewModel.LastName)
+                </a>
             </th>
             <th>
                 Related Film Productions
@@ -66,3 +84,25 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
+   class="btn btn-outline-primary @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
+   class="btn btn-outline-primary @nextDisabled">
+    Next
+</a>
+
+<div class="mt-2">Page @Model.PageIndex out of @Model.TotalPages </div>
