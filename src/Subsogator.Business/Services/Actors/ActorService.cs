@@ -106,7 +106,10 @@ namespace Subsogator.Business.Services.Actors
             return actorCreationDetails;
         }
 
-        public bool CreateActor(CreateActorBindingModel createActorBindingModel, string[] selectedFilmProductions)
+        public bool CreateActor(
+            CreateActorBindingModel createActorBindingModel, 
+            string[] selectedFilmProductions
+        )
         {
             Actor actorToCreate = new Actor
             {
@@ -163,7 +166,10 @@ namespace Subsogator.Business.Services.Actors
             return actorToEditDetails;
         }
 
-        public bool EditActor(EditActorBindingModel editActorBindingModel, string[] selectedFilmProductions)
+        public bool EditActor(
+            EditActorBindingModel editActorBindingModel, 
+            string[] selectedFilmProductions
+        )
         {
             var actorToUpdate = _actorRepository
                     .GetAllByCondition(a => a.Id == editActorBindingModel.Id)
@@ -225,18 +231,22 @@ namespace Subsogator.Business.Services.Actors
             return _actorRepository.GetById(actorId);
         }
 
-        private List<AssignedFilmProductionDataViewModel> PopulateAssignedFilmProductionData(Actor actor)
+        private List<AssignedFilmProductionDataViewModel> PopulateAssignedFilmProductionData(
+            Actor actor
+         )
         {
             var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking().ToList();
 
             var filmProductionsOfAnActor = new HashSet<string>(actor.FilmProductionActors
                 .Select(fa => fa.FilmProduction.Id));
 
-            var assignedFilmProductionDataViewModel = new List<AssignedFilmProductionDataViewModel>();
+            var assignedFilmProductionDataViewModel = 
+                    new List<AssignedFilmProductionDataViewModel>();
 
             foreach (var filmProduction in allFilmProductions)
             {
-                assignedFilmProductionDataViewModel.Add(new AssignedFilmProductionDataViewModel
+                assignedFilmProductionDataViewModel
+                .Add(new AssignedFilmProductionDataViewModel
                 {
                     FilmProductionId = filmProduction.Id,
                     Title = filmProduction.Title,
@@ -247,7 +257,10 @@ namespace Subsogator.Business.Services.Actors
             return assignedFilmProductionDataViewModel;
         }
 
-        private void UpdateFilmProductionActorsByActor(string[] selectedFilmProductions, Actor actor)
+        private void UpdateFilmProductionActorsByActor(
+            string[] selectedFilmProductions, 
+            Actor actor
+        )
         {
             if (selectedFilmProductions == null)
             {
@@ -280,8 +293,11 @@ namespace Subsogator.Business.Services.Actors
                 {
                     if (filmProductionsOfAnActor.Contains(filmProduction.Id))
                     {
-                        FilmProductionActor filmProductionActorToRemove = actor.FilmProductionActors
-                                .FirstOrDefault(fp => fp.FilmProductionId == filmProduction.Id);
+                        FilmProductionActor filmProductionActorToRemove = 
+                            actor.FilmProductionActors
+                                    .FirstOrDefault(fp => 
+                                        fp.FilmProductionId == filmProduction.Id
+                                    );
                         _filmProductionActorRepository.Delete(filmProductionActorToRemove);
                     }
                 }

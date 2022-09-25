@@ -30,9 +30,15 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: Actors
-        public IActionResult Index(string sortOrder, string currentFilter, string searchTerm, int? pageNumber)
+        public IActionResult Index(
+            string sortOrder, 
+            string currentFilter, 
+            string searchTerm, 
+            int? pageNumber
+        )
         {
-            IEnumerable<AllActorsViewModel> allActorsViewModel = _actorService.GetAllActors();
+            IEnumerable<AllActorsViewModel> allActorsViewModel = _actorService
+                    .GetAllActors();
 
             bool isAllActorsViewModelEmpty = allActorsViewModel.Count() == 0;
 
@@ -62,16 +68,21 @@ namespace Subsogator.Web.Controllers
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                allActorsViewModel = allActorsViewModel.Where(avm =>
-                                        avm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
-                                        avm.LastName.ToLower().Contains(searchTerm.ToLower()));
+                allActorsViewModel = allActorsViewModel
+                        .Where(avm =>
+                            avm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
+                            avm.LastName.ToLower().Contains(searchTerm.ToLower())
+                        );
             }
 
             allActorsViewModel = sortOrder switch
             {
-                "actor_first_name_descending" => allActorsViewModel.OrderByDescending(avm => avm.FirstName),
-                "actor_last_name_ascending" => allActorsViewModel.OrderBy(avm => avm.LastName),
-                "actor_last_name_descending" => allActorsViewModel.OrderByDescending(avm => avm.LastName),
+                "actor_first_name_descending" => allActorsViewModel
+                        .OrderByDescending(avm => avm.FirstName),
+                "actor_last_name_ascending" => allActorsViewModel
+                        .OrderBy(avm => avm.LastName),
+                "actor_last_name_descending" => allActorsViewModel
+                        .OrderByDescending(avm => avm.LastName),
                 _ => allActorsViewModel.OrderBy(avm => avm.FirstName)
             };
 
@@ -117,7 +128,7 @@ namespace Subsogator.Web.Controllers
             }
 
             bool isNewActorCreated = _actorService
-                                        .CreateActor(createActorBindingModel, selectedFilmProductions);
+                    .CreateActor(createActorBindingModel, selectedFilmProductions);
 
             if (!isNewActorCreated)
             {
@@ -143,7 +154,8 @@ namespace Subsogator.Web.Controllers
 
             TempData["ActorSuccessMessage"] = string.Format(
                     NotificationMessages.RecordCreationSuccessMessage,
-                    "Actor", $"{createActorBindingModel.FirstName} {createActorBindingModel.LastName}"
+                    "Actor", $"{createActorBindingModel.FirstName} " +
+                    $"{createActorBindingModel.LastName}"
                 );
 
             return RedirectToIndexActionInCurrentController();
@@ -166,7 +178,10 @@ namespace Subsogator.Web.Controllers
         // POST: Actors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditActorBindingModel editActorBindingModel, string[] selectedFilmProductions)
+        public IActionResult Edit(
+            EditActorBindingModel editActorBindingModel, 
+            string[] selectedFilmProductions
+        )
         {
             if (!ModelState.IsValid)
             {
@@ -180,7 +195,8 @@ namespace Subsogator.Web.Controllers
             {
                 TempData["ActorErrorMessage"] = string.Format(
                         NotificationMessages.ExistingRecordErrorMessage,
-                        "actor", $"{editActorBindingModel.FirstName} {editActorBindingModel.LastName}"
+                        "actor", $"{editActorBindingModel.FirstName} " +
+                        $"{editActorBindingModel.LastName}"
                     );
 
                 return View(editActorBindingModel);
@@ -200,7 +216,8 @@ namespace Subsogator.Web.Controllers
 
             TempData["ActorSuccessMessage"] = string.Format(
                    NotificationMessages.RecordUpdateSuccessMessage,
-                   "Actor", $"{editActorBindingModel.FirstName} {editActorBindingModel.LastName}"
+                   "Actor", $"{editActorBindingModel.FirstName} " +
+                   $"{editActorBindingModel.LastName}"
                 );
 
             return RedirectToIndexActionInCurrentController();
