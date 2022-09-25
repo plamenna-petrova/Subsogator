@@ -261,7 +261,8 @@ namespace Subsogator.Web.Controllers
 
             TempData["ActorSuccessMessage"] = string.Format(
                     NotificationMessages.RecordDeletionSuccessMessage,
-                    "Actor", $"{actorToConfirmDeletion.FirstName} {actorToConfirmDeletion.LastName}"
+                    "Actor", $"{actorToConfirmDeletion.FirstName} " +
+                    $"{actorToConfirmDeletion.LastName}"
                   );
 
             return RedirectToIndexActionInCurrentController();

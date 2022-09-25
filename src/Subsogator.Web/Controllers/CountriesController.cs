@@ -81,7 +81,8 @@ namespace Subsogator.Web.Controllers
                 return View(createCountryBindingModel);
             }
 
-            bool isNewCountryCreated = _countryService.CreateCountry(createCountryBindingModel);
+            bool isNewCountryCreated = _countryService
+                .CreateCountry(createCountryBindingModel);
 
             if (!isNewCountryCreated)
             {
@@ -134,7 +135,8 @@ namespace Subsogator.Web.Controllers
                 return View(editCountryBindingModel);
             }
 
-            bool isCurrentCountryEdited = _countryService.EditCountry(editCountryBindingModel);
+            bool isCurrentCountryEdited = _countryService
+                .EditCountry(editCountryBindingModel);
 
             if (!isCurrentCountryEdited)
             {
@@ -190,10 +192,12 @@ namespace Subsogator.Web.Controllers
 
             if (!isCountryDeleted)
             {
-                string failedDeletionMessage = NotificationMessages.RecordFailedDeletionErrorMessage;
+                string failedDeletionMessage = NotificationMessages
+                    .RecordFailedDeletionErrorMessage;
 
                 TempData["CountryErrorMessage"] =
-                    string.Format(failedDeletionMessage, "country") + $"{countryToConfirmDeletion.Name}!"
+                    string.Format(failedDeletionMessage, "country") + 
+                    $"{countryToConfirmDeletion.Name}!"
                     + "Check the country relationship status!";
 
                 return RedirectToAction(nameof(Delete));

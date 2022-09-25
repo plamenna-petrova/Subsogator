@@ -70,7 +70,9 @@ namespace Subsogator.Web.Controllers
         // POST: Screenwriters/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateScreenwriterBindingModel createScreenwriterBindingModel)
+        public IActionResult Create(
+            CreateScreenwriterBindingModel createScreenwriterBindingModel
+        )
         {
             if (!ModelState.IsValid)
             {

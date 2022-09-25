@@ -52,7 +52,8 @@ namespace Subsogator.Web.Controllers
                 _filmProductionService
                     .GetAllFilmProductionsWithRelatedData();
 
-            bool isAllFilmProductionsViewModelEmpty = allFilmProductionsViewModel.Count() == 0;
+            bool isAllFilmProductionsViewModelEmpty = 
+                allFilmProductionsViewModel.Count() == 0;
 
             if (isAllFilmProductionsViewModelEmpty)
             {
@@ -83,8 +84,12 @@ namespace Subsogator.Web.Controllers
             var allCountriesForSelectList = _countryService.GetAllCountries();
             var allLanguagesForSelectList = _languageService.GetAllLanguages();
 
-            ViewData["CountryByName"] = new SelectList(allCountriesForSelectList, "Id", "Name");
-            ViewData["LanguageByName"] = new SelectList(allLanguagesForSelectList, "Id", "Name");
+            ViewData["CountryByName"] = new SelectList(
+                allCountriesForSelectList, "Id", "Name"
+            );
+            ViewData["LanguageByName"] = new SelectList(
+                allLanguagesForSelectList, "Id", "Name"
+            );
 
             return View(new CreateFilmProductionBindingModel());
         }
@@ -136,7 +141,8 @@ namespace Subsogator.Web.Controllers
         // GET: FilmProductions/Edit/5
         public IActionResult Edit(string id)
         {
-            EditFilmProductionBindingModel editFilmProductionBindingModel = _filmProductionService
+            EditFilmProductionBindingModel editFilmProductionBindingModel = 
+                _filmProductionService
                     .GetFilmProductionEditingDetails(id);
 
             if (editFilmProductionBindingModel == null)
@@ -162,7 +168,9 @@ namespace Subsogator.Web.Controllers
         // POST: FilmProductions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditFilmProductionBindingModel editFilmProductionBindingModel)
+        public IActionResult Edit(
+            EditFilmProductionBindingModel editFilmProductionBindingModel
+        )
         {
             var allCountriesForSelectList = _countryService.GetAllCountries();
             var allLanguagesForSelectList = _languageService.GetAllLanguages();
@@ -213,7 +221,8 @@ namespace Subsogator.Web.Controllers
         // GET: FilmProductions/Delete/5
         public IActionResult Delete(string id)
         {
-            DeleteFilmProductionViewModel deleteFilmProductionViewModel = _filmProductionService
+            DeleteFilmProductionViewModel deleteFilmProductionViewModel = 
+                _filmProductionService
                     .GetFilmProductionDeletionDetails(id);
 
             if (deleteFilmProductionViewModel == null)
@@ -229,7 +238,8 @@ namespace Subsogator.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {
-            var filmProductionToConfirmDeletion = _filmProductionService.FindFilmProduction(id);
+            var filmProductionToConfirmDeletion = _filmProductionService
+                .FindFilmProduction(id);
 
             _filmProductionService.DeleteFilmProduction(filmProductionToConfirmDeletion);
 
@@ -237,7 +247,8 @@ namespace Subsogator.Web.Controllers
 
             if (!isFilmProductionDeleted)
             {
-                string failedDeletionMessage = NotificationMessages.RecordFailedDeletionErrorMessage;
+                string failedDeletionMessage = NotificationMessages
+                    .RecordFailedDeletionErrorMessage;
 
                 TempData["FilmProductionErrorMessage"] =
                     string.Format(failedDeletionMessage, "film production") + 

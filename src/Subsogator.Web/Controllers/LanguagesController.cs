@@ -135,7 +135,8 @@ namespace Subsogator.Web.Controllers
                 return View(editLanguageBindingModel);
             }
 
-            bool isCurrentLanguageEdited = _languageService.EditLanguage(editLanguageBindingModel);
+            bool isCurrentLanguageEdited = _languageService
+                .EditLanguage(editLanguageBindingModel);
 
             if (!isCurrentLanguageEdited)
             {
@@ -191,10 +192,12 @@ namespace Subsogator.Web.Controllers
 
             if (!isLanguageDeleted)
             {
-                string failedDeletionMessage = NotificationMessages.RecordFailedDeletionErrorMessage;
+                string failedDeletionMessage = NotificationMessages
+                    .RecordFailedDeletionErrorMessage;
 
                 TempData["LanguageErrorMessage"] = 
-                    string.Format(failedDeletionMessage, "language") + $"{languageToConfirmDeletion.Name}!"
+                    string.Format(failedDeletionMessage, "language") + 
+                    $"{languageToConfirmDeletion.Name}!"
                     + "Check the language relationship status!";
 
                 return RedirectToAction(nameof(Delete));

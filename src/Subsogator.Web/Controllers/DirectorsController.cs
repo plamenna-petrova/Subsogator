@@ -74,7 +74,8 @@ namespace Subsogator.Web.Controllers
                 return View(createDirectorBindingModel);
             }
 
-            bool isNewDirectorCreated = _directorService.CreateDirector(createDirectorBindingModel);
+            bool isNewDirectorCreated = _directorService
+                .CreateDirector(createDirectorBindingModel);
 
             if (!isNewDirectorCreated)
             {
@@ -131,7 +132,8 @@ namespace Subsogator.Web.Controllers
                 return View(editDirectorBindingModel);
             }
 
-            bool isCurrentDirectorEdited = _directorService.EditDirector(editDirectorBindingModel);
+            bool isCurrentDirectorEdited = _directorService
+                .EditDirector(editDirectorBindingModel);
 
             if (!isCurrentDirectorEdited)
             {
@@ -158,7 +160,8 @@ namespace Subsogator.Web.Controllers
 
             TempData["DirectorSuccessMessage"] = string.Format(
                    NotificationMessages.RecordUpdateSuccessMessage,
-                   "Director", $"{editDirectorBindingModel.FirstName} {editDirectorBindingModel.LastName}"
+                   "Director", $"{editDirectorBindingModel.FirstName} " +
+                     $"{editDirectorBindingModel.LastName}"
                 );
 
             return RedirectToIndexActionInCurrentController();
@@ -202,7 +205,8 @@ namespace Subsogator.Web.Controllers
 
             TempData["DirectorSuccessMessage"] = string.Format(
                     NotificationMessages.RecordDeletionSuccessMessage,
-                    "Director", $"{directorToConfirmDeletion.FirstName} {directorToConfirmDeletion.LastName}"
+                    "Director", $"{directorToConfirmDeletion.FirstName} " +
+                        $"{directorToConfirmDeletion.LastName}"
                   );
 
             return RedirectToIndexActionInCurrentController();

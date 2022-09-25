@@ -30,7 +30,8 @@ namespace Subsogator.Web.Controllers
         // GET: Genres
         public IActionResult Index()
         {
-            IEnumerable<AllGenresViewModel> allGenresViewModel = _genreService.GetAllGenres();
+            IEnumerable<AllGenresViewModel> allGenresViewModel = 
+                _genreService.GetAllGenres();
 
             bool isAllGenresViewModelEmpty = allGenresViewModel.Count() == 0;
 
@@ -181,7 +182,8 @@ namespace Subsogator.Web.Controllers
             if (!isGenreDeleted)
             {
                 TempData["GenreErrorMessage"] =
-                    string.Format(NotificationMessages.RecordFailedDeletionErrorMessage, "genre") +
+                    string.Format(NotificationMessages
+                    .RecordFailedDeletionErrorMessage, "genre") +
                     $"{genreToConfirmDeletion.Name}";
 
                 return RedirectToAction(nameof(Delete));
