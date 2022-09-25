@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Data.DataAccess.Repositories.Interfaces
 {
-    public interface IDirectorRepository: IBaseRepository<Director>
+    public interface IDirectorRepository: ICrewMemberRepository<Director>
     {
 
     }

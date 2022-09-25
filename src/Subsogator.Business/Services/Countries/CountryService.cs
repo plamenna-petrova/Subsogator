@@ -18,7 +18,10 @@ namespace Subsogator.Business.Services.Countries
 
         private readonly ICountryRepository _countryRepository;
 
-        public CountryService(ICountryRepository countryRepository, ApplicationDbContext applicationDbContext)
+        public CountryService(
+            ICountryRepository countryRepository, 
+            ApplicationDbContext applicationDbContext
+        )
         {
             _applicationDbContext = applicationDbContext;
             _countryRepository = countryRepository;

@@ -14,7 +14,10 @@ namespace Subsogator.Business.Transactions.Implementation
 
         private readonly ILogger _logger;
 
-        public UnitOfWork(ApplicationDbContext applicationDbContext, ILogger<UnitOfWork> logger)
+        public UnitOfWork(
+            ApplicationDbContext applicationDbContext, 
+            ILogger<UnitOfWork> logger
+        )
         {
             _applicatioDbContext = applicationDbContext;
             _logger = logger;

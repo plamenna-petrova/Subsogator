@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Data.DataAccess.Repositories.Interfaces
 {
-    public interface IScreenwriterRepository: IBaseRepository<Screenwriter>
+    public interface IScreenwriterRepository: ICrewMemberRepository<Screenwriter>
     {
 
     }

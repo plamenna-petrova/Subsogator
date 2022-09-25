@@ -33,7 +33,8 @@ namespace Subsogator.Web.Controllers
         public IActionResult Index(
             string sortOrder, 
             string currentFilter, 
-            string searchTerm, 
+            string searchTerm,
+            int? pageSize,
             int? pageNumber
         )
         {
@@ -86,10 +87,15 @@ namespace Subsogator.Web.Controllers
                 _ => allActorsViewModel.OrderBy(avm => avm.FirstName)
             };
 
-            int pageSize = 3;
+            if (pageSize == null)
+            {
+                pageSize = 3;
+            }
+
+            ViewData["CurrentPageSize"] = pageSize;
 
             var paginatedList = PaginatedList<AllActorsViewModel>
-                .Create(allActorsViewModel, pageNumber ?? 1, pageSize);
+                .Create(allActorsViewModel, pageNumber ?? 1, (int) pageSize);
             
             return View(paginatedList);
         }

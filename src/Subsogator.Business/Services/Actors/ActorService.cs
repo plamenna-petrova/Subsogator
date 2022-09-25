@@ -235,7 +235,9 @@ namespace Subsogator.Business.Services.Actors
             Actor actor
          )
         {
-            var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking().ToList();
+            var allFilmProductions = _filmProductionRepository
+                .GetAllAsNoTracking()
+                    .ToList();
 
             var filmProductionsOfAnActor = new HashSet<string>(actor.FilmProductionActors
                 .Select(fa => fa.FilmProduction.Id));

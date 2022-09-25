@@ -96,7 +96,9 @@ namespace Subsogator.Business.Services.Screenwriters
             return true;
         }
 
-        public EditScreenwriterBindingModel GetScreenwriterEditingDetails(string screenwriterId)
+        public EditScreenwriterBindingModel GetScreenwriterEditingDetails(
+            string screenwriterId
+        )
         {
             var screenwriterToEdit = FindScreenwriter(screenwriterId);
 
@@ -137,7 +139,9 @@ namespace Subsogator.Business.Services.Screenwriters
             return true;
         }
 
-        public DeleteScreenwriterViewModel GetScreenwriterDeletionDetails(string screenwriterId)
+        public DeleteScreenwriterViewModel GetScreenwriterDeletionDetails(
+            string screenwriterId
+        )
         {
             var screenwriterToDelete = FindScreenwriter(screenwriterId);
 

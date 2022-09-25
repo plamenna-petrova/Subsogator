@@ -8,8 +8,9 @@ using System.Text;
 
 namespace Data.DataAccess.Repositories.Implementation
 {
-    public abstract class CrewMemberRepository<TCrewMemberEntity> : BaseRepository<TCrewMemberEntity>, 
-            ICrewMemberRepository<TCrewMemberEntity> where TCrewMemberEntity: CrewMember
+    public abstract class CrewMemberRepository<TCrewMemberEntity> 
+        : BaseRepository<TCrewMemberEntity>, ICrewMemberRepository<TCrewMemberEntity> 
+            where TCrewMemberEntity: CrewMember
     {
         public CrewMemberRepository(ApplicationDbContext applicationDbContext)
             : base(applicationDbContext)
