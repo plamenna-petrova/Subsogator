@@ -41,6 +41,7 @@ namespace Subsogator.Business.Services.Actors
                             LastName = a.LastName,
                             RelatedFilmProductions = a.FilmProductionActors
                                 .Where(fa => fa.ActorId == a.Id)
+                                .OrderBy(fa => fa.FilmProduction.Title)
                                 .Select(fa => new FilmProductionConciseInformationViewModel
                                 {
                                     Title = fa.FilmProduction.Title
@@ -53,33 +54,33 @@ namespace Subsogator.Business.Services.Actors
 
         public ActorDetailsViewModel GetActorDetails(string actorId)
         {
-            var singleActor = _actorRepository
-                .GetAllByCondition(a => a.Id == actorId)
-                    .Include(a => a.FilmProductionActors)
-                        .ThenInclude(fa => fa.FilmProduction)
-                            .FirstOrDefault();
+            //var singleActor = _actorRepository
+            //    .GetAllByCondition(a => a.Id == actorId)
+            //        .Include(a => a.FilmProductionActors)
+            //            .ThenInclude(fa => fa.FilmProduction)
+            //                .FirstOrDefault();
+
+            var lazyLoadedActor = _actorRepository
+                                    .GetAllByCondition(a => a.Id == actorId)
+                                        .FirstOrDefault();
 
             var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking();
 
-            // for testing
-
-            //var filmProductionsOfAnActor = new HashSet<FilmProduction>(singleActor.FilmProductionActors
-            //    .Select(fa => fa.FilmProduction));
-
-            if (singleActor is null)
+            if (lazyLoadedActor is null)
             {
                 return null;
             }
 
             var singleActorDetails = new ActorDetailsViewModel
             {
-                Id = singleActor.Id,
-                FirstName = singleActor.FirstName,
-                LastName = singleActor.LastName,
-                CreatedOn = singleActor.CreatedOn,
-                ModifiedOn = singleActor.ModifiedOn,
-                RelatedFilmProductions = singleActor.FilmProductionActors
-                    .Where(fa => fa.ActorId == singleActor.Id)
+                Id = lazyLoadedActor.Id,
+                FirstName = lazyLoadedActor.FirstName,
+                LastName = lazyLoadedActor.LastName,
+                CreatedOn = lazyLoadedActor.CreatedOn,
+                ModifiedOn = lazyLoadedActor.ModifiedOn,
+                RelatedFilmProductions = lazyLoadedActor.FilmProductionActors
+                    .Where(fa => fa.ActorId == lazyLoadedActor.Id)
+                    .OrderBy(fa => fa.FilmProduction.Title)
                     .Select(fa => new FilmProductionDetailedInformationViewModel
                     {
                         Title = fa.FilmProduction.Title,
@@ -92,12 +93,26 @@ namespace Subsogator.Business.Services.Actors
             return singleActorDetails;
         }
 
-        public bool CreateActor(CreateActorBindingModel createActorBindingModel)
+        public CreateActorBindingModel GetActorCreatingDetails()
+        {
+            var actor = new Actor();
+
+            var actorCreationDetails = new CreateActorBindingModel
+            {
+                FirstName = actor.FirstName,
+                LastName = actor.LastName,
+                AssignedFilmProductions = PopulateAssignedFilmProductionData(actor)
+            };
+
+            return actorCreationDetails;
+        }
+
+        public bool CreateActor(CreateActorBindingModel createActorBindingModel, string[] selectedFilmProductions)
         {
             Actor actorToCreate = new Actor
             {
                 FirstName = createActorBindingModel.FirstName,
-                LastName = createActorBindingModel.LastName,
+                LastName = createActorBindingModel.LastName
             };
 
             var allActors = _actorRepository.GetAllAsNoTracking();
@@ -105,6 +120,19 @@ namespace Subsogator.Business.Services.Actors
             if (_actorRepository.Exists(allActors, actorToCreate))
             {
                 return false;
+            }
+
+            if (selectedFilmProductions != null)
+            {
+                foreach (var filmProductionId in selectedFilmProductions)
+                {
+                    var filmProductionActorToAdd = new FilmProductionActor
+                    {
+                        FilmProductionId = filmProductionId,
+                        ActorId = actorToCreate.Id
+                    };
+                    actorToCreate.FilmProductionActors.Add(filmProductionActorToAdd);
+                }
             }
 
             _actorRepository.Add(actorToCreate);
@@ -184,6 +212,12 @@ namespace Subsogator.Business.Services.Actors
 
         public void DeleteActor(Actor actor)
         {
+            var filmProductionActorsByActor = _filmProductionActorRepository
+                    .GetAllByCondition(fa => fa.ActorId == actor.Id)
+                        .ToArray();
+
+            _filmProductionActorRepository.DeleteRange(filmProductionActorsByActor);
+
             _actorRepository.Delete(actor);
         }
 

@@ -209,7 +209,7 @@ namespace Subsogator.Web.Controllers
 
             TempData["ScreenwriterSuccessMessage"] = string.Format(
                     NotificationMessages.RecordDeletionSuccessMessage,
-                    "screenwriter", $"{screenwriterToConfirmDeletion.FirstName} " +
+                    "Screenwriter", $"{screenwriterToConfirmDeletion.FirstName} " +
                     $"{screenwriterToConfirmDeletion.LastName}"
                   );
 

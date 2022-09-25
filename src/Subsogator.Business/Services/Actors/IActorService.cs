@@ -13,7 +13,9 @@ namespace Subsogator.Business.Services.Actors
 
         ActorDetailsViewModel GetActorDetails(string actorId);
 
-        bool CreateActor(CreateActorBindingModel createActorBindingModel);
+        CreateActorBindingModel GetActorCreatingDetails();
+
+        bool CreateActor(CreateActorBindingModel createActorBindingModel, string[] selectedFilmProductions);
 
         EditActorBindingModel GetActorEditingDetails(string actorId);
 

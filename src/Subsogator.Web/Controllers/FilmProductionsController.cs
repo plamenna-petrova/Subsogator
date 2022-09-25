@@ -249,7 +249,7 @@ namespace Subsogator.Web.Controllers
 
             TempData["FilmProductionSuccessMessage"] = string.Format(
                 NotificationMessages.RecordDeletionSuccessMessage,
-                "Language", $"{filmProductionToConfirmDeletion.Title}");
+                "Film Production", $"{filmProductionToConfirmDeletion.Title}");
 
             return RedirectToAction(nameof(Index));
         }

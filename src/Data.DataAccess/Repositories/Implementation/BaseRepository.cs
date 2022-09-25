@@ -47,14 +47,29 @@ namespace Data.DataAccess.Repositories.Implementation
             DbSet.Add(entity);
         }
 
+        public virtual void AddRange(TEntity[] entities)
+        {
+            DbSet.AddRange(entities);
+        }
+
         public virtual void Update(TEntity entity)
         {
             DbSet.Update(entity);
         }
 
+        public virtual void UpdateRange(TEntity[] entities)
+        {
+            DbSet.UpdateRange(entities);
+        }
+
         public virtual void Delete(TEntity entity)
         {
             DbSet.Remove(entity);
+        }
+
+        public virtual void DeleteRange(TEntity[] entities)
+        {
+            DbSet.RemoveRange(entities);
         }
 
         public virtual bool Exists(IQueryable<TEntity> entities, TEntity entityToFind)

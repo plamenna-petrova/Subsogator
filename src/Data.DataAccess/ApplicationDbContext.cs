@@ -57,6 +57,8 @@ namespace Data.DataAccess
 
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
         {
+            dbContextOptionsBuilder.UseLazyLoadingProxies();
+
             if (!dbContextOptionsBuilder.IsConfigured)
             {
                 string secretsJSONFullPath = ConnectionConstants.DatabaseConnectionString;

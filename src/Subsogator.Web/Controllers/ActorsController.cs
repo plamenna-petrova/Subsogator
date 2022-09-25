@@ -59,20 +59,25 @@ namespace Subsogator.Web.Controllers
         // GET: Actors/Create
         public ViewResult Create()
         {
-            return View(new CreateActorBindingModel());
+  
+            return View(_actorService.GetActorCreatingDetails());
         }
 
         // POST: Actors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateActorBindingModel createActorBindingModel)
+        public IActionResult Create(
+            CreateActorBindingModel createActorBindingModel, 
+            string[] selectedFilmProductions
+         )
         {
             if (!ModelState.IsValid)
             {
                 return View(createActorBindingModel);
             }
 
-            bool isNewActorCreated = _actorService.CreateActor(createActorBindingModel);
+            bool isNewActorCreated = _actorService
+                                        .CreateActor(createActorBindingModel, selectedFilmProductions);
 
             if (!isNewActorCreated)
             {
@@ -128,7 +133,8 @@ namespace Subsogator.Web.Controllers
                 return View(editActorBindingModel);
             }
 
-            bool isCurrentActorEdited = _actorService.EditActor(editActorBindingModel, selectedFilmProductions);
+            bool isCurrentActorEdited = _actorService
+                    .EditActor(editActorBindingModel, selectedFilmProductions);
 
             if (!isCurrentActorEdited)
             {
@@ -198,7 +204,7 @@ namespace Subsogator.Web.Controllers
 
             TempData["ActorSuccessMessage"] = string.Format(
                     NotificationMessages.RecordDeletionSuccessMessage,
-                    "actor", $"{actorToConfirmDeletion.FirstName} {actorToConfirmDeletion.LastName}"
+                    "Actor", $"{actorToConfirmDeletion.FirstName} {actorToConfirmDeletion.LastName}"
                   );
 
             return RedirectToIndexActionInCurrentController();
