@@ -19,8 +19,8 @@ namespace Subsogator.Common.GlobalConstants
         public const string RecordCreationSuccessMessage = "{0} {1} " +
             "created successfully!";
 
-        public const string RecordUpdateSuccessMessage = "{0} {1} saved successfully";
+        public const string RecordUpdateSuccessMessage = "{0} {1} saved successfully!";
 
-        public const string RecordDeletionSuccessMessage = "{0} {1} deleted successfully";
+        public const string RecordDeletionSuccessMessage = "{0} {1} deleted successfully!";
     }
 }

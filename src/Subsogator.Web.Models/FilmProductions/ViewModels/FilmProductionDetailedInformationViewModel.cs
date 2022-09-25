@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Subsogator.Web.Models.FilmProductions.ViewModels
@@ -10,6 +11,7 @@ namespace Subsogator.Web.Models.FilmProductions.ViewModels
 
         public int Duration { get; set; }
 
+        [DisplayName("Release Date")]
         public DateTime ReleaseDate { get; set; }
     }
 }

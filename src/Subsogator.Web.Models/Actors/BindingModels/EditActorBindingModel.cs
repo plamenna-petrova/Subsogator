@@ -1,4 +1,5 @@
 ﻿using Subsogator.Common.GlobalConstants;
+using Subsogator.Web.Models.FilmProductionActors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,5 +23,7 @@ namespace Subsogator.Web.Models.Actors.BindingModels
             ErrorMessage = ValidationConstants.ActorLastNameMinimumLengthValidationMessage)]
         [DisplayName(DisplayConstants.LastNameDisplayName)]
         public string LastName { get; set; }
+
+        public IEnumerable<AssignedFilmProductionDataViewModel> AssignedFilmProductions { get; set; }
     }
 }

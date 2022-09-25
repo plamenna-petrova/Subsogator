@@ -50,7 +50,7 @@ namespace Subsogator.Web.Controllers
         {
             IEnumerable<AllFilmProductionsViewModel> allFilmProductionsViewModel = 
                 _filmProductionService
-                    .GetAllFilmProductions();
+                    .GetAllFilmProductionsWithRelatedData();
 
             bool isAllFilmProductionsViewModelEmpty = allFilmProductionsViewModel.Count() == 0;
 

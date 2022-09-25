@@ -12,6 +12,7 @@ using Subsogator.Web.Models.Actors.ViewModels;
 using Subsogator.Web.Models.Actors.BindingModels;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Common.GlobalConstants;
+using Subsogator.Business.Services.FilmProductions;
 
 namespace Subsogator.Web.Controllers
 {
@@ -120,14 +121,14 @@ namespace Subsogator.Web.Controllers
         // POST: Actors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditActorBindingModel editActorBindingModel)
+        public IActionResult Edit(EditActorBindingModel editActorBindingModel, string[] selectedFilmProductions)
         {
             if (!ModelState.IsValid)
             {
                 return View(editActorBindingModel);
             }
 
-            bool isCurrentActorEdited = _actorService.EditActor(editActorBindingModel);
+            bool isCurrentActorEdited = _actorService.EditActor(editActorBindingModel, selectedFilmProductions);
 
             if (!isCurrentActorEdited)
             {

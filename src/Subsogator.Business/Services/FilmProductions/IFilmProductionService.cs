@@ -9,7 +9,9 @@ namespace Subsogator.Business.Services.FilmProductions
 {
     public interface IFilmProductionService
     {
-        IEnumerable<AllFilmProductionsViewModel> GetAllFilmProductions();
+        List<FilmProduction> GetAllFilmProductions();
+
+        IEnumerable<AllFilmProductionsViewModel> GetAllFilmProductionsWithRelatedData();
 
         FilmProductionFullDetailsViewModel GetFilmProductionDetails(string filmProductionId);
 

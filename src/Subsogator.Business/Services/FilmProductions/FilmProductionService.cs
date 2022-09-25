@@ -23,7 +23,12 @@ namespace Subsogator.Business.Services.FilmProductions
             _filmProductionRepository = filmProductionRepository;
         }
 
-        public IEnumerable<AllFilmProductionsViewModel> GetAllFilmProductions()
+        public List<FilmProduction> GetAllFilmProductions()
+        {
+            return _filmProductionRepository.GetAllAsNoTracking().ToList();
+        }
+
+        public IEnumerable<AllFilmProductionsViewModel> GetAllFilmProductionsWithRelatedData()
         {
             List<AllFilmProductionsViewModel> allFilmProductions = _filmProductionRepository
                 .GetAllAsNoTracking()

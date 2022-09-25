@@ -17,7 +17,7 @@ namespace Subsogator.Business.Services.Actors
 
         EditActorBindingModel GetActorEditingDetails(string actorId);
 
-        bool EditActor(EditActorBindingModel editActorBindingModel);
+        bool EditActor(EditActorBindingModel editActorBindingModel, string[] selectedFilmProductions);
 
         DeleteActorViewModel GetActorDeletionDetails(string actorId);
 
