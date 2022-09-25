@@ -46,6 +46,62 @@
         <dd class="col-sm-10 text-white">
             @Html.DisplayFor(filmProduction => filmProduction.LanguageName)
         </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(filmProduction => filmProduction.RelatedGenres)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @for (var i = 0; i < Model.RelatedGenres.Count(); i++)
+            {
+                <span>@Model.RelatedGenres[i]</span>
+
+                if (i != Model.RelatedGenres.Count() - 1)
+                {
+                   <span>,</span>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(filmProduction => filmProduction.RelatedActors)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @for (var i = 0; i < Model.RelatedActors.Count(); i++)
+            {
+                <span>@Model.RelatedActors[i].Item1 @Model.RelatedActors[i].Item2</span>
+
+                if (i != Model.RelatedActors.Count() - 1)
+                {
+                    <span>,</span>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(filmProduction => filmProduction.RelatedDirectors)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @for (var i = 0; i < Model.RelatedDirectors.Count(); i++)
+            {
+                <span>@Model.RelatedDirectors[i].Item1 @Model.RelatedDirectors[i].Item2</span>
+
+                if (i != Model.RelatedDirectors.Count() - 1)
+                {
+                    <span>,</span>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(filmProduction => filmProduction.RelatedScreenwriters)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @for (var i = 0; i < Model.RelatedScreenwriters.Count(); i++)
+            {
+                <span>@Model.RelatedScreenwriters[i].Item1 @Model.RelatedScreenwriters[i].Item2</span>
+
+                if (i != Model.RelatedScreenwriters.Count() - 1)
+                {
+                    <span>,</span>
+                }
+            }
+        </dd>
     </dl>
 </div>
 <div>

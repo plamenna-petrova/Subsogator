@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Subsogator.Web.Models.Actors.ViewModels;
+using Subsogator.Web.Models.Directors.ViewModels;
+using Subsogator.Web.Models.Screenwriters.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,5 +22,13 @@ namespace Subsogator.Web.Models.FilmProductions.ViewModels
         public string CountryName { get; set; }
 
         public string LanguageName { get; set; }
+
+        public List<string> RelatedGenres { get; set; }
+
+        public List<Tuple<string, string>> RelatedActors { get; set; }
+
+        public List<Tuple<string, string>> RelatedDirectors { get; set; }
+
+        public List<Tuple<string, string>> RelatedScreenwriters { get; set; }
     }
 }

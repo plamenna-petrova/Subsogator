@@ -1,7 +1,9 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
 using Microsoft.EntityFrameworkCore;
+using Subsogator.Web.Models.Actors.ViewModels;
 using Subsogator.Web.Models.Countries.ViewModels;
+using Subsogator.Web.Models.Directors.ViewModels;
 using Subsogator.Web.Models.FilmProductions.BindingModels;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Web.Models.Languages.ViewModels;
@@ -55,8 +57,16 @@ namespace Subsogator.Business.Services.FilmProductions
             var singleFilmProduction = _filmProductionRepository
                     .GetAllByCondition(fp => fp.Id == filmProductionId)
                         .Include(fp => fp.Country)
-                            .Include(fp => fp.Language)
-                                .FirstOrDefault();
+                        .Include(fp => fp.Language)
+                        .Include(fp => fp.FilmProductionGenres)
+                            .ThenInclude(fg => fg.Genre)
+                        .Include(fp => fp.FilmProductionActors)
+                            .ThenInclude(fa => fa.Actor)
+                        .Include(fp => fp.FilmProductionDirectors)
+                            .ThenInclude(fd => fd.Director)
+                        .Include(fp => fp.FilmProductionScreenwriters)
+                            .ThenInclude(fs => fs.Screenwriter)
+                        .FirstOrDefault();
 
             if (singleFilmProduction is null)
             {
@@ -71,7 +81,28 @@ namespace Subsogator.Business.Services.FilmProductions
                 ReleaseDate = singleFilmProduction.ReleaseDate,
                 PlotSummary = singleFilmProduction.PlotSummary,
                 CountryName = singleFilmProduction.Country.Name,
-                LanguageName = singleFilmProduction.Language.Name
+                LanguageName = singleFilmProduction.Language.Name,
+                RelatedGenres = singleFilmProduction.FilmProductionGenres
+                                    .Select(fg => fg.Genre.Name)
+                                    .ToList(),
+                RelatedActors = singleFilmProduction.FilmProductionActors
+                                    .Select(fa => new Tuple<string, string>(
+                                        fa.Actor.FirstName,
+                                        fa.Actor.LastName)
+                                    )
+                                    .ToList(),
+                RelatedDirectors = singleFilmProduction.FilmProductionDirectors
+                                    .Select(fd => new Tuple<string, string>(
+                                            fd.Director.FirstName,
+                                            fd.Director.LastName
+                                        ))
+                                    .ToList(),
+                RelatedScreenwriters = singleFilmProduction.FilmProductionScreenwriters
+                                    .Select(fs => new Tuple<string, string>(
+                                            fs.Screenwriter.FirstName,
+                                            fs.Screenwriter.LastName
+                                        ))
+                                    .ToList()
             };
 
             return singleFilmProductionDetails;
@@ -84,8 +115,8 @@ namespace Subsogator.Business.Services.FilmProductions
             FilmProduction filmProductionToCreate = new FilmProduction
             {
                 Title = createFilmProductionBindingModel.Title,
-                Duration = (int) createFilmProductionBindingModel.Duration,
-                ReleaseDate = (DateTime) createFilmProductionBindingModel.ReleaseDate,
+                Duration = (int)createFilmProductionBindingModel.Duration,
+                ReleaseDate = (DateTime)createFilmProductionBindingModel.ReleaseDate,
                 PlotSummary = createFilmProductionBindingModel.PlotSummary,
                 CountryId = createFilmProductionBindingModel.CountryId,
                 LanguageId = createFilmProductionBindingModel.LanguageId
@@ -119,7 +150,7 @@ namespace Subsogator.Business.Services.FilmProductions
             return filmProductionToEditDetails;
         }
 
-        public void EditFilmProduction(EditFilmProductionBindingModel 
+        public void EditFilmProduction(EditFilmProductionBindingModel
             editFilmProductionBindingModel
         )
         {
