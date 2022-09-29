@@ -12,13 +12,15 @@ namespace Subsogator.Business.Services.Directors
     {
         IEnumerable<AllDirectorsViewModel> GetAllDirectors();
 
+        CreateDirectorBindingModel GetDirectorCreatingDetails();
+
         DirectorDetailsViewModel GetDirectorDetails(string directorId);
 
-        bool CreateDirector(CreateDirectorBindingModel createDirectorBindingModel);
+        bool CreateDirector(CreateDirectorBindingModel createDirectorBindingModel, string[] selectedFilmProductions);
 
         EditDirectorBindingModel GetDirectorEditingDetails(string directorId);
 
-        bool EditDirector(EditDirectorBindingModel editDirectorBindingModel);
+        bool EditDirector(EditDirectorBindingModel editDirectorBindingModel, string[] selectedFilmProductions);
 
         DeleteDirectorViewModel GetDirectorDeletionDetails(string directorId);
 

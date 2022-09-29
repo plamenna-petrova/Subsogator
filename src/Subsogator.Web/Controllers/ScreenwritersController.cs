@@ -12,6 +12,7 @@ using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Screenwriters.ViewModels;
 using Subsogator.Web.Models.Screenwriters.BindingModels;
 using Subsogator.Common.GlobalConstants;
+using Subsogator.Web.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -22,7 +23,7 @@ namespace Subsogator.Web.Controllers
         private readonly IUnitOfWork _unitOfWork;
 
         public ScreenwritersController(
-            IScreenwriterService screenwriterService,
+            IScreenwriterService screenwriterService, 
             IUnitOfWork unitOfWork
         )
         {
@@ -30,11 +31,15 @@ namespace Subsogator.Web.Controllers
             _screenwriterService = screenwriterService;
         }
 
-        // GET: Screenwriters
-        public IActionResult Index()
+        public IActionResult Index(
+            string sortOrder,
+            string currentFilter,
+            string searchTerm,
+            int? pageSize,
+            int? pageNumber
+        )
         {
-            IEnumerable<AllScreenwritersViewModel> allScreenwritersViewModel =
-                _screenwriterService
+            IEnumerable<AllScreenwritersViewModel> allScreenwritersViewModel = _screenwriterService
                     .GetAllScreenwriters();
 
             bool isAllScreenwritersViewModelEmpty = allScreenwritersViewModel.Count() == 0;
@@ -44,14 +49,62 @@ namespace Subsogator.Web.Controllers
                 return NotFound();
             }
 
-            return View(allScreenwritersViewModel);
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["ScreenwriterFirstNameSort"] = string.IsNullOrEmpty(sortOrder)
+                ? "screenwriter_first_name_descending"
+                : "";
+            ViewData["ScreenwriterLastNameSort"] = sortOrder == "screenwriter_last_name_ascending"
+                ? "screenwriter_last_name_descending"
+                : "screenwriter_last_name_ascending";
+
+            if (searchTerm != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchTerm = currentFilter;
+            }
+
+            ViewData["ScreenwriterSearchFilter"] = searchTerm;
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                allScreenwritersViewModel = allScreenwritersViewModel
+                        .Where(avm =>
+                            avm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
+                            avm.LastName.ToLower().Contains(searchTerm.ToLower())
+                        );
+            }
+
+            allScreenwritersViewModel = sortOrder switch
+            {
+                "screenwriter_first_name_descending" => allScreenwritersViewModel
+                        .OrderByDescending(avm => avm.FirstName),
+                "screenwriter_last_name_ascending" => allScreenwritersViewModel
+                        .OrderBy(avm => avm.LastName),
+                "screenwriter_last_name_descending" => allScreenwritersViewModel
+                        .OrderByDescending(avm => avm.LastName),
+                _ => allScreenwritersViewModel.OrderBy(avm => avm.FirstName)
+            };
+
+            if (pageSize == null)
+            {
+                pageSize = 3;
+            }
+
+            ViewData["CurrentPageSize"] = pageSize;
+
+            var paginatedList = PaginatedList<AllScreenwritersViewModel>
+                .Create(allScreenwritersViewModel, pageNumber ?? 1, (int)pageSize);
+
+            return View(paginatedList);
         }
 
         // GET: Screenwriters/Details/5
         public IActionResult Details(string id)
         {
-            ScreenwriterDetailsViewModel screenwriterDetailsViewModel = _screenwriterService
-                .GetScreenwriterDetails(id);
+            ScreenwriterDetailsViewModel screenwriterDetailsViewModel = _screenwriterService.GetScreenwriterDetails(id);
 
             if (screenwriterDetailsViewModel == null)
             {
@@ -64,15 +117,17 @@ namespace Subsogator.Web.Controllers
         // GET: Screenwriters/Create
         public ViewResult Create()
         {
-            return View(new CreateScreenwriterBindingModel());
+
+            return View(_screenwriterService.GetScreenwriterCreatingDetails());
         }
 
         // POST: Screenwriters/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(
-            CreateScreenwriterBindingModel createScreenwriterBindingModel
-        )
+            CreateScreenwriterBindingModel createScreenwriterBindingModel,
+            string[] selectedFilmProductions
+         )
         {
             if (!ModelState.IsValid)
             {
@@ -80,15 +135,15 @@ namespace Subsogator.Web.Controllers
             }
 
             bool isNewScreenwriterCreated = _screenwriterService
-                .CreateScreenwriter(createScreenwriterBindingModel);
+                    .CreateScreenwriter(createScreenwriterBindingModel, selectedFilmProductions);
 
             if (!isNewScreenwriterCreated)
             {
                 TempData["ScreenwriterErrorMessage"] = string.Format(
-                       NotificationMessages.ExistingRecordErrorMessage,
-                       "screenwriter", $"{createScreenwriterBindingModel.FirstName} " +
-                       $"{createScreenwriterBindingModel.LastName}"
-                   );
+                        NotificationMessages.ExistingRecordErrorMessage,
+                        "screenwriter", $"{createScreenwriterBindingModel.FirstName} " +
+                        $"{createScreenwriterBindingModel.LastName}"
+                    );
 
                 return View(createScreenwriterBindingModel);
             }
@@ -130,7 +185,10 @@ namespace Subsogator.Web.Controllers
         // POST: Screenwriters/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditScreenwriterBindingModel editScreenwriterBindingModel)
+        public IActionResult Edit(
+            EditScreenwriterBindingModel editScreenwriterBindingModel,
+            string[] selectedFilmProductions
+        )
         {
             if (!ModelState.IsValid)
             {
@@ -138,12 +196,12 @@ namespace Subsogator.Web.Controllers
             }
 
             bool isCurrentScreenwriterEdited = _screenwriterService
-                .EditScreenwriter(editScreenwriterBindingModel);
+                    .EditScreenwriter(editScreenwriterBindingModel, selectedFilmProductions);
 
             if (!isCurrentScreenwriterEdited)
             {
                 TempData["ScreenwriterErrorMessage"] = string.Format(
-                    NotificationMessages.ExistingRecordErrorMessage,
+                        NotificationMessages.ExistingRecordErrorMessage,
                         "screenwriter", $"{editScreenwriterBindingModel.FirstName} " +
                         $"{editScreenwriterBindingModel.LastName}"
                     );
@@ -165,7 +223,7 @@ namespace Subsogator.Web.Controllers
 
             TempData["ScreenwriterSuccessMessage"] = string.Format(
                    NotificationMessages.RecordUpdateSuccessMessage,
-                   "screenwriter", $"{editScreenwriterBindingModel.FirstName} " +
+                   "Screenwriter", $"{editScreenwriterBindingModel.FirstName} " +
                    $"{editScreenwriterBindingModel.LastName}"
                 );
 
@@ -191,8 +249,7 @@ namespace Subsogator.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {
-            Screenwriter screenwriterToConfirmDeletion = _screenwriterService
-                .FindScreenwriter(id);
+            Screenwriter screenwriterToConfirmDeletion = _screenwriterService.FindScreenwriter(id);
 
             _screenwriterService.DeleteScreenwriter(screenwriterToConfirmDeletion);
 

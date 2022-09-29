@@ -13,6 +13,7 @@ using Subsogator.Web.Models.Directors;
 using Subsogator.Web.Models.Directors.ViewModels;
 using Subsogator.Web.Models.Directors.BindingModels;
 using Subsogator.Common.GlobalConstants;
+using Subsogator.Web.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -28,11 +29,16 @@ namespace Subsogator.Web.Controllers
             _directorService = directorService;
         }
 
-        // GET: Directors
-        public IActionResult Index()
+        public IActionResult Index(
+            string sortOrder,
+            string currentFilter,
+            string searchTerm,
+            int? pageSize,
+            int? pageNumber
+        )
         {
             IEnumerable<AllDirectorsViewModel> allDirectorsViewModel = _directorService
-                .GetAllDirectors();
+                    .GetAllDirectors();
 
             bool isAllDirectorsViewModelEmpty = allDirectorsViewModel.Count() == 0;
 
@@ -41,14 +47,62 @@ namespace Subsogator.Web.Controllers
                 return NotFound();
             }
 
-            return View(allDirectorsViewModel);
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["DirectorFirstNameSort"] = string.IsNullOrEmpty(sortOrder)
+                ? "director_first_name_descending"
+                : "";
+            ViewData["DirectorLastNameSort"] = sortOrder == "director_last_name_ascending"
+                ? "director_last_name_descending"
+                : "director_last_name_ascending";
+
+            if (searchTerm != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchTerm = currentFilter;
+            }
+
+            ViewData["DirectorSearchFilter"] = searchTerm;
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                allDirectorsViewModel = allDirectorsViewModel
+                        .Where(avm =>
+                            avm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
+                            avm.LastName.ToLower().Contains(searchTerm.ToLower())
+                        );
+            }
+
+            allDirectorsViewModel = sortOrder switch
+            {
+                "director_first_name_descending" => allDirectorsViewModel
+                        .OrderByDescending(avm => avm.FirstName),
+                "director_last_name_ascending" => allDirectorsViewModel
+                        .OrderBy(avm => avm.LastName),
+                "director_last_name_descending" => allDirectorsViewModel
+                        .OrderByDescending(avm => avm.LastName),
+                _ => allDirectorsViewModel.OrderBy(avm => avm.FirstName)
+            };
+
+            if (pageSize == null)
+            {
+                pageSize = 3;
+            }
+
+            ViewData["CurrentPageSize"] = pageSize;
+
+            var paginatedList = PaginatedList<AllDirectorsViewModel>
+                .Create(allDirectorsViewModel, pageNumber ?? 1, (int)pageSize);
+
+            return View(paginatedList);
         }
 
         // GET: Directors/Details/5
         public IActionResult Details(string id)
         {
-            DirectorDetailsViewModel directorDetailsViewModel = _directorService
-                .GetDirectorDetails(id);
+            DirectorDetailsViewModel directorDetailsViewModel = _directorService.GetDirectorDetails(id);
 
             if (directorDetailsViewModel == null)
             {
@@ -61,13 +115,17 @@ namespace Subsogator.Web.Controllers
         // GET: Directors/Create
         public ViewResult Create()
         {
-            return View(new CreateDirectorBindingModel());
+
+            return View(_directorService.GetDirectorCreatingDetails());
         }
 
         // POST: Directors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateDirectorBindingModel createDirectorBindingModel)
+        public IActionResult Create(
+            CreateDirectorBindingModel createDirectorBindingModel,
+            string[] selectedFilmProductions
+         )
         {
             if (!ModelState.IsValid)
             {
@@ -75,7 +133,7 @@ namespace Subsogator.Web.Controllers
             }
 
             bool isNewDirectorCreated = _directorService
-                .CreateDirector(createDirectorBindingModel);
+                    .CreateDirector(createDirectorBindingModel, selectedFilmProductions);
 
             if (!isNewDirectorCreated)
             {
@@ -93,8 +151,8 @@ namespace Subsogator.Web.Controllers
             if (!isNewDirectorSavedToDatabase)
             {
                 TempData["DirectorErrorMessage"] = string.Format(
-                     NotificationMessages.NewRecordFailedSaveErrorMessage, "director"
-                    );
+                    NotificationMessages.NewRecordFailedSaveErrorMessage, "director"
+                );
 
                 return View(createDirectorBindingModel);
             }
@@ -125,7 +183,10 @@ namespace Subsogator.Web.Controllers
         // POST: Directors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditDirectorBindingModel editDirectorBindingModel)
+        public IActionResult Edit(
+            EditDirectorBindingModel editDirectorBindingModel,
+            string[] selectedFilmProductions
+        )
         {
             if (!ModelState.IsValid)
             {
@@ -133,12 +194,12 @@ namespace Subsogator.Web.Controllers
             }
 
             bool isCurrentDirectorEdited = _directorService
-                .EditDirector(editDirectorBindingModel);
+                    .EditDirector(editDirectorBindingModel, selectedFilmProductions);
 
             if (!isCurrentDirectorEdited)
             {
                 TempData["DirectorErrorMessage"] = string.Format(
-                    NotificationMessages.ExistingRecordErrorMessage,
+                        NotificationMessages.ExistingRecordErrorMessage,
                         "director", $"{editDirectorBindingModel.FirstName} " +
                         $"{editDirectorBindingModel.LastName}"
                     );
@@ -161,7 +222,7 @@ namespace Subsogator.Web.Controllers
             TempData["DirectorSuccessMessage"] = string.Format(
                    NotificationMessages.RecordUpdateSuccessMessage,
                    "Director", $"{editDirectorBindingModel.FirstName} " +
-                     $"{editDirectorBindingModel.LastName}"
+                   $"{editDirectorBindingModel.LastName}"
                 );
 
             return RedirectToIndexActionInCurrentController();
@@ -206,7 +267,7 @@ namespace Subsogator.Web.Controllers
             TempData["DirectorSuccessMessage"] = string.Format(
                     NotificationMessages.RecordDeletionSuccessMessage,
                     "Director", $"{directorToConfirmDeletion.FirstName} " +
-                        $"{directorToConfirmDeletion.LastName}"
+                    $"{directorToConfirmDeletion.LastName}"
                   );
 
             return RedirectToIndexActionInCurrentController();

@@ -19,6 +19,8 @@ namespace Subsogator.Infrastructure.Extensions
             serviceCollection.AddScoped<IScreenwriterRepository, ScreenwriterRepository>();
             serviceCollection.AddScoped<IFilmProductionRepository, FilmProductionRepository>();
             serviceCollection.AddScoped<IFilmProductionActorRepository, FilmProductionActorRepository>();
+            serviceCollection.AddScoped<IFilmProductionDirectorRepository, FilmProductionDirectorRepository>();
+            serviceCollection.AddScoped<IFilmProductionScreenwriterRepository, FilmProductionScreenwriterRepository>();
         }
     }
 }

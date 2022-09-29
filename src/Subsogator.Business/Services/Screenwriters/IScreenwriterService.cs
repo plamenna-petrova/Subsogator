@@ -11,18 +11,20 @@ namespace Subsogator.Business.Services.Screenwriters
     {
         IEnumerable<AllScreenwritersViewModel> GetAllScreenwriters();
 
-        ScreenwriterDetailsViewModel GetScreenwriterDetails(string screenwriterId);
+        CreateScreenwriterBindingModel GetScreenwriterCreatingDetails();
 
-        bool CreateScreenwriter(CreateScreenwriterBindingModel createScreenwriterBindingModel);
+        ScreenwriterDetailsViewModel GetScreenwriterDetails(string directorId);
 
-        EditScreenwriterBindingModel GetScreenwriterEditingDetails(string screenwriterId);
+        bool CreateScreenwriter(CreateScreenwriterBindingModel createScreenwriterBindingModel, string[] selectedFilmProductions);
 
-        bool EditScreenwriter(EditScreenwriterBindingModel editScreenwriterBindingModel);
+        EditScreenwriterBindingModel GetScreenwriterEditingDetails(string directorId);
 
-        DeleteScreenwriterViewModel GetScreenwriterDeletionDetails(string screenwriterId);
+        bool EditScreenwriter(EditScreenwriterBindingModel editScreenwriterBindingModel, string[] selectedFilmProductions);
 
-        void DeleteScreenwriter(Screenwriter screenwriter);
+        DeleteScreenwriterViewModel GetScreenwriterDeletionDetails(string directorId);
 
-        Screenwriter FindScreenwriter(string screenwriterId);
+        void DeleteScreenwriter(Screenwriter director);
+
+        Screenwriter FindScreenwriter(string directorId);
     }
 }

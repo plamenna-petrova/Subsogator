@@ -15,7 +15,7 @@
     </div>
 }
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-5">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -30,16 +30,42 @@
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="col-md-10 pl-0">
+                    <table>
+                        <tr>
+                            @{
+                                int counter = 0;
+
+                                foreach (var filmProduction in Model.AssignedFilmProductions)
+                                {
+                                    if (counter++ % 2 == 0)
+                                    {
+                                    @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedFilmProductions"
+                                               value="@filmProduction.FilmProductionId"
+                                               @(Html.Raw(filmProduction.IsAssigned ? "checked=\"checked\"" : "")) />
+                                        @filmProduction.Title
+                                    @:</td>
+                                }
+                            @:</tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index" class="btn btn-secondary">Back to Directors List</a>
-</div>
+    <div>
+        <a asp-action="Index" class="btn btn-secondary">Back to Directors List</a>
+    </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

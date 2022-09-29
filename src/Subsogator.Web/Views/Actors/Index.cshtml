@@ -19,7 +19,8 @@
     <div class="form-actions no-color">
         <p>
             <b>Search by actor names: </b>
-            <input type="text" name="SearchTerm" value="@ViewData["ActorSearchFilter"]" />
+            <input type="text" name="SearchTerm" class="search-term-input"
+                   value="@ViewData["ActorSearchFilter"]" />
             <input type="submit" value="Search" class="btn btn-success" />
             <a asp-action="Index" class="btn btn-primary">Reset</a>
         </p>
@@ -30,13 +31,15 @@
     <thead class="thead-light">
         <tr class="text-center">
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["ActorFirstNameSort"]"
+                <a asp-action="Index" class="sorting-link" 
+                   asp-route-sortOrder="@ViewData["ActorFirstNameSort"]"
                    asp-route-currentFilter="@ViewData["ActorSearchFilter"]">
                     @Html.DisplayNameFor(actor => actor.ViewModel.FirstName)
                 </a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["ActorLastNameSort"]"
+                <a asp-action="Index" class="sorting-link" 
+                   asp-route-sortOrder="@ViewData["ActorLastNameSort"]"
                    asp-route-currentFilter="@ViewData["ActorSearchFilter"]">
                     @Html.DisplayNameFor(actor => actor.ViewModel.LastName)
                 </a>
@@ -144,14 +147,15 @@
         <form>
             <div class="form-group">
                 <label asp-for="PageResults" class="control-label"></label>
-                <select id="pageSizeDropdown" name="PageSize" asp-for="PageResults"
-                        class="form-control"
+                <select name="PageSize" asp-for="PageResults"
+                        class="form-control page-size-select"
                         asp-items="Html.GetEnumSelectList<PageResultsEnum>()">
                 </select>
                 <span asp-validation-for="PageResults" class="text-danger"></span>
             </div>
-            <a
-               class="btn btn-outline-primary change-page-size-button">
+            <a class="btn btn-outline-primary text-primary change-page-size-button"
+               asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]">
                 Change
             </a>
         </form>
@@ -166,12 +170,18 @@
 
 @section scripts {
     <script>
-        let dropdown = document.getElementById("pageSizeDropdown");
-
-        let changePageSizeButton = document.querySelector(".change-page-size-button");
+        const pageSizeSelect = document.querySelector(".page-size-select");
+        const searchTermInput = document.querySelector(".search-term-input");
+        const changePageSizeButton = document.querySelector(".change-page-size-button");
 
         changePageSizeButton.addEventListener('click', () => {
-            location.href = `https://localhost:5001/Actors?pageSize=${dropdown.value}`;
+            let currentFilter = searchTermInput.value;
+            let currentFilterQueryParameter = currentFilter !== ""
+                ? `currentFilter=${currentFilter}`
+                : "";
+            let pageSizeQueryParameter = `pageSize=${pageSizeSelect.value}`;
+            let redirectWithOptions = `${changePageSizeButton.href}?${currentFilterQueryParameter}&${pageSizeQueryParameter}`;
+            changePageSizeButton.href = redirectWithOptions;
         });
     </script>
 }

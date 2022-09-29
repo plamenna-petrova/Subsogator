@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Subsogator.Web.Models.FilmProductionActors
+namespace Subsogator.Web.Models.Mapping
 {
     public class AssignedFilmProductionDataViewModel
     {

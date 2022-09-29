@@ -6,7 +6,7 @@ using Subsogator.Web.Models.Actors.BindingModels;
 using Data.DataModels.Entities;
 using Microsoft.EntityFrameworkCore;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
-using Subsogator.Web.Models.FilmProductionActors;
+using Subsogator.Web.Models.Mapping;
 
 namespace Subsogator.Business.Services.Actors
 {
@@ -53,32 +53,26 @@ namespace Subsogator.Business.Services.Actors
 
         public ActorDetailsViewModel GetActorDetails(string actorId)
         {
-            //var singleActor = _actorRepository
-            //    .GetAllByCondition(a => a.Id == actorId)
-            //        .Include(a => a.FilmProductionActors)
-            //            .ThenInclude(fa => fa.FilmProduction)
-            //                .FirstOrDefault();
-
-            var lazilyLoadedActor = _actorRepository
-                                    .GetAllByCondition(a => a.Id == actorId)
-                                        .FirstOrDefault();
+            var singleActor = _actorRepository
+                  .GetAllByCondition(a => a.Id == actorId)
+                       .FirstOrDefault();
 
             var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking();
 
-            if (lazilyLoadedActor is null)
+            if (singleActor is null)
             {
                 return null;
             }
 
             var singleActorDetails = new ActorDetailsViewModel
             {
-                Id = lazilyLoadedActor.Id,
-                FirstName = lazilyLoadedActor.FirstName,
-                LastName = lazilyLoadedActor.LastName,
-                CreatedOn = lazilyLoadedActor.CreatedOn,
-                ModifiedOn = lazilyLoadedActor.ModifiedOn,
-                RelatedFilmProductions = lazilyLoadedActor.FilmProductionActors
-                    .Where(fa => fa.ActorId == lazilyLoadedActor.Id)
+                Id = singleActor.Id,
+                FirstName = singleActor.FirstName,
+                LastName = singleActor.LastName,
+                CreatedOn = singleActor.CreatedOn,
+                ModifiedOn = singleActor.ModifiedOn,
+                RelatedFilmProductions = singleActor.FilmProductionActors
+                    .Where(fa => fa.ActorId == singleActor.Id)
                     .OrderBy(fa => fa.FilmProduction.Title)
                     .Select(fa => new FilmProductionDetailedInformationViewModel
                     {

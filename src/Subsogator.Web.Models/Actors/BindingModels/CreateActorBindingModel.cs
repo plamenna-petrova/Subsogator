@@ -1,5 +1,5 @@
 ﻿using Subsogator.Common.GlobalConstants;
-using Subsogator.Web.Models.FilmProductionActors;
+using Subsogator.Web.Models.Mapping;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

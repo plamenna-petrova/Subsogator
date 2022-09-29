@@ -5,6 +5,7 @@ using Subsogator.Web.Models.Directors;
 using Subsogator.Web.Models.Directors.BindingModels;
 using Subsogator.Web.Models.Directors.ViewModels;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
+using Subsogator.Web.Models.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,19 @@ namespace Subsogator.Business.Services.Directors
     {
         private readonly IDirectorRepository _directorRepository;
 
-        public DirectorService(IDirectorRepository directorRepository)
+        private readonly IFilmProductionRepository _filmProductionRepository;
+
+        private readonly IFilmProductionDirectorRepository _filmProductionDirectorRepository;
+
+        public DirectorService(
+            IDirectorRepository directorRepository,
+            IFilmProductionRepository filmProductionRepository,
+            IFilmProductionDirectorRepository filmProductionDirectorRepository
+        )
         {
             _directorRepository = directorRepository;
+            _filmProductionRepository = filmProductionRepository;
+            _filmProductionDirectorRepository = filmProductionDirectorRepository;
         }
 
         public IEnumerable<AllDirectorsViewModel> GetAllDirectors()
@@ -46,9 +57,7 @@ namespace Subsogator.Business.Services.Directors
         public DirectorDetailsViewModel GetDirectorDetails(string directorId)
         {
             var singleDirector = _directorRepository
-                .GetAllByCondition(d => d.Id == directorId)
-                   .Include(d => d.FilmProductionDirectors)
-                      .ThenInclude(fd => fd.FilmProduction)
+                    .GetAllByCondition(d => d.Id == directorId)
                          .FirstOrDefault();
 
             if (singleDirector is null)
@@ -76,12 +85,29 @@ namespace Subsogator.Business.Services.Directors
             return singleDirectorDetails;
         }
 
-        public bool CreateDirector(CreateDirectorBindingModel createDirectorBindingModel)
+        public CreateDirectorBindingModel GetDirectorCreatingDetails()
+        {
+            var director = new Director();
+
+            var directorCreationDetails = new CreateDirectorBindingModel
+            {
+                FirstName = director.FirstName,
+                LastName = director.LastName,
+                AssignedFilmProductions = PopulateAssignedFilmProductionData(director)
+            };
+
+            return directorCreationDetails;
+        }
+
+        public bool CreateDirector(
+            CreateDirectorBindingModel createDirectorBindingModel,
+            string[] selectedFilmProductions
+        )
         {
             Director directorToCreate = new Director
             {
                 FirstName = createDirectorBindingModel.FirstName,
-                LastName = createDirectorBindingModel.LastName,
+                LastName = createDirectorBindingModel.LastName
             };
 
             var allDirectors = _directorRepository.GetAllAsNoTracking();
@@ -91,6 +117,19 @@ namespace Subsogator.Business.Services.Directors
                 return false;
             }
 
+            if (selectedFilmProductions != null)
+            {
+                foreach (var filmProductionId in selectedFilmProductions)
+                {
+                    var filmProductionActorToAdd = new FilmProductionDirector
+                    {
+                        FilmProductionId = filmProductionId,
+                        DirectorId = directorToCreate.Id
+                    };
+                    directorToCreate.FilmProductionDirectors.Add(filmProductionActorToAdd);
+                }
+            }
+
             _directorRepository.Add(directorToCreate);
 
             return true;
@@ -98,7 +137,11 @@ namespace Subsogator.Business.Services.Directors
 
         public EditDirectorBindingModel GetDirectorEditingDetails(string directorId)
         {
-            var directorToEdit = FindDirector(directorId);
+            var directorToEdit = _directorRepository
+                    .GetAllByCondition(d=> d.Id == directorId)
+                        .Include(d => d.FilmProductionDirectors)
+                            .ThenInclude(fa => fa.FilmProduction)
+                                .FirstOrDefault();
 
             if (directorToEdit is null)
             {
@@ -109,30 +152,40 @@ namespace Subsogator.Business.Services.Directors
             {
                 Id = directorToEdit.Id,
                 FirstName = directorToEdit.FirstName,
-                LastName = directorToEdit.LastName
+                LastName = directorToEdit.LastName,
+                AssignedFilmProductions = PopulateAssignedFilmProductionData(directorToEdit)
             };
 
             return directorToEditDetails;
         }
 
-        public bool EditDirector(EditDirectorBindingModel editDirectorBindingModel)
+        public bool EditDirector(
+            EditDirectorBindingModel editDirectorBindingModel,
+            string[] selectedFilmProductions
+        )
         {
-            var directorToUpdate = FindDirector(editDirectorBindingModel.Id);
+            var directorToUpdate = _directorRepository
+                    .GetAllByCondition(a => a.Id == editDirectorBindingModel.Id)
+                        .Include(a => a.FilmProductionDirectors)
+                            .ThenInclude(fa => fa.FilmProduction)
+                                .FirstOrDefault();
 
             directorToUpdate.FirstName = editDirectorBindingModel.FirstName;
             directorToUpdate.LastName = editDirectorBindingModel.LastName;
 
-            var filteredDirectors = _directorRepository
+            var filteredActors = _directorRepository
                 .GetAllAsNoTracking()
-                .Where(d => !d.Id.Equals(directorToUpdate.Id))
+                .Where(a => !a.Id.Equals(directorToUpdate.Id))
                 .AsQueryable();
 
-            if (_directorRepository.Exists(filteredDirectors, directorToUpdate))
+            if (_directorRepository.Exists(filteredActors, directorToUpdate))
             {
                 return false;
             }
 
             _directorRepository.Update(directorToUpdate);
+
+            UpdateFilmProductionDirectorsByDirector(selectedFilmProductions, directorToUpdate);
 
             return true;
         }
@@ -157,12 +210,93 @@ namespace Subsogator.Business.Services.Directors
 
         public void DeleteDirector(Director director)
         {
+            var filmProductionDirectorsByDirector = _filmProductionDirectorRepository
+                    .GetAllByCondition(fa => fa.DirectorId == director.Id)
+                        .ToArray();
+
+            _filmProductionDirectorRepository.DeleteRange(filmProductionDirectorsByDirector);
+
             _directorRepository.Delete(director);
         }
 
         public Director FindDirector(string directorId)
         {
             return _directorRepository.GetById(directorId);
+        }
+
+        private List<AssignedFilmProductionDataViewModel> PopulateAssignedFilmProductionData(
+           Director director
+        )
+        {
+            var allFilmProductions = _filmProductionRepository
+                .GetAllAsNoTracking()
+                    .ToList();
+
+            var filmProductionsOfADirector = new HashSet<string>(director.FilmProductionDirectors
+                .Select(fa => fa.FilmProduction.Id));
+
+            var assignedFilmProductionDataViewModel =
+                    new List<AssignedFilmProductionDataViewModel>();
+
+            foreach (var filmProduction in allFilmProductions)
+            {
+                assignedFilmProductionDataViewModel
+                .Add(new AssignedFilmProductionDataViewModel
+                {
+                    FilmProductionId = filmProduction.Id,
+                    Title = filmProduction.Title,
+                    IsAssigned = filmProductionsOfADirector.Contains(filmProduction.Id)
+                });
+            }
+
+            return assignedFilmProductionDataViewModel;
+        }
+
+        private void UpdateFilmProductionDirectorsByDirector(
+           string[] selectedFilmProductions,
+           Director director
+       )
+        {
+            if (selectedFilmProductions == null)
+            {
+                director.FilmProductionDirectors = new List<FilmProductionDirector>();
+                return;
+            }
+
+            var selectedFilmProductionsIds = new HashSet<string>(selectedFilmProductions);
+
+            var filmProductionsOfADirector = new HashSet<string>(
+                    director.FilmProductionDirectors.Select(fa => fa.FilmProduction.Id)
+                );
+
+            var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking();
+
+            foreach (var filmProduction in allFilmProductions)
+            {
+                if (selectedFilmProductionsIds.Contains(filmProduction.Id))
+                {
+                    if (!filmProductionsOfADirector.Contains(filmProduction.Id))
+                    {
+                        director.FilmProductionDirectors.Add(new FilmProductionDirector
+                        {
+                            FilmProductionId = filmProduction.Id,
+                            DirectorId = director.Id
+                        });
+                    }
+                }
+                else
+                {
+                    if (filmProductionsOfADirector.Contains(filmProduction.Id))
+                    {
+                        FilmProductionDirector filmProductionDirectorToRemove =
+                            director.FilmProductionDirectors
+                                    .FirstOrDefault(fp =>
+                                        fp.FilmProductionId == filmProduction.Id
+                                    );
+                        _filmProductionDirectorRepository.Delete(filmProductionDirectorToRemove);
+                    }
+                }
+            }
         }
     }
 }

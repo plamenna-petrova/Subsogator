@@ -6,9 +6,10 @@ using System.Text;
 
 namespace Data.DataAccess.Repositories.Implementation
 {
-    public class FilmProductionActorRepository: BaseRepository<FilmProductionActor>, IFilmProductionActorRepository
+    public class FilmProductionDirectorRepository: BaseRepository<FilmProductionDirector>, 
+        IFilmProductionDirectorRepository
     {
-        public FilmProductionActorRepository(ApplicationDbContext applicationDbContext)
+        public FilmProductionDirectorRepository(ApplicationDbContext applicationDbContext)
             : base(applicationDbContext)
         {
 
