@@ -12,6 +12,7 @@ using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Genres.ViewModels;
 using Subsogator.Web.Models.Genres.BindingModels;
 using Subsogator.Common.GlobalConstants;
+using Subsogator.Web.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -28,10 +29,15 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: Genres
-        public IActionResult Index()
+         public IActionResult Index(
+            string sortOrder,
+            string currentFilter,
+            string searchTerm,
+            int? pageSize,
+            int? pageNumber)
         {
-            IEnumerable<AllGenresViewModel> allGenresViewModel = 
-                _genreService.GetAllGenres();
+            IEnumerable<AllGenresViewModel> allGenresViewModel = _genreService
+                .GetAllGenres();
 
             bool isAllGenresViewModelEmpty = allGenresViewModel.Count() == 0;
 
@@ -40,7 +46,48 @@ namespace Subsogator.Web.Controllers
                 return NotFound();
             }
 
-            return View(allGenresViewModel);
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["GenreNameSort"] = string.IsNullOrEmpty(sortOrder)
+                ? "genre_name_descending"
+                : "";
+
+            if (searchTerm != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchTerm = currentFilter;
+            }
+
+            ViewData["GenreSearchFilter"] = searchTerm;
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                allGenresViewModel = allGenresViewModel
+                        .Where(acvm =>
+                            acvm.Name.ToLower().Contains(searchTerm.ToLower())
+                        );
+            }
+
+            allGenresViewModel = sortOrder switch
+            {
+                "genre_name_descending" => allGenresViewModel
+                        .OrderByDescending(acvm => acvm.Name),
+                _ => allGenresViewModel.OrderBy(acvm => acvm.Name)
+            };
+
+            if (pageSize == null)
+            {
+                pageSize = 3;
+            }
+
+            ViewData["CurrentPageSize"] = pageSize;
+
+            var paginatedList = PaginatedList<AllGenresViewModel>
+                .Create(allGenresViewModel, pageNumber ?? 1, (int)pageSize);
+
+            return View(paginatedList);
         }
 
         // GET: Genres/Details/5

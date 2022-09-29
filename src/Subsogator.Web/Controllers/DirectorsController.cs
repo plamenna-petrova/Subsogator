@@ -69,21 +69,21 @@ namespace Subsogator.Web.Controllers
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 allDirectorsViewModel = allDirectorsViewModel
-                        .Where(avm =>
-                            avm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
-                            avm.LastName.ToLower().Contains(searchTerm.ToLower())
+                        .Where(advm =>
+                            advm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
+                            advm.LastName.ToLower().Contains(searchTerm.ToLower())
                         );
             }
 
             allDirectorsViewModel = sortOrder switch
             {
                 "director_first_name_descending" => allDirectorsViewModel
-                        .OrderByDescending(avm => avm.FirstName),
+                        .OrderByDescending(advm => advm.FirstName),
                 "director_last_name_ascending" => allDirectorsViewModel
-                        .OrderBy(avm => avm.LastName),
+                        .OrderBy(advm => advm.LastName),
                 "director_last_name_descending" => allDirectorsViewModel
-                        .OrderByDescending(avm => avm.LastName),
-                _ => allDirectorsViewModel.OrderBy(avm => avm.FirstName)
+                        .OrderByDescending(advm => advm.LastName),
+                _ => allDirectorsViewModel.OrderBy(advm => advm.FirstName)
             };
 
             if (pageSize == null)

@@ -13,6 +13,7 @@ using Subsogator.Web.Models.Languages.ViewModels;
 using Subsogator.Web.Models.Languages.BindingModels;
 using Microsoft.Extensions.Logging;
 using Subsogator.Common.GlobalConstants;
+using Subsogator.Web.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -36,7 +37,13 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: Languages
-        public IActionResult Index()
+        // GET: Languages
+        public IActionResult Index(
+            string sortOrder,
+            string currentFilter,
+            string searchTerm,
+            int? pageSize,
+            int? pageNumber)
         {
             IEnumerable<AllLanguagesViewModel> allLanguagesViewModel = _languageService
                 .GetAllLanguagesWithRelatedData();
@@ -48,7 +55,48 @@ namespace Subsogator.Web.Controllers
                 return NotFound();
             }
 
-            return View(allLanguagesViewModel);
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["LanguageNameSort"] = string.IsNullOrEmpty(sortOrder)
+                ? "language_name_descending"
+                : "";
+
+            if (searchTerm != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchTerm = currentFilter;
+            }
+
+            ViewData["LanguageSearchFilter"] = searchTerm;
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                allLanguagesViewModel = allLanguagesViewModel
+                        .Where(alvm =>
+                            alvm.Name.ToLower().Contains(searchTerm.ToLower())
+                        );
+            }
+
+            allLanguagesViewModel = sortOrder switch
+            {
+                "language_name_descending" => allLanguagesViewModel
+                        .OrderByDescending(alvm => alvm.Name),
+                _ => allLanguagesViewModel.OrderBy(alvm => alvm.Name)
+            };
+
+            if (pageSize == null)
+            {
+                pageSize = 3;
+            }
+
+            ViewData["CurrentPageSize"] = pageSize;
+
+            var paginatedList = PaginatedList<AllLanguagesViewModel>
+                .Create(allLanguagesViewModel, pageNumber ?? 1, (int)pageSize);
+
+            return View(paginatedList);
         }
 
         // GET: Languages/Details/5

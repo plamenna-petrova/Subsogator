@@ -71,21 +71,21 @@ namespace Subsogator.Web.Controllers
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 allScreenwritersViewModel = allScreenwritersViewModel
-                        .Where(avm =>
-                            avm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
-                            avm.LastName.ToLower().Contains(searchTerm.ToLower())
+                        .Where(asvm =>
+                            asvm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
+                            asvm.LastName.ToLower().Contains(searchTerm.ToLower())
                         );
             }
 
             allScreenwritersViewModel = sortOrder switch
             {
                 "screenwriter_first_name_descending" => allScreenwritersViewModel
-                        .OrderByDescending(avm => avm.FirstName),
+                        .OrderByDescending(asvm => asvm.FirstName),
                 "screenwriter_last_name_ascending" => allScreenwritersViewModel
-                        .OrderBy(avm => avm.LastName),
+                        .OrderBy(asvm => asvm.LastName),
                 "screenwriter_last_name_descending" => allScreenwritersViewModel
-                        .OrderByDescending(avm => avm.LastName),
-                _ => allScreenwritersViewModel.OrderBy(avm => avm.FirstName)
+                        .OrderByDescending(asvm => asvm.LastName),
+                _ => allScreenwritersViewModel.OrderBy(asvm => asvm.FirstName)
             };
 
             if (pageSize == null)

@@ -70,21 +70,21 @@ namespace Subsogator.Web.Controllers
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 allActorsViewModel = allActorsViewModel
-                        .Where(avm =>
-                            avm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
-                            avm.LastName.ToLower().Contains(searchTerm.ToLower())
+                        .Where(aavm =>
+                            aavm.FirstName.ToLower().Contains(searchTerm.ToLower()) ||
+                            aavm.LastName.ToLower().Contains(searchTerm.ToLower())
                         );
             }
 
             allActorsViewModel = sortOrder switch
             {
                 "actor_first_name_descending" => allActorsViewModel
-                        .OrderByDescending(avm => avm.FirstName),
+                        .OrderByDescending(aavm => aavm.FirstName),
                 "actor_last_name_ascending" => allActorsViewModel
-                        .OrderBy(avm => avm.LastName),
+                        .OrderBy(aavm => aavm.LastName),
                 "actor_last_name_descending" => allActorsViewModel
-                        .OrderByDescending(avm => avm.LastName),
-                _ => allActorsViewModel.OrderBy(avm => avm.FirstName)
+                        .OrderByDescending(aavm => aavm.LastName),
+                _ => allActorsViewModel.OrderBy(aavm => aavm.FirstName)
             };
 
             if (pageSize == null)
