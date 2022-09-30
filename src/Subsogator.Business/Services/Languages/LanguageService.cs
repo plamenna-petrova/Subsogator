@@ -118,7 +118,7 @@ namespace Subsogator.Business.Services.Languages
 
             var filteredLanguages = _languageRepository
                 .GetAllAsNoTracking()
-                .Where(l => !l.Id.Equals(languageToUpdate.Id));
+                    .Where(l => !l.Id.Equals(languageToUpdate.Id));
 
             if (_languageRepository.Exists(filteredLanguages, languageToUpdate))
             {

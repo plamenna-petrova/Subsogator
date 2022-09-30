@@ -1,4 +1,5 @@
 ﻿using Subsogator.Common.GlobalConstants;
+using Subsogator.Web.Models.Mapping;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,5 +34,11 @@ namespace Subsogator.Web.Models.FilmProductions.BindingModels
         public string CountryId { get; set; }
 
         public string LanguageId { get; set; }
+
+        public IEnumerable<AssignedActorDataViewModel> AssignedActors { get; set; }
+
+        public IEnumerable<AssignedDirectorDataViewModel> AssignedDirectors { get; set; }
+
+        public IEnumerable<AssignedScreenwriterDataViewModel> AssignedScreenwriters { get; set; }
     }
 }

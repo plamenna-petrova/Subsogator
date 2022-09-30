@@ -48,11 +48,11 @@ namespace Subsogator.Web.Controllers
         // GET: FilmProductions
         public IActionResult Index()
         {
-            IEnumerable<AllFilmProductionsViewModel> allFilmProductionsViewModel = 
+            IEnumerable<AllFilmProductionsViewModel> allFilmProductionsViewModel =
                 _filmProductionService
                     .GetAllFilmProductionsWithRelatedData();
 
-            bool isAllFilmProductionsViewModelEmpty = 
+            bool isAllFilmProductionsViewModelEmpty =
                 allFilmProductionsViewModel.Count() == 0;
 
             if (isAllFilmProductionsViewModelEmpty)
@@ -91,14 +91,17 @@ namespace Subsogator.Web.Controllers
                 allLanguagesForSelectList, "Id", "Name"
             );
 
-            return View(new CreateFilmProductionBindingModel());
+            return View(_filmProductionService.GetFilmProductionCreatingDetails());
         }
 
         // POST: FilmProductions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateFilmProductionBindingModel 
-            createFilmProductionBindingModel
+        public IActionResult Create(CreateFilmProductionBindingModel
+            createFilmProductionBindingModel,
+            string[] selectedActors,
+            string[] selectedDirectors,
+            string[] selectedScreenwriters
         )
         {
             if (!ModelState.IsValid)
@@ -106,7 +109,12 @@ namespace Subsogator.Web.Controllers
                 return View(createFilmProductionBindingModel);
             }
 
-            _filmProductionService.CreateFilmProduction(createFilmProductionBindingModel);
+            _filmProductionService.CreateFilmProduction(
+                createFilmProductionBindingModel,
+                selectedActors,
+                selectedDirectors,
+                selectedScreenwriters
+            );
 
             bool isNewFilmProductionSavedToDatabase = _unitOfWork.CommitSaveChanges();
 
@@ -141,7 +149,7 @@ namespace Subsogator.Web.Controllers
         // GET: FilmProductions/Edit/5
         public IActionResult Edit(string id)
         {
-            EditFilmProductionBindingModel editFilmProductionBindingModel = 
+            EditFilmProductionBindingModel editFilmProductionBindingModel =
                 _filmProductionService
                     .GetFilmProductionEditingDetails(id);
 
@@ -169,7 +177,10 @@ namespace Subsogator.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(
-            EditFilmProductionBindingModel editFilmProductionBindingModel
+            EditFilmProductionBindingModel editFilmProductionBindingModel,
+            string[] selectedActors,
+            string[] selectedDirectors,
+            string[] selectedScreenwriters
         )
         {
             var allCountriesForSelectList = _countryService.GetAllCountries();
@@ -189,7 +200,12 @@ namespace Subsogator.Web.Controllers
                 return View(editFilmProductionBindingModel);
             }
 
-            _filmProductionService.EditFilmProduction(editFilmProductionBindingModel);
+            _filmProductionService.EditFilmProduction(
+                editFilmProductionBindingModel,
+                selectedActors,
+                selectedDirectors,
+                selectedScreenwriters
+            );
 
             bool isCurrentFilmProductionSavedToDatabase = _unitOfWork.CommitSaveChanges();
 
@@ -221,7 +237,7 @@ namespace Subsogator.Web.Controllers
         // GET: FilmProductions/Delete/5
         public IActionResult Delete(string id)
         {
-            DeleteFilmProductionViewModel deleteFilmProductionViewModel = 
+            DeleteFilmProductionViewModel deleteFilmProductionViewModel =
                 _filmProductionService
                     .GetFilmProductionDeletionDetails(id);
 
@@ -251,7 +267,7 @@ namespace Subsogator.Web.Controllers
                     .RecordFailedDeletionErrorMessage;
 
                 TempData["FilmProductionErrorMessage"] =
-                    string.Format(failedDeletionMessage, "film production") + 
+                    string.Format(failedDeletionMessage, "film production") +
                     $"{filmProductionToConfirmDeletion.Title}!"
                     + "Check the film production relationship status!";
 

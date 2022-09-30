@@ -15,11 +15,17 @@ namespace Subsogator.Business.Services.FilmProductions
 
         FilmProductionFullDetailsViewModel GetFilmProductionDetails(string filmProductionId);
 
-        void CreateFilmProduction(CreateFilmProductionBindingModel createFilmProductionBindingModel);
+        CreateFilmProductionBindingModel GetFilmProductionCreatingDetails();
+
+        void CreateFilmProduction(CreateFilmProductionBindingModel createFilmProductionBindingModel,
+            string[] selectedActors, string[] selectedDirectors, string[] selectedScreenwriters);
 
         EditFilmProductionBindingModel GetFilmProductionEditingDetails(string filmProductionId);
 
-        void EditFilmProduction(EditFilmProductionBindingModel editFilmProductionBindingModel);
+        void EditFilmProduction(
+            EditFilmProductionBindingModel editFilmProductionBindingModel,
+            string[] selectedActors, string[] selectedDirectors, string[] selectedScreenwriters
+        );
 
         DeleteFilmProductionViewModel GetFilmProductionDeletionDetails(string filmProductionId);
 

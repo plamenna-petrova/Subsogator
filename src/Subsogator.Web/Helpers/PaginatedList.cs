@@ -11,8 +11,7 @@ namespace Subsogator.Web.Helpers
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-
+            TotalPages = (int) Math.Ceiling(count / (double) pageSize);
             AddRange(items);
         }
 

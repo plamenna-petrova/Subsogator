@@ -175,8 +175,8 @@ namespace Subsogator.Business.Services.Screenwriters
 
             var filteredActors = _screenwriterRepository
                 .GetAllAsNoTracking()
-                .Where(a => !a.Id.Equals(screenwriterToUpdate.Id))
-                .AsQueryable();
+                    .Where(a => !a.Id.Equals(screenwriterToUpdate.Id))
+                        .AsQueryable();
 
             if (_screenwriterRepository.Exists(filteredActors, screenwriterToUpdate))
             {
@@ -185,7 +185,10 @@ namespace Subsogator.Business.Services.Screenwriters
 
             _screenwriterRepository.Update(screenwriterToUpdate);
 
-            UpdateFilmProductionScreenwritersByScreenwriter(selectedFilmProductions, screenwriterToUpdate);
+            UpdateFilmProductionScreenwritersByScreenwriter(
+                selectedFilmProductions, 
+                screenwriterToUpdate
+            );
 
             return true;
         }
@@ -293,7 +296,8 @@ namespace Subsogator.Business.Services.Screenwriters
                                     .FirstOrDefault(fp =>
                                         fp.FilmProductionId == filmProduction.Id
                                     );
-                        _filmProductionScreenwriterRepository.Delete(filmProductionScreenwriterToRemove);
+                        _filmProductionScreenwriterRepository
+                            .Delete(filmProductionScreenwriterToRemove);
                     }
                 }
             }

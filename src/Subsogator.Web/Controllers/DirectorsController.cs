@@ -102,7 +102,8 @@ namespace Subsogator.Web.Controllers
         // GET: Directors/Details/5
         public IActionResult Details(string id)
         {
-            DirectorDetailsViewModel directorDetailsViewModel = _directorService.GetDirectorDetails(id);
+            DirectorDetailsViewModel directorDetailsViewModel = _directorService
+                .GetDirectorDetails(id);
 
             if (directorDetailsViewModel == null)
             {

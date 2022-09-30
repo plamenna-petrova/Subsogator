@@ -175,8 +175,8 @@ namespace Subsogator.Business.Services.Directors
 
             var filteredActors = _directorRepository
                 .GetAllAsNoTracking()
-                .Where(a => !a.Id.Equals(directorToUpdate.Id))
-                .AsQueryable();
+                    .Where(a => !a.Id.Equals(directorToUpdate.Id))
+                        .AsQueryable();
 
             if (_directorRepository.Exists(filteredActors, directorToUpdate))
             {

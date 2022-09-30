@@ -104,7 +104,8 @@ namespace Subsogator.Web.Controllers
         // GET: Screenwriters/Details/5
         public IActionResult Details(string id)
         {
-            ScreenwriterDetailsViewModel screenwriterDetailsViewModel = _screenwriterService.GetScreenwriterDetails(id);
+            ScreenwriterDetailsViewModel screenwriterDetailsViewModel = _screenwriterService
+                .GetScreenwriterDetails(id);
 
             if (screenwriterDetailsViewModel == null)
             {

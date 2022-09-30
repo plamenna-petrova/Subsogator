@@ -118,7 +118,7 @@ namespace Subsogator.Business.Services.Genres
 
             var filteredGenres = _genreRepository
                 .GetAllAsNoTracking()
-                .Where(g => !g.Id.Equals(genreToUpdate.Id));
+                    .Where(g => !g.Id.Equals(genreToUpdate.Id));
 
             if (_genreRepository.Exists(filteredGenres, genreToUpdate))
             {

@@ -176,8 +176,8 @@ namespace Subsogator.Business.Services.Actors
 
             var filteredActors = _actorRepository
                 .GetAllAsNoTracking()
-                .Where(a => !a.Id.Equals(actorToUpdate.Id))
-                .AsQueryable();
+                    .Where(a => !a.Id.Equals(actorToUpdate.Id))
+                        .AsQueryable();
 
             if (_actorRepository.Exists(filteredActors, actorToUpdate))
             {
