@@ -17,11 +17,11 @@ namespace Subsogator.Web.Models.FilmProductions.BindingModels
 
         [Required]
         [Range(45, 240, ErrorMessage = ValidationConstants.FilmProductionDurationRangeValidationMessage)]
-        public int? Duration { get; set; }
+        public int? Duration { get; set; } = null;
 
         [Required]
         [DisplayName(DisplayConstants.FilmProductionReleaseDateDisplayName)]
-        public DateTime? ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; } = null;
 
         [Required]
         [StringLength(500, MinimumLength = 2, 
@@ -32,6 +32,8 @@ namespace Subsogator.Web.Models.FilmProductions.BindingModels
         public string CountryId { get; set; }
 
         public string LanguageId { get; set; }
+
+        public IEnumerable<AssignedGenreDataViewModel> AssignedGenres { get; set; }
 
         public IEnumerable<AssignedActorDataViewModel> AssignedActors { get; set; }
 

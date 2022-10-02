@@ -15,6 +15,7 @@ using Subsogator.Web.Models.FilmProductions.BindingModels;
 using Subsogator.Business.Transactions.Interfaces;
 using Microsoft.Extensions.Logging;
 using Subsogator.Common.GlobalConstants;
+using Subsogator.Web.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -46,7 +47,12 @@ namespace Subsogator.Web.Controllers
         }
 
         // GET: FilmProductions
-        public IActionResult Index()
+        public IActionResult Index(
+            string sortOrder,
+            string currentFilter,
+            string searchTerm,
+            int? pageSize,
+            int? pageNumber)
         {
             IEnumerable<AllFilmProductionsViewModel> allFilmProductionsViewModel =
                 _filmProductionService
@@ -60,7 +66,62 @@ namespace Subsogator.Web.Controllers
                 return NotFound();
             }
 
-            return View(allFilmProductionsViewModel);
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["FilmProductionTitleSort"] = string.IsNullOrEmpty(sortOrder)
+                ? "film_production_title_descending"
+                : "";
+            ViewData["FilmProductionDurationSort"] = sortOrder == "film_production_duration_ascending"
+                ? "film_production_duration_descending"
+                : "film_production_duration_ascending";
+            ViewData["FilmProductionReleaseDateSort"] = sortOrder == "film_production_release_date_ascending"
+                ? "film_production_release_date_descending"
+                : "film_production_release_date_ascending";
+
+            if (searchTerm != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchTerm = currentFilter;
+            }
+
+            ViewData["FilmProductionSearchFilter"] = searchTerm;
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                allFilmProductionsViewModel = allFilmProductionsViewModel
+                        .Where(afpvm =>
+                            afpvm.Title.ToLower().Contains(searchTerm.ToLower())
+                        );
+            }
+
+            allFilmProductionsViewModel = sortOrder switch
+            {
+                "film_production_title_descending" => allFilmProductionsViewModel
+                        .OrderByDescending(afpvm => afpvm.Title),
+                "film_production_duration_ascending" => allFilmProductionsViewModel
+                        .OrderBy(afpvm => afpvm.Duration),
+                "film_production_duration_descending" => allFilmProductionsViewModel
+                        .OrderByDescending(afpvm => afpvm.Duration),
+                "film_production_release_date_ascending" => allFilmProductionsViewModel
+                        .OrderBy(afpvm => afpvm.ReleaseDate),
+                "film_production_release_date_descending" => allFilmProductionsViewModel
+                        .OrderByDescending(afpvm => afpvm.ReleaseDate),
+                _ => allFilmProductionsViewModel.OrderBy(afpvm => afpvm.Title)
+            };
+
+            if (pageSize == null)
+            {
+                pageSize = 3;
+            }
+
+            ViewData["CurrentPageSize"] = pageSize;
+
+            var paginatedList = PaginatedList<AllFilmProductionsViewModel>
+                .Create(allFilmProductionsViewModel, pageNumber ?? 1, (int)pageSize);
+
+            return View(paginatedList);
         }
 
         // GET: FilmProductions/Details/5
@@ -99,6 +160,7 @@ namespace Subsogator.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateFilmProductionBindingModel
             createFilmProductionBindingModel,
+            string[] selectedGenres,
             string[] selectedActors,
             string[] selectedDirectors,
             string[] selectedScreenwriters
@@ -111,6 +173,7 @@ namespace Subsogator.Web.Controllers
 
             _filmProductionService.CreateFilmProduction(
                 createFilmProductionBindingModel,
+                selectedGenres,
                 selectedActors,
                 selectedDirectors,
                 selectedScreenwriters
@@ -178,6 +241,7 @@ namespace Subsogator.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(
             EditFilmProductionBindingModel editFilmProductionBindingModel,
+            string[] selectedGenres,
             string[] selectedActors,
             string[] selectedDirectors,
             string[] selectedScreenwriters
@@ -202,6 +266,7 @@ namespace Subsogator.Web.Controllers
 
             _filmProductionService.EditFilmProduction(
                 editFilmProductionBindingModel,
+                selectedGenres,
                 selectedActors,
                 selectedDirectors,
                 selectedScreenwriters

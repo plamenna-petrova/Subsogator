@@ -50,99 +50,118 @@
                 <span asp-validation-for="LanguageId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <b>Actors</b>
+                <b>Genres</b>
                 <div class="col-md-10 pl-0">
                     <table>
                         <tr>
                             @{
-                                int assignedActorsCounter = 0;
+                                int assignedGenresCounter = 0;
 
-                                foreach (var actor in Model.AssignedActors)
+                                foreach (var genre in Model.AssignedGenres)
                                 {
-                                    if (assignedActorsCounter++ % 2 == 0)
+                                    if (assignedGenresCounter++ % 2 == 0)
                                     {
                                     @:</tr><tr>
                                     }
                                     @:<td>
                                         <input type="checkbox"
-                                               name="selectedActors"
-                                               value="@actor.ActorId"
-                                               @(Html.Raw(actor.IsAssigned 
-                                                    ? "checked=\"checked\"" 
-                                                    : "")) />
-                                        @actor.FirstName @actor.LastName
+                                               name="selectedGenres"
+                                               value="@genre.GenreId"
+                                               @(Html.Raw(genre.IsAssigned ? "checked=\"checked\"" : "")) />
+                                        @genre.Name
                                     @:</td>
                                 }
                             @:</tr>
                             }
                         </table>
                     </div>
-                </div>
-                <b>Directors</b>
-                <div class="col-md-10 pl-0">
-                    <table>
-                        <tr>
-                            @{
-                                int assignedDirectorsCounter = 0;
-
-                                foreach (var director in Model.AssignedDirectors)
-                                {
-                                    if (assignedDirectorsCounter++ % 2 == 0)
-                                    {
-                                    @:</tr><tr>
-                                    }
-                                    @:<td>
-                                        <input type="checkbox"
-                                               name="selectedDirectors"
-                                               value="@director.DirectorId"
-                                               @(Html.Raw(director.IsAssigned 
-                                                    ? "checked=\"checked\"" 
-                                                    : "")) />
-                                        @director.FirstName @director.LastName
-                                    @:</td>
-                                }
-                            @:</tr>
-                            }
-                        </table>
-                    </div>
-                    <b>Screenwriters</b>
+                    <b>Actors</b>
                     <div class="col-md-10 pl-0">
                         <table>
                             <tr>
                                 @{
-                                    int assignedScreenwritersCounter = 0;
+                                    int assignedActorsCounter = 0;
 
-                                    foreach (var screenwriter in Model.AssignedScreenwriters)
+                                    foreach (var actor in Model.AssignedActors)
                                     {
-                                        if (assignedScreenwritersCounter++ % 2 == 0)
+                                        if (assignedActorsCounter++ % 2 == 0)
                                         {
                                         @:</tr><tr>
                                         }
                                         @:<td>
                                             <input type="checkbox"
-                                                   name="selectedScreenwriters"
-                                                   value="@screenwriter.ScreenwriterId"
-                                                   @(Html.Raw(screenwriter.IsAssigned 
-                                                        ? "checked=\"checked\"" 
-                                                        : "")) />
-                                            @screenwriter.FirstName @screenwriter.LastName
+                                                   name="selectedActors"
+                                                   value="@actor.ActorId"
+                                                   @(Html.Raw(actor.IsAssigned ? "checked=\"checked\"" : "")) />
+                                            @actor.FirstName @actor.LastName
                                         @:</td>
                                     }
                                 @:</tr>
                                 }
                             </table>
                         </div>
-                        <div class="form-group">
-                            <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                    <b>Directors</b>
+                    <div class="col-md-10 pl-0">
+                        <table>
+                            <tr>
+                                @{
+                                    int assignedDirectorsCounter = 0;
+
+                                    foreach (var director in Model.AssignedDirectors)
+                                    {
+                                        if (assignedDirectorsCounter++ % 2 == 0)
+                                        {
+                                        @:</tr><tr>
+                                        }
+                                        @:<td>
+                                            <input type="checkbox"
+                                                   name="selectedDirectors"
+                                                   value="@director.DirectorId"
+                                                   @(Html.Raw(director.IsAssigned ? "checked=\"checked\"" : "")) />
+                                            @director.FirstName @director.LastName
+                                        @:</td>
+                                    }
+                                @:</tr>
+                                }
+                            </table>
                         </div>
-                    </form>
+                        <b>Screenwriters</b>
+                        <div class="col-md-10 pl-0">
+                            <table>
+                                <tr>
+                                    @{
+                                        int assignedScreenwritersCounter = 0;
+
+                                        foreach (var screenwriter in Model.AssignedScreenwriters)
+                                        {
+                                            if (assignedScreenwritersCounter++ % 2 == 0)
+                                            {
+                                            @:</tr><tr>
+                                            }
+                                            @:<td>
+                                                <input type="checkbox"
+                                                       name="selectedScreenwriters"
+                                                       value="@screenwriter.ScreenwriterId"
+                                                       @(Html.Raw(screenwriter.IsAssigned ? "checked=\"checked\"" : "")) />
+                                                @screenwriter.FirstName @screenwriter.LastName
+                                            @:</td>
+                                        }
+                                    @:</tr>
+                                    }
+                                </table>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Save" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
 
-            <div>
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-            </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
 
-            @section Scripts {
-                @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-            }
+                @section Scripts {
+                    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+                }

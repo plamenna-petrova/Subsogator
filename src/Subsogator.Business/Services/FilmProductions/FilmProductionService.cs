@@ -20,11 +20,15 @@ namespace Subsogator.Business.Services.FilmProductions
     {
         private readonly IFilmProductionRepository _filmProductionRepository;
 
+        private readonly IGenreRepository _genreRepository;
+
         private readonly IActorRepository _actorRepository;
 
         private readonly IDirectorRepository _directorRepository;
 
         private readonly IScreenwriterRepository _screenwriterRepository;
+
+        private readonly IFilmProductionGenreRepository _filmProductionGenreRepository;
 
         private readonly IFilmProductionActorRepository _filmProductionActorRepository;
 
@@ -34,18 +38,22 @@ namespace Subsogator.Business.Services.FilmProductions
 
         public FilmProductionService(
             IFilmProductionRepository filmProductionRepository,
+            IGenreRepository genreRepository,
             IActorRepository actorRepository,
             IDirectorRepository directorRepository,
             IScreenwriterRepository screenwriterRepository,
+            IFilmProductionGenreRepository filmProductionGenreRepository,
             IFilmProductionActorRepository filmProductionActorRepository,
             IFilmProductionDirectorRepository filmProductionDirectorRepository,
             IFilmProductionScreenwriterRepository filmProductionScreenwriterRepository
         )
         {
             _filmProductionRepository = filmProductionRepository;
+            _genreRepository = genreRepository;
             _actorRepository = actorRepository;
             _directorRepository = directorRepository;
             _screenwriterRepository = screenwriterRepository;
+            _filmProductionGenreRepository = filmProductionGenreRepository;
             _filmProductionActorRepository = filmProductionActorRepository;
             _filmProductonDirectorRepository = filmProductionDirectorRepository;
             _filmProductionScreenwriterRepository = filmProductionScreenwriterRepository;
@@ -152,14 +160,15 @@ namespace Subsogator.Business.Services.FilmProductions
             var filmProductionCreationDetails = new CreateFilmProductionBindingModel
             {
                 Title = filmProduction.Title,
-                Duration = filmProduction.Duration,
-                ReleaseDate = filmProduction.ReleaseDate,
+                Duration = null,
+                ReleaseDate = null,
                 PlotSummary = filmProduction.PlotSummary,
                 CountryId = filmProduction.CountryId,
                 LanguageId = filmProduction.LanguageId,
-                AssignedActors = filmProductionRelatedEntities.Item1,
-                AssignedDirectors = filmProductionRelatedEntities.Item2,
-                AssignedScreenwriters = filmProductionRelatedEntities.Item3
+                AssignedGenres = filmProductionRelatedEntities.Item1,
+                AssignedActors = filmProductionRelatedEntities.Item2,
+                AssignedDirectors = filmProductionRelatedEntities.Item3,
+                AssignedScreenwriters = filmProductionRelatedEntities.Item4
             };
 
             return filmProductionCreationDetails;
@@ -167,6 +176,7 @@ namespace Subsogator.Business.Services.FilmProductions
 
         public void CreateFilmProduction(
             CreateFilmProductionBindingModel createFilmProductionBindingModel,
+            string[] selectedGenres,
             string[] selectedActors,
             string[] selectedDirectors,
             string[] selectedScreenwriters
@@ -181,6 +191,20 @@ namespace Subsogator.Business.Services.FilmProductions
                 CountryId = createFilmProductionBindingModel.CountryId,
                 LanguageId = createFilmProductionBindingModel.LanguageId
             };
+
+            if (selectedGenres != null)
+            {
+                foreach (var genreId in selectedGenres)
+                {
+                    var filmProductionGenreToAdd = new FilmProductionGenre
+                    {
+                        FilmProductionId = filmProductionToCreate.Id,
+                        GenreId = genreId
+                    };
+                    filmProductionToCreate.FilmProductionGenres
+                        .Add(filmProductionGenreToAdd);
+                }
+            }
 
             if (selectedActors != null)
             {
@@ -251,9 +275,10 @@ namespace Subsogator.Business.Services.FilmProductions
                 PlotSummary = filmProductionToEdit.PlotSummary,
                 CountryId = filmProductionToEdit.CountryId,
                 LanguageId = filmProductionToEdit.LanguageId,
-                AssignedActors = filmProductionRelatedEntities.Item1,
-                AssignedDirectors = filmProductionRelatedEntities.Item2,
-                AssignedScreenwriters = filmProductionRelatedEntities.Item3
+                AssignedGenres = filmProductionRelatedEntities.Item1,
+                AssignedActors = filmProductionRelatedEntities.Item2,
+                AssignedDirectors = filmProductionRelatedEntities.Item3,
+                AssignedScreenwriters = filmProductionRelatedEntities.Item4
             };
 
             return filmProductionToEditDetails;
@@ -261,6 +286,7 @@ namespace Subsogator.Business.Services.FilmProductions
 
         public void EditFilmProduction(
             EditFilmProductionBindingModel editFilmProductionBindingModel,
+            string[] selectedGenres,
             string[] selectedActors,
             string[] selectedDirectors,
             string[] selectedScreenwriters
@@ -268,6 +294,8 @@ namespace Subsogator.Business.Services.FilmProductions
         {
             var filmProductionToUpdate = _filmProductionRepository
                  .GetAllByCondition(fp => fp.Id == editFilmProductionBindingModel.Id)
+                      .Include(fp => fp.FilmProductionGenres)
+                           .ThenInclude(fpg => fpg.Genre)
                       .Include(fp => fp.FilmProductionActors)
                            .ThenInclude(fpa => fpa.Actor)
                       .Include(fp => fp.FilmProductionDirectors)
@@ -288,6 +316,7 @@ namespace Subsogator.Business.Services.FilmProductions
             _filmProductionRepository.Update(filmProductionToUpdate);
 
             UpdateFilmProductionMappings(
+                selectedGenres,
                 selectedActors,
                 selectedDirectors,
                 selectedScreenwriters,
@@ -317,6 +346,27 @@ namespace Subsogator.Business.Services.FilmProductions
 
         public void DeleteFilmProduction(FilmProduction filmProduction)
         {
+            var filmProductionGenresByFilmProduction = _filmProductionGenreRepository
+                    .GetAllByCondition(fpg => fpg.FilmProductionId == filmProduction.Id)
+                        .ToArray();
+
+            var filmProductionActorsByFilmProduction = _filmProductionActorRepository
+                    .GetAllByCondition(fpa => fpa.FilmProductionId == filmProduction.Id)
+                        .ToArray();
+
+            var filmProductionDirectorsByFilmProduction = _filmProductonDirectorRepository
+                    .GetAllByCondition(fpd => fpd.FilmProductionId == filmProduction.Id)
+                        .ToArray();
+
+            var filmProductionScreewritersByFilmProduction = _filmProductionScreenwriterRepository
+                    .GetAllByCondition(fps => fps.FilmProductionId == filmProduction.Id)
+                        .ToArray();
+
+            _filmProductionGenreRepository.DeleteRange(filmProductionGenresByFilmProduction);
+            _filmProductionActorRepository.DeleteRange(filmProductionActorsByFilmProduction);
+            _filmProductonDirectorRepository.DeleteRange(filmProductionDirectorsByFilmProduction);
+            _filmProductionScreenwriterRepository.DeleteRange(filmProductionScreewritersByFilmProduction);
+
             _filmProductionRepository.Delete(filmProduction);
         }
 
@@ -325,7 +375,8 @@ namespace Subsogator.Business.Services.FilmProductions
             return _filmProductionRepository.GetById(filmProductionId);
         }
 
-        private Tuple<List<AssignedActorDataViewModel>,
+        private Tuple<List<AssignedGenreDataViewModel>,
+            List<AssignedActorDataViewModel>,
             List<AssignedDirectorDataViewModel>,
             List<AssignedScreenwriterDataViewModel>>
             PopulateAssignedEntitiesToFilmProductionData(
@@ -336,15 +387,33 @@ namespace Subsogator.Business.Services.FilmProductions
                 .GetAllAsNoTracking()
                     .ToList();
 
-            var filmProductionRelatedEntities = new HashSet<string>();
-
+            var assignedGenreDataViewModel = new List<AssignedGenreDataViewModel>();
             var assignedActorDataViewModel = new List<AssignedActorDataViewModel>();
             var assignedDirectorDataViewModel = new List<AssignedDirectorDataViewModel>();
             var assignedScreenwriterDataViewModel = new List<AssignedScreenwriterDataViewModel>();
 
+            var genresOfAFilmProduction = new HashSet<string>(
+                     filmProduction.FilmProductionGenres
+                           .Select(fpg => fpg.Genre.Id));
+
+            var allGenres = _genreRepository
+                    .GetAllAsNoTracking()
+                        .ToList();
+
+            foreach (var genre in allGenres)
+            {
+                assignedGenreDataViewModel
+                .Add(new AssignedGenreDataViewModel
+                {
+                    GenreId = genre.Id,
+                    Name = genre.Name,
+                    IsAssigned = genresOfAFilmProduction.Contains(genre.Id)
+                });
+            }
+
             var actorsOfAFilmProduction = new HashSet<string>(
                      filmProduction.FilmProductionActors
-                          .Select(fa => fa.Actor.Id));
+                          .Select(fpa => fpa.Actor.Id));
 
             var allActors = _actorRepository
                     .GetAllAsNoTracking()
@@ -364,7 +433,7 @@ namespace Subsogator.Business.Services.FilmProductions
 
             var directorsOfAFilmProduction = new HashSet<string>(
                     filmProduction.FilmProductionDirectors
-                        .Select(fa => fa.Director.Id));
+                        .Select(fpd => fpd.Director.Id));
 
             var allDirectors = _directorRepository
                     .GetAllAsNoTracking()
@@ -384,7 +453,7 @@ namespace Subsogator.Business.Services.FilmProductions
 
             var screenwritersOfAFilmProduction = new HashSet<string>(
                     filmProduction.FilmProductionScreenwriters
-                        .Select(fa => fa.Screenwriter.Id));
+                        .Select(fps => fps.Screenwriter.Id));
 
             var allScreenwriters = _screenwriterRepository
                     .GetAllAsNoTracking()
@@ -403,6 +472,7 @@ namespace Subsogator.Business.Services.FilmProductions
             }
 
             return Tuple.Create(
+                assignedGenreDataViewModel,
                 assignedActorDataViewModel,
                 assignedDirectorDataViewModel,
                 assignedScreenwriterDataViewModel
@@ -410,12 +480,54 @@ namespace Subsogator.Business.Services.FilmProductions
         }
 
         private void UpdateFilmProductionMappings(
+           string[] selectedGenres,
            string[] selectedActors,
            string[] selectedDirectors,
            string[] selectedScreenwriters,
            FilmProduction filmProduction
         )
         {
+            if (selectedGenres == null)
+            {
+                filmProduction.FilmProductionGenres = new List<FilmProductionGenre>();
+                return;
+            }
+
+            var selectedGenresIds = new HashSet<string>(selectedGenres);
+
+            var genresOfAFilmProduction = new HashSet<string>(
+                    filmProduction.FilmProductionGenres.Select(fpg => fpg.Genre.Id)
+                );
+
+            var allGenres = _genreRepository.GetAllAsNoTracking();
+
+            foreach (var genre in allGenres)
+            {
+                if (selectedGenresIds.Contains(genre.Id))
+                {
+                    if (!genresOfAFilmProduction.Contains(genre.Id))
+                    {
+                        filmProduction.FilmProductionGenres.Add(new FilmProductionGenre 
+                        { 
+                            FilmProductionId = filmProduction.Id,
+                            GenreId = genre.Id
+                        });
+                    }
+                }
+                else
+                {
+                    if (genresOfAFilmProduction.Contains(genre.Id))
+                    {
+                        FilmProductionGenre filmProductionGenreToRemove =
+                           filmProduction.FilmProductionGenres
+                               .FirstOrDefault(fpg => 
+                                     fpg.GenreId == genre.Id
+                                  );
+                        _filmProductionGenreRepository.Delete(filmProductionGenreToRemove);
+                    }
+                }
+            }
+
             if (selectedActors == null)
             {
                 filmProduction.FilmProductionActors = new List<FilmProductionActor>();

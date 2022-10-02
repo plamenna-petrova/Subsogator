@@ -35,6 +35,8 @@ namespace Subsogator.Web.Models.FilmProductions.BindingModels
 
         public string LanguageId { get; set; }
 
+        public IEnumerable<AssignedGenreDataViewModel> AssignedGenres { get; set; }
+
         public IEnumerable<AssignedActorDataViewModel> AssignedActors { get; set; }
 
         public IEnumerable<AssignedDirectorDataViewModel> AssignedDirectors { get; set; }
