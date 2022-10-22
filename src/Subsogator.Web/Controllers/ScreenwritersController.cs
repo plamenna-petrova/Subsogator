@@ -13,9 +13,11 @@ using Subsogator.Web.Models.Screenwriters.ViewModels;
 using Subsogator.Web.Models.Screenwriters.BindingModels;
 using Subsogator.Common.GlobalConstants;
 using Subsogator.Web.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Subsogator.Web.Controllers
 {
+    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
     public class ScreenwritersController : BaseController
     {
         private readonly IScreenwriterService _screenwriterService;

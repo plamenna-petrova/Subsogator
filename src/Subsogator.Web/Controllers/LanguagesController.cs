@@ -14,9 +14,11 @@ using Subsogator.Web.Models.Languages.BindingModels;
 using Microsoft.Extensions.Logging;
 using Subsogator.Common.GlobalConstants;
 using Subsogator.Web.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Subsogator.Web.Controllers
 {
+    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
     public class LanguagesController : BaseController
     {
         private readonly ILanguageService _languageService;

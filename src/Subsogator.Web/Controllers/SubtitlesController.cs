@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data.DataAccess;
 using Data.DataModels.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Subsogator.Common.GlobalConstants;
 
 namespace Subsogator.Web.Controllers
 {
+    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
     public class SubtitlesController : Controller
     {
         private readonly ApplicationDbContext _context;
