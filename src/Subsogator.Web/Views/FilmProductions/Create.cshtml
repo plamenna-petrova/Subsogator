@@ -14,8 +14,8 @@
     </div>
 }
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-6">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
@@ -44,6 +44,11 @@
             <div class="form-group">
                 <label class="control-label">Language</label>
                 <select asp-for="LanguageId" class="form-control" asp-items="ViewBag.LanguageByName"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" accept="image/*" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <b>Genres</b>

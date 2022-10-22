@@ -1,4 +1,5 @@
-﻿using Subsogator.Common.GlobalConstants;
+﻿using Microsoft.AspNetCore.Http;
+using Subsogator.Common.GlobalConstants;
 using Subsogator.Web.Models.Mapping;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,11 @@ namespace Subsogator.Web.Models.FilmProductions.BindingModels
         public string CountryId { get; set; }
 
         public string LanguageId { get; set; }
+
+        public string ImageName { get; set; }
+
+        [DisplayName("Upload Image")]
+        public IFormFile? ImageFile { get; set; }
 
         public IEnumerable<AssignedGenreDataViewModel> AssignedGenres { get; set; }
 

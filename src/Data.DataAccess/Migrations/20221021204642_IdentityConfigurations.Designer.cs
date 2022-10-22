@@ -4,14 +4,16 @@ using Data.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221021204642_IdentityConfigurations")]
+    partial class IdentityConfigurations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -322,21 +324,6 @@ namespace Data.DataAccess.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Data.DataModels.Entities.Identity.ApplicationUserRole", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles");
-                });
-
             modelBuilder.Entity("Data.DataModels.Entities.Language", b =>
                 {
                     b.Property<string>("Id")
@@ -441,6 +428,9 @@ namespace Data.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
 
@@ -452,6 +442,8 @@ namespace Data.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("UserId");
 
@@ -468,6 +460,9 @@ namespace Data.DataAccess.Migrations
                         .HasColumnType("nvarchar(128)")
                         .HasMaxLength(128);
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
@@ -477,9 +472,31 @@ namespace Data.DataAccess.Migrations
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -576,21 +593,6 @@ namespace Data.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Data.DataModels.Entities.Identity.ApplicationUserRole", b =>
-                {
-                    b.HasOne("Data.DataModels.Entities.Identity.ApplicationRole", "Role")
-                        .WithMany("ApplicationUserRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Data.DataModels.Entities.Identity.ApplicationUser", "User")
-                        .WithMany("ApplicationUserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Data.DataModels.Entities.Subtitles", b =>
                 {
                     b.HasOne("Data.DataModels.Entities.FilmProduction", "FilmProduction")
@@ -611,8 +613,12 @@ namespace Data.DataAccess.Migrations
                 {
                     b.HasOne("Data.DataModels.Entities.Identity.ApplicationUser", null)
                         .WithMany("Claims")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Data.DataModels.Entities.Identity.ApplicationUser", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -620,8 +626,31 @@ namespace Data.DataAccess.Migrations
                 {
                     b.HasOne("Data.DataModels.Entities.Identity.ApplicationUser", null)
                         .WithMany("Logins")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Data.DataModels.Entities.Identity.ApplicationUser", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Data.DataModels.Entities.Identity.ApplicationUser", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Data.DataModels.Entities.Identity.ApplicationRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.DataModels.Entities.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

@@ -7,8 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.29" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.29" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.29" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.25" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.25">
       <PrivateAssets>all</PrivateAssets>
@@ -21,6 +21,10 @@
     <ProjectReference Include="..\Data.DataAccess\Data.DataAccess.csproj" />
     <ProjectReference Include="..\Subsogator.Business\Subsogator.Business.csproj" />
     <ProjectReference Include="..\Subsogator.Infrastructure\Subsogator.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\film-productions\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 using Data.DataAccess;
+using Data.DataModels.Entities.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,8 @@ namespace Subsogator.Web
         {
             serviceCollection.AddDbContext<ApplicationDbContext>();
 
-            serviceCollection.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            serviceCollection.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             serviceCollection.AddControllersWithViews();

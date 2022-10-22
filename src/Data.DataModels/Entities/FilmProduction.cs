@@ -1,7 +1,9 @@
 ﻿using Data.DataModels.Abstraction;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,6 +46,11 @@ namespace Data.DataModels.Entities
         public string LanguageId { get; set; }
 
         public virtual Language Language { get; set; }
+
+        public string? ImageName { get; set; }
+
+        [NotMapped]
+        public IFormFile? ImageFile { get; set; }
 
         public virtual ICollection<FilmProductionGenre> FilmProductionGenres { get; set; }
 

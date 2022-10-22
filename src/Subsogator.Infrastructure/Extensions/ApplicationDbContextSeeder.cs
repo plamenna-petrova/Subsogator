@@ -23,12 +23,18 @@ namespace Subsogator.Infrastructure.Extensions
                     {
                         var seeders = new List<ISeeder>
                         {
-                            new EntitiesSeeder()
+                            new EntitiesSeeder(),
+                            new RolesSeeder(),
+                            new UsersSeeder()
                         };
 
                         foreach (var seeder in seeders)
                         {
-                            if (seeder.SeedDatabase(applicationDbContext))
+                            bool isCurrentSeederCompleted = seeder
+                                .SeedDatabase(applicationDbContext, serviceScope.ServiceProvider)
+                                    .Result.Equals(true);
+
+                            if (isCurrentSeederCompleted)
                             {
                                 logger.LogInformation($"Seeder {seeder.GetType().Name} done.");
                             } 

@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Subsogator.Common.GlobalConstants
+{
+    public class IdentityConstants
+    {
+        public const string AdministratorRoleName = "Administrator";
+        public const string AdministratorEmail = "admin@admin.com";
+        public const string AdministratorUsername = "admin";
+        public const string AdministratorPassword = "Admin123/";
+
+        public const string EditorRoleName = "Editor";
+        public const string EditorEmail = "editor@editor.com";
+        public const string EditorUsername = "editor";
+        public const string EditorPassword = "Editor123/";
+
+        public const string TranslatorRoleName = "Translator";
+        public const string TranslatorEmail = "translator@translator.com";
+        public const string TranslatorUsername = "translator";
+        public const string TranslatorPassword = "Translator123/";
+
+        public const string NormalUserRole = "Normal User";
+
+        public const string ExampleUserEmail = "johndoe@gmail.com";
+        public const string ExampleUserUsername = "john_doe";
+        public const string ExampleUserPassword = "John123/";
+    }
+}

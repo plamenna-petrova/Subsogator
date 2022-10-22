@@ -16,6 +16,7 @@ using Subsogator.Business.Transactions.Interfaces;
 using Microsoft.Extensions.Logging;
 using Subsogator.Common.GlobalConstants;
 using Subsogator.Web.Helpers;
+using Microsoft.AspNetCore.Http;
 
 namespace Subsogator.Web.Controllers
 {

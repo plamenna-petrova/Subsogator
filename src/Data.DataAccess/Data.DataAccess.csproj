@@ -8,9 +8,12 @@
   <ItemGroup>
     <Compile Remove="Migrations\20220924163653_test.cs" />
     <Compile Remove="Migrations\20220924163653_test.Designer.cs" />
+    <Compile Remove="Migrations\20221002134728_AddedImagePropertiesForFilmProductionEntity.cs" />
+    <Compile Remove="Migrations\20221002134728_AddedImagePropertiesForFilmProductionEntity.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.25" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.29" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.25">
       <PrivateAssets>all</PrivateAssets>

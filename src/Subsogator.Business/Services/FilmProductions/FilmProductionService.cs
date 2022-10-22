@@ -13,6 +13,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace Subsogator.Business.Services.FilmProductions
 {
@@ -36,6 +39,8 @@ namespace Subsogator.Business.Services.FilmProductions
 
         private readonly IFilmProductionScreenwriterRepository _filmProductionScreenwriterRepository;
 
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
         public FilmProductionService(
             IFilmProductionRepository filmProductionRepository,
             IGenreRepository genreRepository,
@@ -45,7 +50,8 @@ namespace Subsogator.Business.Services.FilmProductions
             IFilmProductionGenreRepository filmProductionGenreRepository,
             IFilmProductionActorRepository filmProductionActorRepository,
             IFilmProductionDirectorRepository filmProductionDirectorRepository,
-            IFilmProductionScreenwriterRepository filmProductionScreenwriterRepository
+            IFilmProductionScreenwriterRepository filmProductionScreenwriterRepository,
+            IWebHostEnvironment webHostEnvironment
         )
         {
             _filmProductionRepository = filmProductionRepository;
@@ -57,6 +63,7 @@ namespace Subsogator.Business.Services.FilmProductions
             _filmProductionActorRepository = filmProductionActorRepository;
             _filmProductonDirectorRepository = filmProductionDirectorRepository;
             _filmProductionScreenwriterRepository = filmProductionScreenwriterRepository;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public List<FilmProduction> GetAllFilmProductions()
@@ -182,6 +189,13 @@ namespace Subsogator.Business.Services.FilmProductions
             string[] selectedScreenwriters
         )
         {
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            string fileName = Path.GetFileNameWithoutExtension(createFilmProductionBindingModel.ImageFile.FileName);
+            string extension = Path.GetExtension(createFilmProductionBindingModel.ImageFile.FileName);
+            string filmProductionImageName = fileName = fileName + DateTime.Now.ToString("yymmssffff") 
+                    + extension;
+            string path = Path.Combine(wwwRootPath + "/images/film-productions", fileName);
+
             FilmProduction filmProductionToCreate = new FilmProduction
             {
                 Title = createFilmProductionBindingModel.Title,
@@ -189,8 +203,15 @@ namespace Subsogator.Business.Services.FilmProductions
                 ReleaseDate = (DateTime)createFilmProductionBindingModel.ReleaseDate,
                 PlotSummary = createFilmProductionBindingModel.PlotSummary,
                 CountryId = createFilmProductionBindingModel.CountryId,
-                LanguageId = createFilmProductionBindingModel.LanguageId
+                LanguageId = createFilmProductionBindingModel.LanguageId,
+                ImageName = filmProductionImageName,
+                ImageFile = createFilmProductionBindingModel.ImageFile
             };
+
+            using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                filmProductionToCreate.ImageFile.CopyTo(fileStream);
+            }
 
             if (selectedGenres != null)
             {
@@ -275,6 +296,7 @@ namespace Subsogator.Business.Services.FilmProductions
                 PlotSummary = filmProductionToEdit.PlotSummary,
                 CountryId = filmProductionToEdit.CountryId,
                 LanguageId = filmProductionToEdit.LanguageId,
+                ImageName = filmProductionToEdit.ImageName,
                 AssignedGenres = filmProductionRelatedEntities.Item1,
                 AssignedActors = filmProductionRelatedEntities.Item2,
                 AssignedDirectors = filmProductionRelatedEntities.Item3,
@@ -304,6 +326,25 @@ namespace Subsogator.Business.Services.FilmProductions
                             .ThenInclude(fps => fps.Screenwriter)
                       .FirstOrDefault();
 
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            string fileName = Path.GetFileNameWithoutExtension(editFilmProductionBindingModel.ImageFile.FileName);
+            string extension = Path.GetExtension(editFilmProductionBindingModel.ImageFile.FileName);
+            string filmProductionImageName = fileName = fileName + DateTime.Now.ToString("yymmssffff")
+                    + extension;
+
+            string path = Path.Combine(wwwRootPath + "/images/film-productions", fileName);
+
+            var existingImagePath = Path.Combine(
+                _webHostEnvironment.WebRootPath, 
+                "images/film-productions", 
+                filmProductionToUpdate.ImageName
+            );
+
+            if (File.Exists(existingImagePath))
+            {
+                File.Delete(existingImagePath);
+            }
+
             filmProductionToUpdate.Title = editFilmProductionBindingModel.Title;
             filmProductionToUpdate.Duration = editFilmProductionBindingModel.Duration;
             filmProductionToUpdate.Title = editFilmProductionBindingModel.Title;
@@ -312,6 +353,8 @@ namespace Subsogator.Business.Services.FilmProductions
             filmProductionToUpdate.PlotSummary = editFilmProductionBindingModel.PlotSummary;
             filmProductionToUpdate.CountryId = editFilmProductionBindingModel.CountryId;
             filmProductionToUpdate.LanguageId = editFilmProductionBindingModel.LanguageId;
+            filmProductionToUpdate.ImageName = filmProductionImageName;
+            filmProductionToUpdate.ImageFile = editFilmProductionBindingModel.ImageFile;
 
             _filmProductionRepository.Update(filmProductionToUpdate);
 

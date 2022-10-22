@@ -1,5 +1,8 @@
 ﻿using Data.DataModels.Entities;
+using Data.DataModels.Entities.Identity;
 using Data.DataModels.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
@@ -10,11 +13,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Data.DataAccess
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<
+            ApplicationUser, ApplicationRole, string, 
+            IdentityUserClaim<string>, ApplicationUserRole, IdentityUserLogin<string>, 
+            IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
         IConfigurationBuilder _configurationBuilder;
 
@@ -25,10 +32,10 @@ namespace Data.DataAccess
 
         }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions) 
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions)
             : base(dbContextOptions)
         {
-           
+
         }
 
         public virtual DbSet<Actor> Actors { get; set; }
@@ -80,7 +87,8 @@ namespace Data.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            ConfigureUserIdentityRelations(modelBuilder);
         }
 
         public override int SaveChanges()
@@ -90,8 +98,19 @@ namespace Data.DataAccess
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            this.ApplyEntityChanges();
+            ApplyEntityChanges();
             return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return SaveChangesAsync(true, cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            ApplyEntityChanges();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         private void ApplyEntityChanges()
@@ -99,8 +118,8 @@ namespace Data.DataAccess
             var changeTrackerEntries = ChangeTracker.Entries()
                .Where(
                     e => e.Entity is IAuditInfo &&
-                    e.State != EntityState.Unchanged
-                )
+                    (e.State == EntityState.Added || e.State == EntityState.Modified
+                ))
                .Select(e => e)
                .ToList();
 
@@ -118,6 +137,11 @@ namespace Data.DataAccess
                         break;
                 }
             }
+        }
+
+        private void ConfigureUserIdentityRelations(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
     }
 }

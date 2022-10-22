@@ -15,8 +15,8 @@
     </div>
 }
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+    <div class="col-md-6">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -48,6 +48,19 @@
                 <label class="control-label">Language</label>
                 <select asp-for="LanguageId" class="form-control" asp-items="ViewBag.LanguageByName"></select>
                 <span asp-validation-for="LanguageId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @if (Model.ImageName != null)
+                {
+                    <img src="~/images/film-productions/@Model.ImageName"
+                        class="rounded-square"
+                        asp-append-version="true" style="width: 100%; height: 300px;" />
+                    <br />
+                    <span><a href="~/images/film-productions/@Model.ImageName">@Model.ImageName</a></span>
+                }
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" name="image" accept="image/*" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <b>Genres</b>

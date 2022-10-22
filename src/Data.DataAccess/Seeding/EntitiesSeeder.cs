@@ -3,122 +3,121 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Data.DataAccess.Seeding
 {
     public class EntitiesSeeder : ISeeder
     {
-        public bool SeedDatabase(ApplicationDbContext applicationDbContext)
+        public async Task<bool> SeedDatabase(ApplicationDbContext applicationDbContext, IServiceProvider serviceProvider)
         {
             if (applicationDbContext.Subtitles.Any())
             {
                 return false;
             }
 
-            ExecutePartialSeeders(applicationDbContext);
+            await ExecutePartialSeeders(applicationDbContext);
 
             return true;
         }
 
-        private void ExecutePartialSeeders(ApplicationDbContext applicationDbContext)
+        private async Task ExecutePartialSeeders(ApplicationDbContext applicationDbContext)
         {
             foreach (var actorToSeed in ActorSeeder.ActorSeedingArray)
             {
-                applicationDbContext.Actors.Add(actorToSeed);
+                await applicationDbContext.Actors.AddAsync(actorToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var countryToSeed in CountrySeeder.CountrySeedingArray)
             {
-                applicationDbContext.Countries.Add(countryToSeed);
+                await applicationDbContext.Countries.AddAsync(countryToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var directorToSeed in DirectorSeeder.DirectorSeedingArray)
             {
-                applicationDbContext.Directors.Add(directorToSeed);
+                await applicationDbContext .Directors.AddAsync(directorToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var genreToSeed in GenreSeeder.GenreSeedingArray)
             {
-                applicationDbContext.Genres.Add(genreToSeed);
+                await applicationDbContext.Genres.AddAsync(genreToSeed);
             }
 
-            applicationDbContext.SaveChanges();
-
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var languageToSeed in LanguageSeeder.LanguageSeedingArray)
             {
-                applicationDbContext.Languages.Add(languageToSeed);
+                await applicationDbContext.Languages.AddAsync(languageToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var screenwriterToSeed in ScreenwriterSeeder.ScreenwriterSeedingArray)
             {
-                applicationDbContext.Screenwriters.Add(screenwriterToSeed);
+                await applicationDbContext.Screenwriters.AddAsync(screenwriterToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var filmProductionToSeed in FilmProductionSeeder.FilmProductionSeedingArray)
             {
-                applicationDbContext
-                    .FilmProductions.Add(filmProductionToSeed);
+                await applicationDbContext.FilmProductions.AddAsync(filmProductionToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var filmProductionActorsToSeed
                 in FilmProductionActorSeeder.FilmProductionActorSeedingArray
             )
             {
-                applicationDbContext.FilmProductionActors
-                    .Add(filmProductionActorsToSeed);
+                await applicationDbContext.FilmProductionActors
+                    .AddAsync(filmProductionActorsToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var filmProductionDirectorsToSeed
                 in FilmProductionDirectorSeeder.FilmProductionDirectorSeedingArray
             )
             {
-                applicationDbContext.FilmProductionDirectors
-                    .Add(filmProductionDirectorsToSeed);
+                await applicationDbContext.FilmProductionDirectors
+                    .AddAsync(filmProductionDirectorsToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var filmProductionGenresToSeed
                 in FilmProductionGenreSeeder.FilmProductionGenreSeedingArray
             )
             {
-                applicationDbContext.FilmProductionGenres
-                    .Add(filmProductionGenresToSeed);
+                await applicationDbContext.FilmProductionGenres
+                    .AddAsync(filmProductionGenresToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var filmProductionScreenwritersToSeed
                 in FilmProductionScreenwriterSeeder.FilmProductionScreenwriterSeedingArray
             )
             {
-                applicationDbContext.FilmProductionScreenwriters
-                    .Add(filmProductionScreenwritersToSeed);
+                await applicationDbContext.FilmProductionScreenwriters
+                    .AddAsync(filmProductionScreenwritersToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
 
             foreach (var subtitlesToSeed in SubtitlesSeeder.SubtitlesSeedingArray)
             {
-                applicationDbContext.Subtitles.Add(subtitlesToSeed);
+                await applicationDbContext.Subtitles.AddAsync(subtitlesToSeed);
             }
 
-            applicationDbContext.SaveChanges();
+            await applicationDbContext.SaveChangesAsync();
         }
     }
 }
