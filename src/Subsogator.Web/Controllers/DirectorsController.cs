@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Subsogator.Web.Controllers
 {
-    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
     public class DirectorsController : BaseController
     {
         private readonly IDirectorService _directorService;
@@ -31,6 +30,7 @@ namespace Subsogator.Web.Controllers
             _directorService = directorService;
         }
 
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Index(
             string sortOrder,
             string currentFilter,
@@ -101,7 +101,7 @@ namespace Subsogator.Web.Controllers
             return View(paginatedList);
         }
 
-        // GET: Directors/Details/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Details(string id)
         {
             DirectorDetailsViewModel directorDetailsViewModel = _directorService
@@ -115,15 +115,14 @@ namespace Subsogator.Web.Controllers
             return View(directorDetailsViewModel);
         }
 
-        // GET: Directors/Create
+        [Authorize(Roles = "Administrator, Editor")]
         public ViewResult Create()
         {
-
             return View(_directorService.GetDirectorCreatingDetails());
         }
 
-        // POST: Directors/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(
             CreateDirectorBindingModel createDirectorBindingModel,
@@ -169,7 +168,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Directors/Edit/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Edit(string id)
         {
             EditDirectorBindingModel editDirectorBindingModel = _directorService
@@ -183,8 +182,8 @@ namespace Subsogator.Web.Controllers
             return View(editDirectorBindingModel);
         }
 
-        // POST: Directors/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(
             EditDirectorBindingModel editDirectorBindingModel,
@@ -231,7 +230,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Directors/Delete/5
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         public IActionResult Delete(string id)
         {
             DeleteDirectorViewModel deleteDirectorViewModel = _directorService
@@ -245,8 +244,8 @@ namespace Subsogator.Web.Controllers
             return View(deleteDirectorViewModel);
         }
 
-        // POST: Directors/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {

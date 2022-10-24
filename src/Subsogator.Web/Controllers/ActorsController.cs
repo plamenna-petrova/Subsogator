@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Subsogator.Web.Controllers
 {
-    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
     public class ActorsController : BaseController
     {
         private readonly IActorService _actorService;
@@ -31,7 +30,7 @@ namespace Subsogator.Web.Controllers
             _actorService = actorService;
         }
 
-        // GET: Actors
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Index(
             string sortOrder, 
             string currentFilter, 
@@ -102,7 +101,7 @@ namespace Subsogator.Web.Controllers
             return View(paginatedList);
         }
 
-        // GET: Actors/Details/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Details(string id)
         {
             ActorDetailsViewModel actorDetailsViewModel = _actorService.GetActorDetails(id);
@@ -115,15 +114,14 @@ namespace Subsogator.Web.Controllers
             return View(actorDetailsViewModel);
         }
 
-        // GET: Actors/Create
+        [Authorize(Roles = "Administrator, Editor")]
         public ViewResult Create()
         {
-
             return View(_actorService.GetActorCreatingDetails());
         }
 
-        // POST: Actors/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(
             CreateActorBindingModel createActorBindingModel,
@@ -169,7 +167,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Actors/Edit/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Edit(string id)
         {
             EditActorBindingModel editActorBindingModel = _actorService
@@ -183,8 +181,8 @@ namespace Subsogator.Web.Controllers
             return View(editActorBindingModel);
         }
 
-        // POST: Actors/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(
             EditActorBindingModel editActorBindingModel, 
@@ -231,7 +229,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Actors/Delete/5
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         public IActionResult Delete(string id)
         {
             DeleteActorViewModel deleteActorViewModel = _actorService
@@ -245,8 +243,8 @@ namespace Subsogator.Web.Controllers
             return View(deleteActorViewModel);
         }
 
-        // POST: Actors/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {

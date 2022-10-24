@@ -1,4 +1,5 @@
 ﻿using Data.DataModels.Abstraction;
+using Data.DataModels.Entities.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,9 @@ namespace Data.DataModels.Entities
         public string FilmProductionId { get; set; }
 
         public virtual FilmProduction FilmProduction { get; set; }
+
+        public string ApplicationUserId { get; set; }
+
+        public virtual ApplicationUser ApplicationUser { get; set; }
     }
 }

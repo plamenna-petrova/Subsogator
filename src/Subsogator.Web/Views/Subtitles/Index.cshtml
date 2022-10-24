@@ -1,53 +1,147 @@
-﻿@model IEnumerable<Data.DataModels.Entities.Subtitles>
+﻿@model PaginatedList<Subsogator.Web.Models.Subtitles.ViewModels.AllSubtitlesViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Subtitles List";
 }
 
-<h1>Index</h1>
+<h3>@ViewData["Title"]</h3>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New Subtitles</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
+@if (TempData["SubtitlesSuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SubtitlesSuccessMessage"]
+    </div>
+}
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            <b>Search by subtitles name: </b>
+            <input type="text" name="SearchTerm" class="search-term-input"
+                   value="@ViewData["SubtitlesSearchFilter"]" />
+            <input type="submit" value="Search" class="btn btn-success" />
+            <a asp-action="Index" class="btn btn-primary">Reset</a>
+        </p>
+    </div>
+</form>
+
+<table class="table table-bordered table-dark table-striped table-hover mt-3">
+    <thead class="thead-light">
+        <tr class="text-center">
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="Index" class="sorting-link"
+                   asp-route-sortOrder="@ViewData["SubtitlesNameSort"]"
+                   asp-route-currentFilter="@ViewData["SubtitlesSearchFilter"]">
+                    @Html.DisplayNameFor(subtitles => subtitles.ViewModel.Name)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FilmProduction)
+                Related Film Productions
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedOn)
+                Actions
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModifiedOn)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FilmProduction.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedOn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedOn)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var subtitles in Model)
+        {
+            <tr class="text-center">
+                <td>
+                    @Html.DisplayFor(subtitlesModelItem => subtitles.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(subtitlesModelItem => subtitles.RelatedFilmProduction.Title)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@subtitles.Id"
+                       class="btn btn-light">Edit</a>
+                    <a asp-action="Details" asp-route-id="@subtitles.Id"
+                       class="btn btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@subtitles.Id"
+                       class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@{
+    var isPreviousPageDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var isNextPageDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    string getPageButtonAdditionalClassName(int currentPageIndex)
+    {
+        string pageButtonClassName = "";
+
+        if (Model.PageIndex == currentPageIndex)
+        {
+            pageButtonClassName = "btn-primary";
+        }
+        else
+        {
+            pageButtonClassName = "btn-outline-primary";
+        }
+
+        return pageButtonClassName;
+    }
+}
+
+<div class="row">
+    <div class="col-5">
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-pageSize="@ViewData["CurrentPageSize"]"
+           asp-route-currentFilter="@ViewData["SubtiltesSearchFilter"]"
+           class="btn btn-outline-primary @isPreviousPageDisabled">
+            Previous
+        </a>
+
+        @for (int pageIndex = 1; pageIndex <= @Model.TotalPages; pageIndex++)
+        {
+            <a class="btn @getPageButtonAdditionalClassName(pageIndex)"
+               asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-currentFilter="@ViewData["SubtiltesSearchFilter"]"
+               asp-route-pageSize="@ViewData["CurrentPageSize"]"
+               asp-route-pageNumber="@pageIndex">
+                @pageIndex
+            </a>
+        }
+
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-pageSize="@ViewData["CurrentPageSize"]"
+           asp-route-currentFilter="@ViewData["SubtiltesSearchFilter"]"
+           class="btn btn-outline-primary @isNextPageDisabled">
+            Next
+        </a>
+    </div>
+    <div class="col-5">
+        <form>
+            <div class="form-group">
+                <label asp-for="PageResults" class="control-label"></label>
+                <select name="PageSize" asp-for="PageResults"
+                        class="form-control page-size-select"
+                        asp-items="Html.GetEnumSelectList<PageResultsEnum>()">
+                </select>
+                <span asp-validation-for="PageResults" class="text-danger"></span>
+            </div>
+            <a class="btn btn-outline-primary text-primary change-page-size-button"
+               asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]">
+                Change
+            </a>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-5">
+        <div class="mt-2">Page @Model.PageIndex out of @Model.TotalPages </div>
+    </div>
+</div>

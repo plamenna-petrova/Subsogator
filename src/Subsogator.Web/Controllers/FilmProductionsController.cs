@@ -21,7 +21,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Subsogator.Web.Controllers
 {
-    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
     public class FilmProductionsController : BaseController
     {
         private readonly IFilmProductionService _filmProductionService;
@@ -49,7 +48,7 @@ namespace Subsogator.Web.Controllers
             _logger = logger;
         }
 
-        // GET: FilmProductions
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Index(
             string sortOrder,
             string currentFilter,
@@ -73,10 +72,12 @@ namespace Subsogator.Web.Controllers
             ViewData["FilmProductionTitleSort"] = string.IsNullOrEmpty(sortOrder)
                 ? "film_production_title_descending"
                 : "";
-            ViewData["FilmProductionDurationSort"] = sortOrder == "film_production_duration_ascending"
+            ViewData["FilmProductionDurationSort"] = sortOrder == 
+              "film_production_duration_ascending"
                 ? "film_production_duration_descending"
                 : "film_production_duration_ascending";
-            ViewData["FilmProductionReleaseDateSort"] = sortOrder == "film_production_release_date_ascending"
+            ViewData["FilmProductionReleaseDateSort"] = sortOrder == 
+              "film_production_release_date_ascending"
                 ? "film_production_release_date_descending"
                 : "film_production_release_date_ascending";
 
@@ -127,7 +128,7 @@ namespace Subsogator.Web.Controllers
             return View(paginatedList);
         }
 
-        // GET: FilmProductions/Details/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Details(string id)
         {
             FilmProductionFullDetailsViewModel filmProductionFullDetailsViewModel =
@@ -142,7 +143,7 @@ namespace Subsogator.Web.Controllers
             return View(filmProductionFullDetailsViewModel);
         }
 
-        // GET: FilmProductions/Create
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Create()
         {
             var allCountriesForSelectList = _countryService.GetAllCountries();
@@ -158,8 +159,8 @@ namespace Subsogator.Web.Controllers
             return View(_filmProductionService.GetFilmProductionCreatingDetails());
         }
 
-        // POST: FilmProductions/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateFilmProductionBindingModel
             createFilmProductionBindingModel,
@@ -212,7 +213,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: FilmProductions/Edit/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Edit(string id)
         {
             EditFilmProductionBindingModel editFilmProductionBindingModel =
@@ -239,8 +240,8 @@ namespace Subsogator.Web.Controllers
             return View(editFilmProductionBindingModel);
         }
 
-        // POST: FilmProductions/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(
             EditFilmProductionBindingModel editFilmProductionBindingModel,
@@ -302,7 +303,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: FilmProductions/Delete/5
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         public IActionResult Delete(string id)
         {
             DeleteFilmProductionViewModel deleteFilmProductionViewModel =
@@ -317,8 +318,8 @@ namespace Subsogator.Web.Controllers
             return View(deleteFilmProductionViewModel);
         }
 
-        // POST: FilmProductions/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {
@@ -346,7 +347,7 @@ namespace Subsogator.Web.Controllers
                 NotificationMessages.RecordDeletionSuccessMessage,
                 "Film Production", $"{filmProductionToConfirmDeletion.Title}");
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToIndexActionInCurrentController();
         }
     }
 }

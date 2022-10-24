@@ -9,7 +9,10 @@ namespace Data.DataAccess.Seeding
 {
     public class EntitiesSeeder : ISeeder
     {
-        public async Task<bool> SeedDatabase(ApplicationDbContext applicationDbContext, IServiceProvider serviceProvider)
+        public async Task<bool> SeedDatabase(
+            ApplicationDbContext applicationDbContext, 
+            IServiceProvider serviceProvider
+        )
         {
             if (applicationDbContext.Subtitles.Any())
             {

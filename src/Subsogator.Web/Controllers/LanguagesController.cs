@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Subsogator.Web.Controllers
 {
-    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
     public class LanguagesController : BaseController
     {
         private readonly ILanguageService _languageService;
@@ -38,8 +37,7 @@ namespace Subsogator.Web.Controllers
             _logger = logger;
         }
 
-        // GET: Languages
-        // GET: Languages
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Index(
             string sortOrder,
             string currentFilter,
@@ -101,7 +99,7 @@ namespace Subsogator.Web.Controllers
             return View(paginatedList);
         }
 
-        // GET: Languages/Details/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Details(string id)
         {
             LanguageDetailsViewModel languageDetailsViewModel = _languageService
@@ -115,14 +113,14 @@ namespace Subsogator.Web.Controllers
             return View(languageDetailsViewModel);
         }
 
-        // GET: Languages/Create
+        [Authorize(Roles = "Administrator, Editor")]
         public ViewResult Create()
         {
             return View(new CreateLanguageBindingModel());
         }
 
-        // POST: Languages/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateLanguageBindingModel createLanguageBindingModel)
         {
@@ -161,7 +159,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Languages/Edit/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Edit(string id)
         {
             EditLanguageBindingModel editLanguageBindingModel = _languageService
@@ -175,8 +173,8 @@ namespace Subsogator.Web.Controllers
             return View(editLanguageBindingModel);
         }
 
-        // POST: Languages/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EditLanguageBindingModel editLanguageBindingModel)
         {
@@ -215,7 +213,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Languages/Delete/5
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         public IActionResult Delete(string id)
         {
             DeleteLanguageViewModel deleteLanguageViewModel = _languageService
@@ -229,8 +227,8 @@ namespace Subsogator.Web.Controllers
             return View(deleteLanguageViewModel);
         }
 
-        // POST: Languages/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {

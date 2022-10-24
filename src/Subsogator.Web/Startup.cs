@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Subsogator.Infrastructure.Extensions;
+using System.Security.Claims;
+using static Subsogator.Common.GlobalConstants.IdentityConstants;
 
 namespace Subsogator.Web
 {
@@ -28,6 +30,17 @@ namespace Subsogator.Web
             serviceCollection.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            serviceCollection.AddAuthorization(options =>
+            {
+                options.AddPolicy("Administrator", policy => policy.RequireRole($"{AdministratorRoleName}"));
+                options.AddPolicy("AdministratorOrEditor", policy => 
+                    policy.RequireRole($"{AdministratorRoleName}, {EditorRoleName}"
+                ));
+                options.AddPolicy("AdministratorEditorOrUploader", policy =>
+                    policy.RequireRole($"{AdministratorRoleName}, {EditorRoleName}, {UploaderRoleName}"
+                ));
+            });
 
             serviceCollection.AddControllersWithViews();
 
@@ -54,7 +67,6 @@ namespace Subsogator.Web
             else
             {
                 applicationBuilder.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 applicationBuilder.UseHsts();
             }
             applicationBuilder.UseHttpsRedirection();

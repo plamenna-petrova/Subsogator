@@ -10,6 +10,7 @@ using Subsogator.Business.Services.FilmProductions;
 using Subsogator.Business.Services.Genres;
 using Subsogator.Business.Services.Languages;
 using Subsogator.Business.Services.Screenwriters;
+using Subsogator.Business.Services.Subtitles;
 using Subsogator.Business.Transactions.Implementation;
 using Subsogator.Business.Transactions.Interfaces;
 
@@ -28,6 +29,7 @@ namespace Subsogator.Infrastructure.Extensions
             serviceCollection.AddTransient<ILanguageService, LanguageService>();
             serviceCollection.AddTransient<IScreenwriterService, ScreenwriterService>();
             serviceCollection.AddTransient<IFilmProductionService, FilmProductionService>();
+            serviceCollection.AddTransient<ISubtitlesService, SubtitlesService>();
         }
     }
 }

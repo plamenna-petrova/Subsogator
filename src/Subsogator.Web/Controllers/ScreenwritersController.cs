@@ -17,12 +17,13 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Subsogator.Web.Controllers
 {
-    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
     public class ScreenwritersController : BaseController
     {
         private readonly IScreenwriterService _screenwriterService;
 
         private readonly IUnitOfWork _unitOfWork;
+
+        private const string template = "{0}, {1}, {2}";
 
         public ScreenwritersController(
             IScreenwriterService screenwriterService, 
@@ -33,6 +34,7 @@ namespace Subsogator.Web.Controllers
             _screenwriterService = screenwriterService;
         }
 
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Index(
             string sortOrder,
             string currentFilter,
@@ -103,7 +105,7 @@ namespace Subsogator.Web.Controllers
             return View(paginatedList);
         }
 
-        // GET: Screenwriters/Details/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Details(string id)
         {
             ScreenwriterDetailsViewModel screenwriterDetailsViewModel = _screenwriterService
@@ -117,15 +119,15 @@ namespace Subsogator.Web.Controllers
             return View(screenwriterDetailsViewModel);
         }
 
-        // GET: Screenwriters/Create
+        [Authorize(Roles = "Administrator, Editor")]
         public ViewResult Create()
         {
 
             return View(_screenwriterService.GetScreenwriterCreatingDetails());
         }
 
-        // POST: Screenwriters/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(
             CreateScreenwriterBindingModel createScreenwriterBindingModel,
@@ -171,7 +173,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Screenwriters/Edit/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Edit(string id)
         {
             EditScreenwriterBindingModel editScreenwriterBindingModel = _screenwriterService
@@ -185,8 +187,8 @@ namespace Subsogator.Web.Controllers
             return View(editScreenwriterBindingModel);
         }
 
-        // POST: Screenwriters/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(
             EditScreenwriterBindingModel editScreenwriterBindingModel,
@@ -233,7 +235,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Screenwriters/Delete/5
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         public IActionResult Delete(string id)
         {
             DeleteScreenwriterViewModel deleteScreenwriterViewModel = _screenwriterService
@@ -247,8 +249,8 @@ namespace Subsogator.Web.Controllers
             return View(deleteScreenwriterViewModel);
         }
 
-        // POST: Screenwriters/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {

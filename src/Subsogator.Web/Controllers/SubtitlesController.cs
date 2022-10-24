@@ -9,155 +9,351 @@ using Data.DataAccess;
 using Data.DataModels.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Subsogator.Common.GlobalConstants;
+using Subsogator.Business.Services.Subtitles;
+using Subsogator.Business.Transactions.Interfaces;
+using Subsogator.Web.Helpers;
+using Subsogator.Web.Models.Subtitles.ViewModels;
+using Subsogator.Web.Models.Actors.ViewModels;
+using Subsogator.Business.Services.FilmProductions;
+using Subsogator.Web.Models.Actors.BindingModels;
+using Subsogator.Web.Models.Subtitles.BindingModels;
+using Subsogator.Web.Models.FilmProductions.BindingModels;
+using Subsogator.Web.Models.FilmProductions.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Data.DataModels.Entities.Identity;
+using System.Security.Claims;
 
 namespace Subsogator.Web.Controllers
 {
-    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
-    public class SubtitlesController : Controller
+    public class SubtitlesController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
-        public SubtitlesController(ApplicationDbContext context)
+        private readonly ISubtitlesService _subtitlesService;
+
+        private readonly IFilmProductionService _filmProductionService;
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        public SubtitlesController(
+            ApplicationDbContext context,
+            ISubtitlesService subtitlesService,
+            IFilmProductionService filmProductionService,
+            IUnitOfWork unitOfWork
+        )
         {
             _context = context;
+            _subtitlesService = subtitlesService;
+            _filmProductionService = filmProductionService;
+            _unitOfWork = unitOfWork;
         }
 
-        // GET: Subtitles
-        public async Task<IActionResult> Index()
+        [Authorize(Roles = "Administrator, Editor, Uploader")]
+        public IActionResult Index(
+            string sortOrder,
+            string currentFilter,
+            string searchTerm,
+            int? pageSize,
+            int? pageNumber
+        )
         {
-            var applicationDbContext = _context.Subtitles.Include(s => s.FilmProduction);
-            return View(await applicationDbContext.ToListAsync());
-        }
+            IEnumerable<AllSubtitlesViewModel> allSubtitlesViewModel = _subtitlesService
+                    .GetAllSubtitles();
 
-        // GET: Subtitles/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
+            bool isAllSubtitlesViewModelEmpty = allSubtitlesViewModel.Count() == 0;
+
+            if (isAllSubtitlesViewModelEmpty)
             {
                 return NotFound();
             }
 
-            var subtitles = await _context.Subtitles
-                .Include(s => s.FilmProduction)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (subtitles == null)
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["SubtitlesNameSort"] = string.IsNullOrEmpty(sortOrder)
+                ? "subtitles_name_descending"
+                : "";
+
+            if (searchTerm != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchTerm = currentFilter;
+            }
+
+            ViewData["SubtitlesSearchFilter"] = searchTerm;
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                allSubtitlesViewModel = allSubtitlesViewModel
+                        .Where(aavm =>
+                            aavm.Name.ToLower().Contains(searchTerm.ToLower())
+                        );
+            }
+
+            allSubtitlesViewModel = sortOrder switch
+            {
+                "subtitles_name_descending" => allSubtitlesViewModel
+                        .OrderByDescending(aavm => aavm.Name),
+                _ => allSubtitlesViewModel.OrderBy(aavm => aavm.Name)
+            };
+
+            if (pageSize == null)
+            {
+                pageSize = 3;
+            }
+
+            ViewData["CurrentPageSize"] = pageSize;
+
+            var paginatedList = PaginatedList<AllSubtitlesViewModel>
+                .Create(allSubtitlesViewModel, pageNumber ?? 1, (int)pageSize);
+
+            return View(paginatedList);
+        }
+
+
+        [Authorize(Roles = "Administrator, Editor, Uploader")]
+        public IActionResult Details(string id)
+        {
+            SubtitlesDetailsViewModel subtitlesDetailsViewModel = _subtitlesService
+                .GetSubtitlesDetails(id);
+
+            if (subtitlesDetailsViewModel == null)
             {
                 return NotFound();
             }
 
-            return View(subtitles);
+            return View(subtitlesDetailsViewModel);
         }
 
-        // GET: Subtitles/Create
+        [Authorize(Roles = "Administrator, Editor, Uploader")]
         public IActionResult Create()
         {
-            ViewData["FilmProductionId"] = new SelectList(_context.FilmProductions, "Id", "Id");
-            return View();
-        }
+            var allFilmProductions = _filmProductionService.GetAllFilmProductions();
 
-        // POST: Subtitles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,FilmProductionId,Id,CreatedOn,ModifiedOn")] Subtitles subtitles)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(subtitles);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["FilmProductionId"] = new SelectList(_context.FilmProductions, "Id", "Id", subtitles.FilmProductionId);
-            return View(subtitles);
-        }
+            var allFilmProductionsIdsBySubtitles = _subtitlesService.GetAllToList()
+                .Select(s => s.FilmProduction.Id)
+                    .ToList();
 
-        // GET: Subtitles/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            List<FilmProduction> allFilmProductionsForSelectList = new List<FilmProduction>();
 
-            var subtitles = await _context.Subtitles.FindAsync(id);
-            if (subtitles == null)
+            foreach (var filmProduction in allFilmProductions)
             {
-                return NotFound();
-            }
-            ViewData["FilmProductionId"] = new SelectList(_context.FilmProductions, "Id", "Id", subtitles.FilmProductionId);
-            return View(subtitles);
-        }
-
-        // POST: Subtitles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Name,FilmProductionId,Id,CreatedOn,ModifiedOn")] Subtitles subtitles)
-        {
-            if (id != subtitles.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (!allFilmProductionsIdsBySubtitles.Contains(filmProduction.Id))
                 {
-                    _context.Update(subtitles);
-                    await _context.SaveChangesAsync();
+                    allFilmProductionsForSelectList.Add(filmProduction);
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SubtitlesExists(subtitles.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["FilmProductionId"] = new SelectList(_context.FilmProductions, "Id", "Id", subtitles.FilmProductionId);
-            return View(subtitles);
+
+            if (allFilmProductionsForSelectList.Count > 0)
+            {
+                ViewData["FilmProductionByTitle"] = new SelectList(
+                    allFilmProductionsForSelectList, "Id", "Title"
+                );
+            }
+            else
+            {
+                return RedirectToIndexActionInCurrentController();
+            }
+
+            return View(new CreateSubtitlesBindingModel());
         }
 
-        // GET: Subtitles/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        [HttpPost]
+        [Authorize(Roles = "Administrator, Editor, Uploader")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(CreateSubtitlesBindingModel createSubtitlesBindingModel)
         {
-            if (id == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return View(createSubtitlesBindingModel);
             }
 
-            var subtitles = await _context.Subtitles
-                .Include(s => s.FilmProduction)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (subtitles == null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            _subtitlesService.CreateSubtitles(createSubtitlesBindingModel, userId);
+
+            bool areNewSubtitlesSavedToDatabase = _unitOfWork.CommitSaveChanges();
+
+            if (!areNewSubtitlesSavedToDatabase)
             {
-                return NotFound();
+                var allFilmProductionsForSelectList = _filmProductionService.GetAllFilmProductions();
+
+                ViewData["FilmProductionByTitle"] = new SelectList(
+                    allFilmProductionsForSelectList,
+                    "Id", "Title", createSubtitlesBindingModel.FilmProductionId
+                );
+
+                TempData["SubtitlesErrorMessage"] = string.Format(
+                    NotificationMessages.NewRecordFailedSaveErrorMessage,
+                "subtitles");
+
+                return View(createSubtitlesBindingModel);
             }
 
-            return View(subtitles);
+            TempData["SubtitlesSuccessMessage"] = string.Format(
+                NotificationMessages.RecordCreationSuccessMessage,
+                "Subtitles", $"{createSubtitlesBindingModel.Name}");
+
+            return RedirectToIndexActionInCurrentController();
         }
 
-        // POST: Subtitles/Delete/5
+        [Authorize(Roles = "Administrator, Editor, Uploader")]
+        public IActionResult Edit(string id)
+        {
+            EditSubtitlesBindingModel editSubtitlesBindingModel =
+               _subtitlesService
+                   .GetSubtitlesEditingDetails(id);
+
+            if (editSubtitlesBindingModel == null)
+            {
+                return NotFound();
+            }
+
+            var allFilmProductions = _filmProductionService.GetAllFilmProductions();
+
+            var allFilmProductionsIdsBySubtitles = _subtitlesService.GetAllToList()
+                .Select(s => s.FilmProduction.Id)
+                    .ToList();
+
+            List<FilmProduction> allFilmProductionsForSelectList = new List<FilmProduction>();
+
+            foreach (var filmProduction in allFilmProductions)
+            {
+                if (!allFilmProductionsIdsBySubtitles.Contains(filmProduction.Id))
+                {
+                    allFilmProductionsForSelectList.Add(filmProduction);
+                }
+            }
+
+            if (allFilmProductionsForSelectList.Count > 0)
+            {
+                ViewData["FilmProductionByTitle"] = new SelectList(
+                    allFilmProductionsForSelectList, "Id", "Title"
+                );
+            }
+            else
+            {
+                return RedirectToIndexActionInCurrentController();
+            }
+
+            return View(editSubtitlesBindingModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator, Editor, Uploader")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(EditSubtitlesBindingModel editSubtitlesBindingModel)
+        {
+            var allFilmProductions = _filmProductionService.GetAllFilmProductions();
+
+            var allFilmProductionsIdsBySubtitles = _subtitlesService.GetAllToList()
+                .Select(s => s.FilmProduction.Id)
+                    .ToList();
+
+            List<FilmProduction> allFilmProductionsForSelectList = new List<FilmProduction>();
+
+            foreach (var filmProduction in allFilmProductions)
+            {
+                if (!allFilmProductionsIdsBySubtitles.Contains(filmProduction.Id))
+                {
+                    allFilmProductionsForSelectList.Add(filmProduction);
+                }
+            }
+
+            if (allFilmProductionsForSelectList.Count > 0)
+            {
+                ViewData["FilmProductionByTitle"] = new SelectList(
+                    allFilmProductionsForSelectList, "Id", "Title"
+                );
+            }
+            else
+            {
+                return RedirectToIndexActionInCurrentController();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["FilmProductionByTitle"] = new SelectList(
+                         allFilmProductionsForSelectList,
+                         "Id", "Title", editSubtitlesBindingModel.FilmProductionId
+                     );
+
+                return View(editSubtitlesBindingModel);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            _subtitlesService.EditSubtitles(editSubtitlesBindingModel, userId);
+
+            bool areCurrentSubtitlesSavedToDatabase = _unitOfWork.CommitSaveChanges();
+
+            if (!areCurrentSubtitlesSavedToDatabase)
+            {
+                ViewData["FilmProductionByTitle"] = new SelectList(
+                         allFilmProductionsForSelectList,
+                         "Id", "Title", editSubtitlesBindingModel.FilmProductionId
+                     );
+
+                TempData["SubtitlesErrorMessage"] = string.Format(
+                    NotificationMessages.RecordFailedUpdateSaveErrorMessage,
+                        "film production");
+
+                return View(editSubtitlesBindingModel);
+            }
+
+            TempData["SubtitlesSuccessMessage"] = string.Format(NotificationMessages
+                .RecordUpdateSuccessMessage, "Subtitles",
+                $"");
+
+            return RedirectToIndexActionInCurrentController();
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Delete(string id)
+        {
+            DeleteSubtitlesViewModel deleteSubtitlesViewModel =
+                _subtitlesService
+                    .GetSubtitlesDeletionDetails(id);
+
+            if (deleteSubtitlesViewModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(deleteSubtitlesViewModel);
+        }
+
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public IActionResult DeleteConfirmed(string id)
         {
-            var subtitles = await _context.Subtitles.FindAsync(id);
-            _context.Subtitles.Remove(subtitles);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            var subtitlesToConfirmDeletion = _subtitlesService
+                .FindSubtitles(id);
 
-        private bool SubtitlesExists(string id)
-        {
-            return _context.Subtitles.Any(e => e.Id == id);
+            _subtitlesService.DeleteSubtitles(subtitlesToConfirmDeletion);
+
+            bool areSubtitlesDeleted = _unitOfWork.CommitSaveChanges();
+
+            if (!areSubtitlesDeleted)
+            {
+                string failedDeletionMessage = NotificationMessages
+                    .RecordFailedDeletionErrorMessage;
+
+                TempData["SubtitlesErrorMessage"] =
+                    string.Format(failedDeletionMessage, "subtitles") +
+                    $"{subtitlesToConfirmDeletion.Name}!"
+                    + "Check the film production relationship status!";
+
+                return RedirectToAction(nameof(Delete));
+            }
+
+            TempData["SubtitlesSuccessMessage"] = string.Format(
+                NotificationMessages.RecordDeletionSuccessMessage,
+                "Film Production", $"{subtitlesToConfirmDeletion.Name}");
+
+            return RedirectToIndexActionInCurrentController();
         }
     }
 }

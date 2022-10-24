@@ -35,7 +35,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        @if (User.IsInRole(AdministratorRoleName))
+                        @if (User.IsInRole(AdministratorRoleName) || User.IsInRole(EditorRoleName) || User.IsInRole(UploaderRoleName))
                         {
                             <li class="nav-item">
                                 <div class="dropdown">
@@ -43,13 +43,17 @@
                                         Dashboard
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Actors" asp-action="Index">Actors</a>
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Countries</a>
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Directors" asp-action="Index">Directors</a>
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Genres" asp-action="Index">Genres</a>
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Languages" asp-action="Index">Languages</a>
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Screenwriters" asp-action="Index">Screenwriters</a>
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="FilmProductions" asp-action="Index">Film Productions</a>
+                                        @if (User.IsInRole(AdministratorRoleName) || User.IsInRole(EditorRoleName))
+                                        {
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Actors" asp-action="Index">Actors</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Countries</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Directors" asp-action="Index">Directors</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Genres" asp-action="Index">Genres</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Languages" asp-action="Index">Languages</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Screenwriters" asp-action="Index">Screenwriters</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="FilmProductions" asp-action="Index">Film Productions</a>
+                                        }
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Subtitles" asp-action="Index">Subtitles</a>
                                     </div>
                                 </div>
                             </li>

@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Subsogator.Web.Controllers
 {
-    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
     public class GenresController : BaseController
     {
         private readonly IGenreService _genreService;
@@ -30,8 +29,8 @@ namespace Subsogator.Web.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // GET: Genres
-         public IActionResult Index(
+        [Authorize(Roles = "Administrator, Editor")]
+        public IActionResult Index(
             string sortOrder,
             string currentFilter,
             string searchTerm,
@@ -92,7 +91,7 @@ namespace Subsogator.Web.Controllers
             return View(paginatedList);
         }
 
-        // GET: Genres/Details/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Details(string id)
         {
             GenreDetailsViewModel genreDetailsViewModel = _genreService.GetGenreDetails(id);
@@ -105,14 +104,14 @@ namespace Subsogator.Web.Controllers
             return View(genreDetailsViewModel);
         }
 
-        // GET: Genres/Create
+        [Authorize(Roles = "Administrator, Editor")]
         public ViewResult Create()
         {
             return View(new CreateGenreBindingModel());
         }
 
-        // POST: Genres/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateGenreBindingModel createGenreBindingModel)
         {
@@ -150,7 +149,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Genres/Edit/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Edit(string id)
         {
             EditGenreBindingModel editGenreBindingModel = _genreService
@@ -164,8 +163,8 @@ namespace Subsogator.Web.Controllers
             return View(editGenreBindingModel);
         }
 
-        // POST: Genres/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EditGenreBindingModel editGenreBindingModel)
         {
@@ -203,7 +202,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Genres/Delete/5
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         public IActionResult Delete(string id)
         {
             DeleteGenreViewModel deleteGenreViewModel = _genreService
@@ -217,8 +216,8 @@ namespace Subsogator.Web.Controllers
             return View(deleteGenreViewModel);
         }
 
-        // POST: Genres/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {

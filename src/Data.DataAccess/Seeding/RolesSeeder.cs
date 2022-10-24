@@ -13,7 +13,10 @@ namespace Data.DataAccess.Seeding
 {
     public class RolesSeeder : ISeeder
     {
-        public async Task<bool> SeedDatabase(ApplicationDbContext applicationDbContext, IServiceProvider serviceProvider)
+        public async Task<bool> SeedDatabase(
+            ApplicationDbContext applicationDbContext, 
+            IServiceProvider serviceProvider
+        )
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
@@ -23,6 +26,7 @@ namespace Data.DataAccess.Seeding
                 IdentityConstants.AdministratorRoleName, 
                 IdentityConstants.EditorRoleName, 
                 IdentityConstants.TranslatorRoleName,
+                IdentityConstants.UploaderRoleName,
                 IdentityConstants.NormalUserRole 
             };
 
@@ -53,7 +57,10 @@ namespace Data.DataAccess.Seeding
             return isRolesSeedingTriggered;
         }
 
-        public static async Task<bool> SeedRoleAsync(ApplicationDbContext applicationDbContext, RoleManager<ApplicationRole> roleManager, string roleName)
+        public static async Task<bool> SeedRoleAsync(
+            ApplicationDbContext applicationDbContext, 
+            RoleManager<ApplicationRole> roleManager, string roleName
+        )
         {
             bool isRoleCreated = true;
 
@@ -69,7 +76,10 @@ namespace Data.DataAccess.Seeding
             {
                 isRoleCreated = false;
 
-                throw new Exception(string.Join(Environment.NewLine, roleCreationResult.Errors.Select(e => e.Description)));
+                throw new Exception(string.Join(
+                    Environment.NewLine, 
+                    roleCreationResult.Errors.Select(e => e.Description)
+                ));
             }
 
             return isRoleCreated;

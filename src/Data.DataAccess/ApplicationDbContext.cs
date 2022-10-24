@@ -86,9 +86,7 @@ namespace Data.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-            ConfigureUserIdentityRelations(modelBuilder);
+            ConfigureEntityRelations(modelBuilder);
         }
 
         public override int SaveChanges()
@@ -107,7 +105,10 @@ namespace Data.DataAccess
             return SaveChangesAsync(true, cancellationToken);
         }
 
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        public override Task<int> SaveChangesAsync(
+            bool acceptAllChangesOnSuccess, 
+            CancellationToken cancellationToken = default
+        )
         {
             ApplyEntityChanges();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
@@ -139,7 +140,7 @@ namespace Data.DataAccess
             }
         }
 
-        private void ConfigureUserIdentityRelations(ModelBuilder modelBuilder)
+        private void ConfigureEntityRelations(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }

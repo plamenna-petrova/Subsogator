@@ -13,7 +13,10 @@ namespace Data.DataAccess.Seeding
 {
     public class UsersSeeder : ISeeder
     {
-        public async Task<bool> SeedDatabase(ApplicationDbContext applicationDbContext, IServiceProvider serviceProvider)
+        public async Task<bool> SeedDatabase(
+            ApplicationDbContext applicationDbContext, 
+            IServiceProvider serviceProvider
+        )
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var databaseLoadedUsers = applicationDbContext.Users.IgnoreQueryFilters().ToList();
@@ -25,6 +28,7 @@ namespace Data.DataAccess.Seeding
                 IdentityConstants.AdministratorUsername,
                 IdentityConstants.EditorUsername,
                 IdentityConstants.TranslatorUsername,
+                IdentityConstants.UploaderUsername,
                 IdentityConstants.ExampleUserUsername
             };
 
@@ -32,6 +36,7 @@ namespace Data.DataAccess.Seeding
                 IdentityConstants.AdministratorEmail,
                 IdentityConstants.EditorEmail,
                 IdentityConstants.TranslatorEmail,
+                IdentityConstants.UploaderEmail,
                 IdentityConstants.ExampleUserEmail
             };
 
@@ -40,6 +45,7 @@ namespace Data.DataAccess.Seeding
                 IdentityConstants.AdministratorPassword,
                 IdentityConstants.EditorPassword,
                 IdentityConstants.TranslatorPassword,
+                IdentityConstants.UploaderPassword,
                 IdentityConstants.ExampleUserPassword
             };
 
@@ -48,6 +54,7 @@ namespace Data.DataAccess.Seeding
                 IdentityConstants.AdministratorRoleName,
                 IdentityConstants.EditorRoleName,
                 IdentityConstants.TranslatorRoleName,
+                IdentityConstants.UploaderRoleName,
                 IdentityConstants.NormalUserRole
             };
 
@@ -62,7 +69,7 @@ namespace Data.DataAccess.Seeding
 
                 if (user == null)
                 {
-                    if (i <= 2)
+                    if (i <= Array.IndexOf(usernames, IdentityConstants.UploaderUsername))
                     {
                         if (!await SeedUserAsync(
                             databaseLoadedUsers, userManager, usernames[i], 
@@ -123,7 +130,10 @@ namespace Data.DataAccess.Seeding
             {
                 isUserCreated = false;
 
-                throw new Exception(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
+                throw new Exception(string.Join(
+                    Environment.NewLine, 
+                    result.Errors.Select(e => e.Description)
+                ));
             }
 
             return isUserCreated;

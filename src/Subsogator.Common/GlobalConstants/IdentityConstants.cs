@@ -21,6 +21,11 @@ namespace Subsogator.Common.GlobalConstants
         public const string TranslatorUsername = "translator";
         public const string TranslatorPassword = "Translator123/";
 
+        public const string UploaderRoleName = "Uploader";
+        public const string UploaderEmail = "uploader@uploader.com";
+        public const string UploaderUsername = "uploader";
+        public const string UploaderPassword = "Uploader123/";
+
         public const string NormalUserRole = "Normal User";
 
         public const string ExampleUserEmail = "johndoe@gmail.com";

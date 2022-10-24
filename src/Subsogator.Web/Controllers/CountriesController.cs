@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Subsogator.Web.Controllers
 {
-    [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
     public class CountriesController : BaseController
     {
         private readonly ICountryService _countryService;
@@ -38,7 +37,7 @@ namespace Subsogator.Web.Controllers
             _logger = logger;
         }
 
-        // GET: Countries
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Index(
             string sortOrder,
             string currentFilter,
@@ -100,7 +99,7 @@ namespace Subsogator.Web.Controllers
             return View(paginatedList);
         }
 
-        // GET: Countries/Details/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Details(string id)
         {
             CountryDetailsViewModel countryDetailsViewModel = _countryService
@@ -114,14 +113,14 @@ namespace Subsogator.Web.Controllers
             return View(countryDetailsViewModel);
         }
 
-        // GET: Countries/Create
+        [Authorize(Roles = "Administrator, Editor")]
         public ViewResult Create()
         {
             return View(new CreateCountryBindingModel());
         }
 
-        // POST: Countries/Create
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateCountryBindingModel createCountryBindingModel)
         {
@@ -160,7 +159,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Countries/Edit/5
+        [Authorize(Roles = "Administrator, Editor")]
         public IActionResult Edit(string id)
         {
             EditCountryBindingModel editCountryBindingModel = _countryService
@@ -174,8 +173,8 @@ namespace Subsogator.Web.Controllers
             return View(editCountryBindingModel);
         }
 
-        // POST: Countries/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Administrator, Editor")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EditCountryBindingModel editCountryBindingModel)
         {
@@ -214,7 +213,7 @@ namespace Subsogator.Web.Controllers
             return RedirectToIndexActionInCurrentController();
         }
 
-        // GET: Countries/Delete/5
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         public IActionResult Delete(string id)
         {
             DeleteCountryViewModel deleteCountryViewModel = _countryService
@@ -228,8 +227,8 @@ namespace Subsogator.Web.Controllers
             return View(deleteCountryViewModel);
         }
 
-        // POST: Countries/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = IdentityConstants.AdministratorRoleName)]
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmDeletion(string id)
         {
