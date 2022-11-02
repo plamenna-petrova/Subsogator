@@ -28,6 +28,8 @@ namespace Subsogator.Web.Models.FilmProductions.ViewModels
         [DisplayName("Language")]
         public string LanguageName { get; set; }
 
+        public string ImageName { get; set; }
+
         [DisplayName("Genres")]
         public List<string> RelatedGenres { get; set; }
 

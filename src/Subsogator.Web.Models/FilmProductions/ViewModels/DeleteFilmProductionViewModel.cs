@@ -11,5 +11,7 @@ namespace Subsogator.Web.Models.FilmProductions.ViewModels
 
         [DisplayName("Release Date")]
         public DateTime ReleaseDate { get; set; }
+
+        public string ImageName { get; set; }
     }
 }

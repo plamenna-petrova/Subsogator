@@ -130,6 +130,7 @@ namespace Subsogator.Business.Services.FilmProductions
                 PlotSummary = singleFilmProduction.PlotSummary,
                 CountryName = singleFilmProduction.Country.Name,
                 LanguageName = singleFilmProduction.Language.Name,
+                ImageName = singleFilmProduction.ImageName,
                 RelatedGenres = singleFilmProduction.FilmProductionGenres
                                     .Select(fg => fg.Genre.Name)
                                     .ToList(),
@@ -190,9 +191,11 @@ namespace Subsogator.Business.Services.FilmProductions
         )
         {
             string wwwRootPath = _webHostEnvironment.WebRootPath;
-            string fileName = Path.GetFileNameWithoutExtension(createFilmProductionBindingModel.ImageFile.FileName);
+            string fileName = Path.GetFileNameWithoutExtension(
+                createFilmProductionBindingModel.ImageFile.FileName
+            );
             string extension = Path.GetExtension(createFilmProductionBindingModel.ImageFile.FileName);
-            string filmProductionImageName = fileName = fileName + DateTime.Now.ToString("yymmssffff") 
+            string filmProductionImageName = fileName = fileName + DateTime.Now.ToString("yymmssffff")
                     + extension;
             string path = Path.Combine(wwwRootPath + "/images/film-productions", fileName);
 
@@ -326,23 +329,39 @@ namespace Subsogator.Business.Services.FilmProductions
                             .ThenInclude(fps => fps.Screenwriter)
                       .FirstOrDefault();
 
-            string wwwRootPath = _webHostEnvironment.WebRootPath;
-            string fileName = Path.GetFileNameWithoutExtension(editFilmProductionBindingModel.ImageFile.FileName);
-            string extension = Path.GetExtension(editFilmProductionBindingModel.ImageFile.FileName);
-            string filmProductionImageName = fileName = fileName + DateTime.Now.ToString("yymmssffff")
-                    + extension;
-
-            string path = Path.Combine(wwwRootPath + "/images/film-productions", fileName);
-
-            var existingImagePath = Path.Combine(
-                _webHostEnvironment.WebRootPath, 
-                "images/film-productions", 
-                filmProductionToUpdate.ImageName
-            );
-
-            if (File.Exists(existingImagePath))
+            if (editFilmProductionBindingModel.ImageFile != null)
             {
-                File.Delete(existingImagePath);
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(
+                        editFilmProductionBindingModel.ImageFile.FileName
+                );
+                string extension = Path.GetExtension(editFilmProductionBindingModel.ImageFile.FileName);
+                string filmProductionImageName = fileName = fileName + DateTime.Now.ToString("yymmssffff")
+                        + extension;
+
+                string path = Path.Combine(wwwRootPath + "/images/film-productions", fileName);
+
+                if (filmProductionToUpdate.ImageName != null)
+                {
+                    var existingImagePath = Path.Combine(
+                        _webHostEnvironment.WebRootPath,
+                        "images/film-productions",
+                            filmProductionToUpdate.ImageName
+                    );
+
+                    if (File.Exists(existingImagePath))
+                    {
+                        File.Delete(existingImagePath);
+                    }
+                }
+
+                filmProductionToUpdate.ImageName = filmProductionImageName;
+                filmProductionToUpdate.ImageFile = editFilmProductionBindingModel.ImageFile;
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    filmProductionToUpdate.ImageFile.CopyTo(fileStream);
+                }
             }
 
             filmProductionToUpdate.Title = editFilmProductionBindingModel.Title;
@@ -353,8 +372,6 @@ namespace Subsogator.Business.Services.FilmProductions
             filmProductionToUpdate.PlotSummary = editFilmProductionBindingModel.PlotSummary;
             filmProductionToUpdate.CountryId = editFilmProductionBindingModel.CountryId;
             filmProductionToUpdate.LanguageId = editFilmProductionBindingModel.LanguageId;
-            filmProductionToUpdate.ImageName = filmProductionImageName;
-            filmProductionToUpdate.ImageFile = editFilmProductionBindingModel.ImageFile;
 
             _filmProductionRepository.Update(filmProductionToUpdate);
 
@@ -381,7 +398,8 @@ namespace Subsogator.Business.Services.FilmProductions
             var filmProductionToDeleteDetails = new DeleteFilmProductionViewModel
             {
                 Title = filmProductionToDelete.Title,
-                ReleaseDate = filmProductionToDelete.ReleaseDate
+                ReleaseDate = filmProductionToDelete.ReleaseDate,
+                ImageName = filmProductionToDelete.ImageName
             };
 
             return filmProductionToDeleteDetails;
@@ -409,6 +427,20 @@ namespace Subsogator.Business.Services.FilmProductions
             _filmProductionActorRepository.DeleteRange(filmProductionActorsByFilmProduction);
             _filmProductonDirectorRepository.DeleteRange(filmProductionDirectorsByFilmProduction);
             _filmProductionScreenwriterRepository.DeleteRange(filmProductionScreewritersByFilmProduction);
+
+            if (filmProduction.ImageName != null)
+            {
+                var existingImagePath = Path.Combine(
+                    _webHostEnvironment.WebRootPath,
+                    "images/film-productions",
+                        filmProduction.ImageName
+                );
+
+                if (File.Exists(existingImagePath))
+                {
+                    File.Delete(existingImagePath);
+                }
+            }
 
             _filmProductionRepository.Delete(filmProduction);
         }
@@ -550,8 +582,8 @@ namespace Subsogator.Business.Services.FilmProductions
                 {
                     if (!genresOfAFilmProduction.Contains(genre.Id))
                     {
-                        filmProduction.FilmProductionGenres.Add(new FilmProductionGenre 
-                        { 
+                        filmProduction.FilmProductionGenres.Add(new FilmProductionGenre
+                        {
                             FilmProductionId = filmProduction.Id,
                             GenreId = genre.Id
                         });
@@ -563,7 +595,7 @@ namespace Subsogator.Business.Services.FilmProductions
                     {
                         FilmProductionGenre filmProductionGenreToRemove =
                            filmProduction.FilmProductionGenres
-                               .FirstOrDefault(fpg => 
+                               .FirstOrDefault(fpg =>
                                      fpg.GenreId == genre.Id
                                   );
                         _filmProductionGenreRepository.Delete(filmProductionGenreToRemove);

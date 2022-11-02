@@ -1,6 +1,8 @@
 ﻿using Data.DataAccess.Repositories.Implementation;
 using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Subsogator.Web.Models.Actors.BindingModels;
 using Subsogator.Web.Models.Actors.ViewModels;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
@@ -8,24 +10,31 @@ using Subsogator.Web.Models.Subtitles.BindingModels;
 using Subsogator.Web.Models.Subtitles.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Subsogator.Business.Services.Subtitles
 {
-    public class SubtitlesService: ISubtitlesService
+    public class SubtitlesService : ISubtitlesService
     {
         private readonly ISubtitlesRepository _subtitlesRepository;
 
         private readonly IFilmProductionRepository _filmProductionRepository;
 
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
         public SubtitlesService(
             ISubtitlesRepository subtitlesRepository,
-            IFilmProductionRepository filmProductionRepository
+            IFilmProductionRepository filmProductionRepository,
+            IWebHostEnvironment webHostEnvironment
         )
         {
             _subtitlesRepository = subtitlesRepository;
             _filmProductionRepository = filmProductionRepository;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public List<Data.DataModels.Entities.Subtitles> GetAllToList()
@@ -85,7 +94,26 @@ namespace Subsogator.Business.Services.Subtitles
                 .GetAllAsNoTracking()
                     .ToList();
 
-            var relatedFilmProduction = allFilmProductions.Find(f => f.Id == createSubtitlesBindingModel.FilmProductionId);
+            var relatedFilmProduction = allFilmProductions
+                .Find(f => f.Id == createSubtitlesBindingModel.FilmProductionId);
+
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+            string directoryName = Path.GetDirectoryName(@$"{wwwRootPath}\archives\subtitles\{createSubtitlesBindingModel.FilmProductionId}\");
+
+            Directory.CreateDirectory(directoryName);
+
+            foreach (var file in createSubtitlesBindingModel.Files)
+            {
+                string outputPath = Path.Combine(wwwRootPath + @$"\archives\subtitles\{createSubtitlesBindingModel.FilmProductionId}");
+
+                string path = Path.Combine(outputPath, file.FileName);
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+            }
 
             Data.DataModels.Entities.Subtitles subtitlesToCreate = new Data.DataModels.Entities.Subtitles
             {
@@ -134,7 +162,8 @@ namespace Subsogator.Business.Services.Subtitles
                           .FirstOrDefault();
 
             var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking().ToList();
-            var relatedFilmProduction = allFilmProductions.Find(f => f.Id == editSubtitlesBindingModel.FilmProductionId);
+            var relatedFilmProduction = allFilmProductions
+                  .Find(f => f.Id == editSubtitlesBindingModel.FilmProductionId);
 
             subtitlesToUpdate.FilmProductionId = editSubtitlesBindingModel.FilmProductionId;
             subtitlesToUpdate.Name = $"{relatedFilmProduction.Title} {relatedFilmProduction.ReleaseDate.Year}";
