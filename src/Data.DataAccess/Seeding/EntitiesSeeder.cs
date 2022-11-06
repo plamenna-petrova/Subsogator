@@ -42,7 +42,7 @@ namespace Data.DataAccess.Seeding
 
             foreach (var directorToSeed in DirectorSeeder.DirectorSeedingArray)
             {
-                await applicationDbContext .Directors.AddAsync(directorToSeed);
+                await applicationDbContext.Directors.AddAsync(directorToSeed);
             }
 
             await applicationDbContext.SaveChangesAsync();

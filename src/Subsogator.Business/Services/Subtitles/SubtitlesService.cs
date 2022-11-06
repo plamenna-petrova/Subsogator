@@ -97,6 +97,11 @@ namespace Subsogator.Business.Services.Subtitles
             var relatedFilmProduction = allFilmProductions
                 .Find(f => f.Id == createSubtitlesBindingModel.FilmProductionId);
 
+            if (createSubtitlesBindingModel.Files is null || createSubtitlesBindingModel.Files.Count() == 0)
+            {
+                return false;
+            }
+
             string wwwRootPath = _webHostEnvironment.WebRootPath;
 
             string directoryName = Path.GetDirectoryName(@$"{wwwRootPath}\archives\subtitles\{createSubtitlesBindingModel.FilmProductionId}\");

@@ -15,6 +15,7 @@ namespace Data.DataModels.Entities.Identity
             Claims = new HashSet<IdentityUserClaim<string>>();
             Logins = new HashSet<IdentityUserLogin<string>>();
             Subtitles = new HashSet<Subtitles>();
+            Comments = new HashSet<Comment>();
         }
 
         public DateTime CreatedOn { get; set; }
@@ -28,5 +29,7 @@ namespace Data.DataModels.Entities.Identity
         public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
 
         public virtual ICollection<Subtitles> Subtitles { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

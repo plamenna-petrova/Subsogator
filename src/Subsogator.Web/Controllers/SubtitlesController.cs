@@ -27,8 +27,6 @@ namespace Subsogator.Web.Controllers
 {
     public class SubtitlesController : BaseController
     {
-        private readonly ApplicationDbContext _context;
-
         private readonly ISubtitlesService _subtitlesService;
 
         private readonly IFilmProductionService _filmProductionService;
@@ -36,13 +34,11 @@ namespace Subsogator.Web.Controllers
         private readonly IUnitOfWork _unitOfWork;
 
         public SubtitlesController(
-            ApplicationDbContext context,
             ISubtitlesService subtitlesService,
             IFilmProductionService filmProductionService,
             IUnitOfWork unitOfWork
         )
         {
-            _context = context;
             _subtitlesService = subtitlesService;
             _filmProductionService = filmProductionService;
             _unitOfWork = unitOfWork;
@@ -297,7 +293,7 @@ namespace Subsogator.Web.Controllers
 
                 TempData["SubtitlesErrorMessage"] = string.Format(
                     NotificationMessages.RecordFailedUpdateSaveErrorMessage,
-                        "film production");
+                        "subtitles");
 
                 return View(editSubtitlesBindingModel);
             }
@@ -344,14 +340,14 @@ namespace Subsogator.Web.Controllers
                 TempData["SubtitlesErrorMessage"] =
                     string.Format(failedDeletionMessage, "subtitles") +
                     $"{subtitlesToConfirmDeletion.Name}!"
-                    + "Check the film production relationship status!";
+                    + "Check the subtitles relationship status!";
 
                 return RedirectToAction(nameof(Delete));
             }
 
             TempData["SubtitlesSuccessMessage"] = string.Format(
                 NotificationMessages.RecordDeletionSuccessMessage,
-                "Film Production", $"{subtitlesToConfirmDeletion.Name}");
+                "Subtitles", $"{subtitlesToConfirmDeletion.Name}");
 
             return RedirectToIndexActionInCurrentController();
         }

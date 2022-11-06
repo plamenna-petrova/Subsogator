@@ -1,0 +1,114 @@
+﻿@model Subsogator.Web.Models.SubtitlesCatalogue.SubtitlesCatalogueItemDetailsViewModel
+
+@if (TempData["SubtitlesCatalogueErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["SubtitlesCatalogueErrorMessage"]
+    </div>
+}
+<div class="row">
+    <div class="col-lg-6">
+        @if (Model.RelatedFilmProduction.ImageName != null)
+        {
+            <img src="~/images/film-productions/@Model.RelatedFilmProduction.ImageName"
+             class="rounded-square"
+             asp-append-version="true" style="width: 100%; height: auto;" />
+            <br />
+        }
+        else
+        {
+            <img src="~/images/film-productions/istockphoto-1147544807-612x612.jpg" style="width: 100%; height: auto;" />
+        }
+    </div>
+    <div class="col-lg-6">
+        <h1 class="text-primary">@Html.DisplayFor(model => model.RelatedFilmProduction.Title)</h1>
+        <dl class="row bg-secondary">
+            <dt class="col-sm-3 text-white bg-info font-weight-normal">
+                @Html.DisplayNameFor(model => model.CreatedOn)
+            </dt>
+            <dd class="col-sm-9 text-white">
+                @Html.DisplayFor(model => model.CreatedOn)
+            </dd>
+            <dt class="col-sm-3 text-white bg-info font-weight-normal">
+                Uploaded By
+            </dt>
+            <dd class="col-sm-9 text-white">
+                @Html.DisplayFor(model => model.UploaderUserName)
+            </dd>
+            <dt class="col-sm-3 text-white bg-info font-weight-normal">
+                Release Date
+            </dt>
+            <dd class="col-sm-9 text-white">
+                @Model.RelatedFilmProduction.ReleaseDate.ToShortDateString()
+            </dd>
+            <dt class="col-sm-3 text-white bg-info font-weight-normal">
+                Duration
+            </dt>
+            <dd class="col-sm-9 text-white">
+                @Html.DisplayFor(model => model.RelatedFilmProduction.Duration)
+            </dd>
+            <dt class="col-sm-3 text-white bg-info font-weight-normal">
+                Country
+            </dt>
+            <dd class="col-sm-9 text-white">
+                @Html.DisplayFor(model => model.RelatedFilmProduction.CountryName)
+            </dd>
+            <dt class="col-sm-3 text-white bg-info font-weight-normal">
+                Language
+            </dt>
+            <dd class="col-sm-9 text-white">
+                @Html.DisplayFor(model => model.RelatedFilmProduction.LanguageName)
+            </dd>
+            <dt class="col-sm-3 text-white bg-info font-weight-normal">
+                @Html.DisplayNameFor(model => model.ModifiedOn)
+            </dt>
+            <dd class="col-sm-9 text-white">
+                @Html.DisplayFor(model => model.ModifiedOn)
+            </dd>
+        </dl>
+        <h3>@Html.DisplayFor(model => model.Name)</h3>
+        <p class="text-center">
+            <a class="btn btn-primary" asp-controller="SubtitlesCatalogue" asp-action="DownloadSubtitles" asp-route-id="@Model.Id" download>Download</a>
+        </p>
+    </div>
+</div>
+<div class="row d-block w-100">
+    <div class="mt-5">
+        @foreach (var comment in Model.Comments)
+        {
+            @if (comment.Content != null)
+            {
+                <span class="badge badge-primary">By @comment.Username</span>
+                <span class="bg-secondary">By @comment.CreatedOn</span>
+                <div class="alert alert-info" role="alert">
+                    @comment.Content
+                </div>
+            }
+        }
+    </div>
+</div>
+@if(User.Identity.IsAuthenticated) 
+{
+    <div class="row d-block w-100">
+        <form asp-action="WriteComment" class="mt-5">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <input type="hidden" asp-for="Id" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Comment</label>
+                <textarea asp-for="CommentContent" class="form-control" style="width: 100%;"></textarea>
+                <span asp-validation-for="CommentContent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Write Comment" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+}
+else 
+{
+    <div class="alert alert-danger" role="alert">
+        <p>You must register / log in, in order to write comments</p>
+    </div>
+}

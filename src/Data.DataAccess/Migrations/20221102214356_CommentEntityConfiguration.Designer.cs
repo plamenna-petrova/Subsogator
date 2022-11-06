@@ -4,14 +4,16 @@ using Data.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221102214356_CommentEntityConfiguration")]
+    partial class CommentEntityConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,14 +64,9 @@ namespace Data.DataAccess.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SubtitlesId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("SubtitlesId");
 
                     b.ToTable("Comments");
                 });
@@ -542,11 +539,6 @@ namespace Data.DataAccess.Migrations
                     b.HasOne("Data.DataModels.Entities.Identity.ApplicationUser", "ApplicationUser")
                         .WithMany("Comments")
                         .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Data.DataModels.Entities.Subtitles", "Subtitles")
-                        .WithMany("Comments")
-                        .HasForeignKey("SubtitlesId")
                         .OnDelete(DeleteBehavior.NoAction);
                 });
 

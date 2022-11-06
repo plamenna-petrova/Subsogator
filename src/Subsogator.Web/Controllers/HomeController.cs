@@ -18,7 +18,7 @@ namespace Subsogator.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction(nameof(Index), "SubtitlesCatalogue");
         }
 
         public IActionResult Privacy()
