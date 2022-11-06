@@ -93,5 +93,14 @@ namespace Subsogator.Web.Controllers
 
             return RedirectToIndexActionInCurrentController();
         }
+
+        public IActionResult DeclinePromotion(string id)
+        {
+            _userService.DeclinePromotion(id);
+
+            _unitOfWork.CommitSaveChanges();
+
+            return RedirectToIndexActionInCurrentController();
+        }
     }
 }

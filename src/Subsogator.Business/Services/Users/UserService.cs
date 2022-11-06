@@ -82,6 +82,34 @@ namespace Subsogator.Business.Services.Users
             }
         }
 
+        public void DeclinePromotion(string userId)
+        {
+            var user = FindUser(userId);
+
+            if (user.PromotionStatus == PromotionStatus.Pending)
+            {
+                user.PromotionStatus = PromotionStatus.Declined;
+                user.PromotionLevel = null;
+            }
+
+            _userRepository.Update(user);
+        }
+
+        public void EnrollForUploaderRole(string userId)
+        {
+            var user = FindUser(userId);
+
+            user.PromotionStatus = PromotionStatus.Pending;
+            user.PromotionLevel = "Uploader";
+
+            _userRepository.Update(user);
+        }
+
+        public ApplicationUser FindUser(string userId)
+        {
+            return _userRepository.GetById(userId);
+        }
+
         private async Task AssignRole(ApplicationUser applicationUser, string oldRole, string newRole)
         {
             if (!string.IsNullOrEmpty(oldRole))
@@ -92,11 +120,6 @@ namespace Subsogator.Business.Services.Users
             await _userManager.AddToRoleAsync(applicationUser, newRole);
 
             _userRepository.Update(applicationUser);
-        }
-
-        public ApplicationUser FindUser(string userId)
-        {
-            return _userRepository.GetById(userId);
         }
     }
 }

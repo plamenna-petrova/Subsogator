@@ -1,18 +1,40 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Data.DataModels.Entities.Identity;
+using Data.DataModels.Enums;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Subsogator.Business.Services.Users;
+using Subsogator.Business.Transactions.Interfaces;
+using Subsogator.Common.GlobalConstants;
 using Subsogator.Web.Models;
 using System.Diagnostics;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Subsogator.Web.Controllers
 {
     [AllowAnonymous]
     public class HomeController : BaseController
     {
+        private readonly IUserService _userService;
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        private readonly UserManager<ApplicationUser> _userManager;
+
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            IUserService userService, 
+            IUnitOfWork unitOfWork, 
+            UserManager<ApplicationUser> userManager,
+            ILogger<HomeController> logger
+        )
         {
+            _userService = userService;
+            _unitOfWork = unitOfWork;
+            _userManager = userManager;
             _logger = logger;
         }
 
@@ -24,6 +46,37 @@ namespace Subsogator.Web.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public async Task<IActionResult> BecomeAnUploader()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser.PromotionStatus == PromotionStatus.Pending)
+            {
+                TempData["BecomeAnUploaderInfoMessage"] = "The current status for uploader promotion is pending!";
+
+                return RedirectToIndexActionInCurrentController();
+            }
+
+            if (currentUser.PromotionStatus == PromotionStatus.Declined)
+            {
+                _userService.EnrollForUploaderRole(currentUser.Id);
+
+                _unitOfWork.CommitSaveChanges();
+
+                TempData["BecomeAnUploaderInfoMessage"] = "The current status for uploader promotion was declined. Sending another request!";
+
+                return RedirectToIndexActionInCurrentController();
+            }
+
+            _userService.EnrollForUploaderRole(currentUser.Id);
+
+            _unitOfWork.CommitSaveChanges();
+
+            TempData["BecomeAnUploaderInfoMessage"] = "Request for promotion sent. Status - pending";
+
+            return RedirectToIndexActionInCurrentController();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

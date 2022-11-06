@@ -12,13 +12,6 @@
     </div>
 </form>
 
-@if(User.IsInRole(NormalUserRole)) 
-{
-    <div>
-        <a asp-action="BecomeAnUploader" class="btn btn-primary">Become An Uploader</a>
-    </div>
-}
-
 <div class="container">
     <div class="row">
         @foreach (var subtitles in Model)

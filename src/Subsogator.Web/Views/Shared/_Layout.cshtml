@@ -65,6 +65,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="SubtitlesCatalogue" asp-action="Index">Catalogue</a>
                         </li>
+                        @if (User.IsInRole(NormalUserRole))
+                        {
+                            <li>
+                                <a asp-controller="Home" asp-action="BecomeAnUploader" class="btn btn-primary">Become An Uploader</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -72,6 +78,13 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["BecomeAnUploaderInfoMessage"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["BecomeAnUploaderInfoMessage"]
+                </div>
+            }
+
             @RenderBody()
         </main>
     </div>

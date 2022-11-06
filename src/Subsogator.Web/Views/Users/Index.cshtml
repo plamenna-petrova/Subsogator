@@ -59,16 +59,13 @@
                                 <li>@role</li>
                             }
                         }
-                        else
-                        {
-                            <li>No Related Film Productions</li>
-                        }
                     </ul>
                 </td>
                 <td>
                     @if ((int)user.PromotionStatus == 1) 
                     {
                         <a asp-controller="Users" asp-action="Promote" asp-route-id="@user.Id" class="btn btn-light">Promote</a>
+                        <a class="btn btn-primary" asp-controller="Users" asp-action="DeclinePromotion" asp-route-id="@user.Id" class="btn btn-light">Decline Promotion</a>
                     }
                 </td>
             </tr>

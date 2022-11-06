@@ -81,15 +81,5 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
 
             return singleSubtitlesDetails;
         }
-
-        public void EnrollForUploaderRole(string userId)
-        {
-            var user = _userRepository.GetById(userId);
-
-            user.PromotionStatus = PromotionStatus.Pending;
-            user.PromotionLevel = "Uploader";
-
-            _userRepository.Update(user);
-        }
     }
 }

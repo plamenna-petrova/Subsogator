@@ -15,5 +15,9 @@ namespace Subsogator.Business.Services.Users
         Task PromoteUser(string userId);
 
         ApplicationUser FindUser(string userId);
+
+        void DeclinePromotion(string userId);
+
+        void EnrollForUploaderRole(string userId);
     }
 }
