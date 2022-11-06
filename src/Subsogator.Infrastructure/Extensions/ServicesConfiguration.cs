@@ -13,6 +13,7 @@ using Subsogator.Business.Services.Languages;
 using Subsogator.Business.Services.Screenwriters;
 using Subsogator.Business.Services.Subtitles;
 using Subsogator.Business.Services.SubtitlesCatalogue;
+using Subsogator.Business.Services.Users;
 using Subsogator.Business.Transactions.Implementation;
 using Subsogator.Business.Transactions.Interfaces;
 
@@ -34,6 +35,7 @@ namespace Subsogator.Infrastructure.Extensions
             serviceCollection.AddTransient<ISubtitlesService, SubtitlesService>();
             serviceCollection.AddTransient<ISubtitlesCatalogueService, SubtitlesCatalogueService>();
             serviceCollection.AddTransient<ICommentService, CommentService>();
+            serviceCollection.AddTransient<IUserService, UserService>();
         }
     }
 }

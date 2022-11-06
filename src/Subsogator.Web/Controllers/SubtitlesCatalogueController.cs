@@ -207,5 +207,16 @@ namespace Subsogator.Web.Controllers
 
             return RedirectToAction(nameof(Details), new { subtitlesCatalogueDetailsViewModel.Id });
         }
+
+        public IActionResult BecomeAnUploader()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            _subtitlesCatalogueService.EnrollForUploaderRole(userId);
+
+            _unitOfWork.CommitSaveChanges();
+
+            return RedirectToIndexActionInCurrentController();
+        }
     }
 }

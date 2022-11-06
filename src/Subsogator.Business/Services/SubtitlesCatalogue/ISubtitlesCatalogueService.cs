@@ -11,5 +11,7 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
         IEnumerable<AllSubtitlesForCatalogueViewModel> GetAllSubtitlesForCatalogue();
 
         SubtitlesCatalogueItemDetailsViewModel GetSubtitlesCatalogueItemDetails(string subtitlesId);
+
+        void EnrollForUploaderRole(string userId);
     }
 }

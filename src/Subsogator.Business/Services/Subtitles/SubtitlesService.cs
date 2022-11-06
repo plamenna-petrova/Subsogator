@@ -104,13 +104,15 @@ namespace Subsogator.Business.Services.Subtitles
 
             string wwwRootPath = _webHostEnvironment.WebRootPath;
 
-            string directoryName = Path.GetDirectoryName(@$"{wwwRootPath}\archives\subtitles\{createSubtitlesBindingModel.FilmProductionId}\");
+            string directoryName = Path
+                .GetDirectoryName(@$"{wwwRootPath}\archives\subtitles\{createSubtitlesBindingModel.FilmProductionId}\");
 
             Directory.CreateDirectory(directoryName);
 
             foreach (var file in createSubtitlesBindingModel.Files)
             {
-                string outputPath = Path.Combine(wwwRootPath + @$"\archives\subtitles\{createSubtitlesBindingModel.FilmProductionId}");
+                string outputPath = Path
+                  .Combine(wwwRootPath + @$"\archives\subtitles\{createSubtitlesBindingModel.FilmProductionId}");
 
                 string path = Path.Combine(outputPath, file.FileName);
 

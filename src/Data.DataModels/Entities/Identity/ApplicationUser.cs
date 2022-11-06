@@ -1,4 +1,5 @@
-﻿using Data.DataModels.Interfaces;
+﻿using Data.DataModels.Enums;
+using Data.DataModels.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,10 @@ namespace Data.DataModels.Entities.Identity
         public DateTime CreatedOn { get; set; }
 
         public DateTime? ModifiedOn { get; set; }
+
+        public PromotionStatus PromotionStatus { get; set; } = PromotionStatus.Neutral;
+
+        public string PromotionLevel { get; set; }
 
         public virtual ICollection<ApplicationUserRole> ApplicationUserRoles { get; set; }
 

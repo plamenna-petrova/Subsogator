@@ -1,4 +1,5 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
+using Data.DataModels.Enums;
 using Subsogator.Web.Models.Subtitles.ViewModels;
 using Subsogator.Web.Models.SubtitlesCatalogue;
 using System;
@@ -12,9 +13,15 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
     {
         private ISubtitlesRepository _subtitlesRepository;
 
-        public SubtitlesCatalogueService(ISubtitlesRepository subtitlesRepository)
+        private IUserRepository _userRepository;
+
+        public SubtitlesCatalogueService(
+            ISubtitlesRepository subtitlesRepository,
+            IUserRepository userRepository
+        )
         {
             _subtitlesRepository = subtitlesRepository;
+            _userRepository = userRepository;
         }
 
         public IEnumerable<AllSubtitlesForCatalogueViewModel> GetAllSubtitlesForCatalogue()
@@ -73,6 +80,16 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
             };
 
             return singleSubtitlesDetails;
+        }
+
+        public void EnrollForUploaderRole(string userId)
+        {
+            var user = _userRepository.GetById(userId);
+
+            user.PromotionStatus = PromotionStatus.Pending;
+            user.PromotionLevel = "Uploader";
+
+            _userRepository.Update(user);
         }
     }
 }
