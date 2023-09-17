@@ -5,25 +5,17 @@ using Microsoft.EntityFrameworkCore;
 using Subsogator.Web.Models.Countries.BindingModels;
 using Subsogator.Web.Models.Countries.ViewModels;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Subsogator.Business.Services.Countries
 {
     public class CountryService: ICountryService
     {
-        private readonly ApplicationDbContext _applicationDbContext;
-
         private readonly ICountryRepository _countryRepository;
 
-        public CountryService(
-            ICountryRepository countryRepository, 
-            ApplicationDbContext applicationDbContext
-        )
+        public CountryService(ICountryRepository countryRepository)
         {
-            _applicationDbContext = applicationDbContext;
             _countryRepository = countryRepository;
         }
 

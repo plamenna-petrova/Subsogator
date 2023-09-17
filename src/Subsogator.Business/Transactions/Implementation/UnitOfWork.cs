@@ -2,9 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Subsogator.Business.Transactions.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Subsogator.Business.Transactions.Implementation
 {

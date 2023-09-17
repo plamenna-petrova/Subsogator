@@ -23,5 +23,9 @@ namespace Subsogator.Business.Services.Users
         void EnrollForUploaderRole(string userId);
 
         void EnrollForEditorRole(string userId);
+
+        DeleteUserViewModel GetUserDeletionDetails(string userId);
+
+        Task<bool> DeleteUser(string userId);
     }
 }

@@ -6,10 +6,17 @@
 
 <h3>@ViewData["Title"]</h3>
 
-@if (TempData["UserSuccessMessage"] != null)
+@if (TempData["UsersSuccessMessage"] != null)
 {
     <div class="alert alert-success" role="alert">
-        @TempData["UserSuccessMessage"]
+        @TempData["UsersSuccessMessage"]
+    </div>
+}
+
+@if (TempData["UsersInvalidOperationErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["UsersInvalidOperationErrorMessage"]
     </div>
 }
 
@@ -71,6 +78,7 @@
                     {
                         <a asp-controller="Users" asp-action="Demote" asp-route-id="@user.Id" class="btn btn-light">Demote</a>
                     }
+                    <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }

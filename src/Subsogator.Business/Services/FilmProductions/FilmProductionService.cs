@@ -1,10 +1,7 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
-using Data.DataModels.Abstraction;
 using Data.DataModels.Entities;
 using Microsoft.EntityFrameworkCore;
-using Subsogator.Web.Models.Actors.ViewModels;
 using Subsogator.Web.Models.Countries.ViewModels;
-using Subsogator.Web.Models.Directors.ViewModels;
 using Subsogator.Web.Models.FilmProductions.BindingModels;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Web.Models.Languages.ViewModels;
@@ -12,10 +9,8 @@ using Subsogator.Web.Models.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
-using Microsoft.AspNetCore.Http;
 
 namespace Subsogator.Business.Services.FilmProductions
 {

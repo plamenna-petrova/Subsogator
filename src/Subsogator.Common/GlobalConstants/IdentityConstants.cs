@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Subsogator.Common.GlobalConstants
+﻿namespace Subsogator.Common.GlobalConstants
 {
     public class IdentityConstants
     {

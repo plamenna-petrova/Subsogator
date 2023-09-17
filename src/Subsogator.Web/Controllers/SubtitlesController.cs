@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Data.DataAccess;
 using Data.DataModels.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Subsogator.Common.GlobalConstants;
@@ -13,14 +9,8 @@ using Subsogator.Business.Services.Subtitles;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Helpers;
 using Subsogator.Web.Models.Subtitles.ViewModels;
-using Subsogator.Web.Models.Actors.ViewModels;
 using Subsogator.Business.Services.FilmProductions;
-using Subsogator.Web.Models.Actors.BindingModels;
 using Subsogator.Web.Models.Subtitles.BindingModels;
-using Subsogator.Web.Models.FilmProductions.BindingModels;
-using Subsogator.Web.Models.FilmProductions.ViewModels;
-using Microsoft.AspNetCore.Identity;
-using Data.DataModels.Entities.Identity;
 using System.Security.Claims;
 
 namespace Subsogator.Web.Controllers
@@ -319,11 +309,11 @@ namespace Subsogator.Web.Controllers
 
             if (!areSubtitlesDeleted)
             {
-                string failedDeletionMessage = NotificationMessages
+                string subtitlesFailedDeletionMessage = NotificationMessages
                     .RecordFailedDeletionErrorMessage;
 
                 TempData["SubtitlesErrorMessage"] =
-                    string.Format(failedDeletionMessage, "subtitles") +
+                    string.Format(subtitlesFailedDeletionMessage, "subtitles") +
                     $"{subtitlesToConfirmDeletion.Name}!"
                     + "Check the subtitles relationship status!";
 

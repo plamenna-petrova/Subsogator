@@ -3,10 +3,8 @@ using Data.DataModels.Entities;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Web.Models.Genres.BindingModels;
 using Subsogator.Web.Models.Genres.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 
 namespace Subsogator.Business.Services.Genres

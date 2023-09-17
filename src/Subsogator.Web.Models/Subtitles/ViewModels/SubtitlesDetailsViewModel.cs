@@ -1,9 +1,7 @@
 ﻿using Subsogator.Common.GlobalConstants;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using System.Text;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
 
 namespace Subsogator.Web.Models.Subtitles.ViewModels

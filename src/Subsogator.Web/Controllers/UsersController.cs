@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Subsogator.Business.Services.Users;
 using Subsogator.Business.Transactions.Interfaces;
+using Subsogator.Common.GlobalConstants;
 using Subsogator.Web.Helpers;
 using Subsogator.Web.Models.Users.ViewModels;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Subsogator.Web.Controllers
@@ -67,7 +68,7 @@ namespace Subsogator.Web.Controllers
 
             allUsersViewModel = sortOrder switch
             {
-                "User_name_descending" => allUsersViewModel
+                "user_name_descending" => allUsersViewModel
                         .OrderByDescending(acvm => acvm.Username),
                 _ => allUsersViewModel.OrderBy(acvm => acvm.Username)
             };
@@ -108,5 +109,58 @@ namespace Subsogator.Web.Controllers
 
             return RedirectToIndexActionInCurrentController();
         }
-    }
+
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Delete(string id)
+        {
+            DeleteUserViewModel deleteUserViewModel = _userService.GetUserDeletionDetails(id);
+
+            if (deleteUserViewModel == null)
+            {
+                return NotFound();
+            }
+
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == deleteUserViewModel.Id)
+            {
+                TempData["UsersInvalidOperationErrorMessage"] = "Error! The admin cannot delete himself!";
+
+                return RedirectToIndexActionInCurrentController();
+            }
+
+            return View(deleteUserViewModel);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Administrator")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var userToConfirmDeletion = _userService.FindUser(id);
+
+            bool isUserDeleted = await _userService.DeleteUser(userToConfirmDeletion.Id);
+
+            if (isUserDeleted)
+            {
+                _unitOfWork.CommitSaveChanges();
+            }
+            else
+            {
+                string userFailedDeletionErrorMessage = NotificationMessages
+                    .RecordFailedDeletionErrorMessage;
+
+                TempData["UsersErrorMessage"] =
+                    string.Format(userFailedDeletionErrorMessage, "user") +
+                    $" {userToConfirmDeletion.UserName}!";
+
+                return RedirectToAction(nameof(Delete));
+            }
+
+            TempData["UsersSuccessMessage"] = string.Format(
+                NotificationMessages.RecordDeletionSuccessMessage,
+                "User", $"{userToConfirmDeletion.UserName}"
+            );
+
+            return RedirectToIndexActionInCurrentController();
+        }
+    } 
 }

@@ -3,7 +3,6 @@ using Data.DataModels.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Data.DataModels.Entities.Identity
 {

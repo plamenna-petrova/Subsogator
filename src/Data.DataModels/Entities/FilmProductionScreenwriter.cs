@@ -1,11 +1,4 @@
-﻿using Data.DataModels.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data.DataModels.Entities
+﻿namespace Data.DataModels.Entities
 {
     public class FilmProductionScreenwriter
     {

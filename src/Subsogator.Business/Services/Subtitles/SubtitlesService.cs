@@ -1,20 +1,11 @@
-﻿using Data.DataAccess.Repositories.Implementation;
-using Data.DataAccess.Repositories.Interfaces;
-using Data.DataModels.Entities;
+﻿using Data.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Subsogator.Web.Models.Actors.BindingModels;
-using Subsogator.Web.Models.Actors.ViewModels;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Web.Models.Subtitles.BindingModels;
 using Subsogator.Web.Models.Subtitles.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Subsogator.Business.Services.Subtitles
 {

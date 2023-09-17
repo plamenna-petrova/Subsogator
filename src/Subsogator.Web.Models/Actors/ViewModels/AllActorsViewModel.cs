@@ -1,11 +1,7 @@
-﻿using Data.DataModels.Entities;
-using Subsogator.Common.GlobalConstants;
+﻿using Subsogator.Common.GlobalConstants;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Subsogator.Web.Models.Actors.ViewModels
 {

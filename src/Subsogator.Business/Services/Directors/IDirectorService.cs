@@ -1,10 +1,7 @@
 ﻿using Data.DataModels.Entities;
-using Subsogator.Web.Models.Directors;
 using Subsogator.Web.Models.Directors.BindingModels;
 using Subsogator.Web.Models.Directors.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Subsogator.Business.Services.Directors
 {

@@ -1,10 +1,7 @@
 ﻿using Data.DataModels.Entities;
-using Microsoft.AspNetCore.Http;
 using Subsogator.Web.Models.FilmProductions.BindingModels;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Subsogator.Business.Services.FilmProductions
 {

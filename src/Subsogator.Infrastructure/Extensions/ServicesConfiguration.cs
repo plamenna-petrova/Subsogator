@@ -1,8 +1,4 @@
-﻿using Data.DataAccess.Repositories;
-using Data.DataAccess.Repositories.Implementation;
-using Data.DataAccess.Repositories.Interfaces;
-using Data.DataModels.Abstraction;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Subsogator.Business.Services.Actors;
 using Subsogator.Business.Services.Comments;
 using Subsogator.Business.Services.Countries;

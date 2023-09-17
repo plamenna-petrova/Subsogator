@@ -1,9 +1,5 @@
 ﻿using Data.DataModels.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.DataAccess.Seeding
 {
@@ -13,9 +9,6 @@ namespace Data.DataAccess.Seeding
 
         private static Subtitles[] SeedSubtitles()
         {
-            //{ relatedFilmProduction.Title}
-            //{ relatedFilmProduction.ReleaseDate.Year}
-
             var subtitlesToSeed = new Subtitles[]
             {
                 new Subtitles()

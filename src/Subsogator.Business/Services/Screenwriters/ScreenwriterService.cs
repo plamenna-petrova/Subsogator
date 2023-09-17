@@ -5,10 +5,8 @@ using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Web.Models.Mapping;
 using Subsogator.Web.Models.Screenwriters.BindingModels;
 using Subsogator.Web.Models.Screenwriters.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Subsogator.Business.Services.Screenwriters
 {
@@ -126,6 +124,7 @@ namespace Subsogator.Business.Services.Screenwriters
                         FilmProductionId = filmProductionId,
                         ScreenwriterId = screenwriterToCreate.Id
                     };
+
                     screenwriterToCreate.FilmProductionScreenwriters.Add(filmProductionActorToAdd);
                 }
             }

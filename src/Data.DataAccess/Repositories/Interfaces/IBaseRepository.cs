@@ -1,9 +1,6 @@
-﻿using Data.DataModels.Abstraction;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Data.DataAccess.Repositories
 {

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Data.DataAccess;
-using Data.DataModels.Entities;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Business.Services.FilmProductions;
 using Subsogator.Business.Services.Countries;
@@ -16,7 +11,6 @@ using Subsogator.Business.Transactions.Interfaces;
 using Microsoft.Extensions.Logging;
 using Subsogator.Common.GlobalConstants;
 using Subsogator.Web.Helpers;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Subsogator.Web.Controllers

@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Data.DataAccess;
 using Data.DataModels.Entities;
 using Subsogator.Business.Services.Actors;
 using Subsogator.Web.Models.Actors.ViewModels;
 using Subsogator.Web.Models.Actors.BindingModels;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Common.GlobalConstants;
-using Subsogator.Business.Services.FilmProductions;
 using Subsogator.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
 

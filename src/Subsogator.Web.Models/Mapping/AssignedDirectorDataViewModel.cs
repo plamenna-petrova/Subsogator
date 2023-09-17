@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Subsogator.Web.Models.Mapping
+﻿namespace Subsogator.Web.Models.Mapping
 {
     public class AssignedDirectorDataViewModel
     {

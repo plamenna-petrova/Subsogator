@@ -1,10 +1,5 @@
-﻿using Subsogator.Common.GlobalConstants;
-using Subsogator.Web.Models.FilmProductions.ViewModels;
-using System;
+﻿using Subsogator.Web.Models.FilmProductions.ViewModels;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Subsogator.Web.Models.Countries.ViewModels
 {

@@ -1,12 +1,6 @@
-﻿using Data.DataModels.Entities;
-using Subsogator.Web.Models.Actors.BindingModels;
-using Subsogator.Web.Models.Actors.ViewModels;
-using Subsogator.Web.Models.Subtitles.BindingModels;
+﻿using Subsogator.Web.Models.Subtitles.BindingModels;
 using Subsogator.Web.Models.Subtitles.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Subsogator.Business.Services.Subtitles
 {

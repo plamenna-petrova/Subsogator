@@ -1,9 +1,7 @@
 ﻿using Data.DataModels.Entities;
 using Subsogator.Web.Models.Actors.BindingModels;
 using Subsogator.Web.Models.Actors.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Subsogator.Business.Services.Actors
 {

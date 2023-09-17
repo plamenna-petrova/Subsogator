@@ -1,9 +1,4 @@
-﻿using Data.DataModels.Entities.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Subsogator.Web.Models.SubtitlesCatalogue
+﻿namespace Subsogator.Web.Models.SubtitlesCatalogue
 {
     public class AllSubtitlesForCatalogueViewModel
     {

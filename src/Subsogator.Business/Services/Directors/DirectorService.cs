@@ -1,15 +1,12 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
 using Microsoft.EntityFrameworkCore;
-using Subsogator.Web.Models.Directors;
 using Subsogator.Web.Models.Directors.BindingModels;
 using Subsogator.Web.Models.Directors.ViewModels;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Web.Models.Mapping;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Subsogator.Business.Services.Directors
 {
@@ -126,6 +123,7 @@ namespace Subsogator.Business.Services.Directors
                         FilmProductionId = filmProductionId,
                         DirectorId = directorToCreate.Id
                     };
+
                     directorToCreate.FilmProductionDirectors.Add(filmProductionActorToAdd);
                 }
             }

@@ -6,10 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Subsogator.Business.Services.Users;
 using Subsogator.Business.Transactions.Interfaces;
-using Subsogator.Common.GlobalConstants;
 using Subsogator.Web.Models;
 using System.Diagnostics;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Subsogator.Web.Controllers

@@ -1,10 +1,6 @@
-﻿using Subsogator.Web.Models.Actors.ViewModels;
-using Subsogator.Web.Models.Directors.ViewModels;
-using Subsogator.Web.Models.Screenwriters.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 namespace Subsogator.Web.Models.FilmProductions.ViewModels
 {

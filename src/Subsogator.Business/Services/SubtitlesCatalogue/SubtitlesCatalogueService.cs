@@ -1,11 +1,7 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
-using Data.DataModels.Enums;
-using Subsogator.Web.Models.Subtitles.ViewModels;
 using Subsogator.Web.Models.SubtitlesCatalogue;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Subsogator.Business.Services.SubtitlesCatalogue
 {
@@ -13,15 +9,9 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
     {
         private ISubtitlesRepository _subtitlesRepository;
 
-        private IUserRepository _userRepository;
-
-        public SubtitlesCatalogueService(
-            ISubtitlesRepository subtitlesRepository,
-            IUserRepository userRepository
-        )
+        public SubtitlesCatalogueService(ISubtitlesRepository subtitlesRepository)
         {
             _subtitlesRepository = subtitlesRepository;
-            _userRepository = userRepository;
         }
 
         public IEnumerable<AllSubtitlesForCatalogueViewModel> GetAllSubtitlesForCatalogue()

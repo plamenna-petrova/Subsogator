@@ -1,12 +1,9 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
 using Data.DataModels.Entities;
 using Subsogator.Web.Models.Comments.BindingModels;
-using Subsogator.Web.Models.Subtitles.BindingModels;
 using Subsogator.Web.Models.SubtitlesCatalogue;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Subsogator.Business.Services.Comments
 {
