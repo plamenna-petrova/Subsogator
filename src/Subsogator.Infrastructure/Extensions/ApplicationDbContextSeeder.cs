@@ -23,9 +23,9 @@ namespace Subsogator.Infrastructure.Extensions
                     {
                         var seeders = new List<ISeeder>
                         {
-                            new EntitiesSeeder(),
                             new RolesSeeder(),
-                            new UsersSeeder()
+                            new UsersSeeder(),
+                            new EntitiesSeeder(),
                         };
 
                         foreach (var seeder in seeders)

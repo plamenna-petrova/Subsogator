@@ -54,7 +54,7 @@ namespace Subsogator.Web.Controllers
 
             if (currentUser.PromotionStatus == PromotionStatus.Pending)
             {
-                TempData["BecomeAnUploaderInfoMessage"] = "The current status for uploader promotion is pending!";
+                TempData["UserPromotionInfoMessage"] = "The current status for uploader promotion is pending!";
 
                 return RedirectToIndexActionInCurrentController();
             }
@@ -62,19 +62,44 @@ namespace Subsogator.Web.Controllers
             if (currentUser.PromotionStatus == PromotionStatus.Declined)
             {
                 _userService.EnrollForUploaderRole(currentUser.Id);
-
                 _unitOfWork.CommitSaveChanges();
 
-                TempData["BecomeAnUploaderInfoMessage"] = "The current status for uploader promotion was declined. Sending another request!";
+                TempData["UserPromotionInfoMessage"] = "The uploader promotion was declined. Sending another request!";
 
                 return RedirectToIndexActionInCurrentController();
             }
 
             _userService.EnrollForUploaderRole(currentUser.Id);
-
             _unitOfWork.CommitSaveChanges();
 
-            TempData["BecomeAnUploaderInfoMessage"] = "Request for promotion sent. Status - pending";
+            TempData["UserPromotionInfoMessage"] = "Request for uploader promotion sent. Status - pending";
+
+            return RedirectToIndexActionInCurrentController();
+        }
+
+        public async Task<IActionResult> BecomeAnEditor()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser.PromotionStatus == PromotionStatus.Pending)
+            {
+                TempData["UserPromotionInfoMessage"] = "The current status for editor promotion is pending!";
+            }
+
+            if (currentUser.PromotionStatus == PromotionStatus.Declined)
+            {
+                _userService.EnrollForEditorRole(currentUser.Id);
+                _unitOfWork.CommitSaveChanges();
+
+                TempData["UserPromotionInfoMessage"] = "The editor promotion was declined. Sending another request!";
+
+                return RedirectToIndexActionInCurrentController();
+            }
+
+            _userService.EnrollForEditorRole(currentUser.Id);
+            _unitOfWork.CommitSaveChanges();
+
+            TempData["UserPromotionInfoMessage"] = "Request for editor promotion sent. Status - pending";
 
             return RedirectToIndexActionInCurrentController();
         }

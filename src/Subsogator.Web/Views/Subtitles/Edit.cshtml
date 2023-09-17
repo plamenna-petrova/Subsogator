@@ -17,17 +17,20 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (ViewBag.FilmProductionByTitle != null)
+            {
+                <div class="form-group">
+                    <label class="control-label">Film Production</label>
+                    <select asp-for="FilmProductionId" class="form-control" asp-items="ViewBag.FilmProductionByTitle"></select>
+                    <span asp-validation-for="FilmProductionId" class="text-danger"></span>
+                </div>
+            }
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Film Production</label>
-                <select asp-for="FilmProductionId" class="form-control" asp-items="ViewBag.FilmProductionByTitle"></select>
-                <span asp-validation-for="FilmProductionId" class="text-danger"></span>
+                <label class="col-form-label">Select Multiple Files</label>
+                <input asp-for="Files" type="file" accept=".srt" class="form-control" multiple />
+                <span asp-validation-for="Files" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">

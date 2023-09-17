@@ -296,6 +296,7 @@ namespace Subsogator.Business.Services.Screenwriters
                                     .FirstOrDefault(fp =>
                                         fp.FilmProductionId == filmProduction.Id
                                     );
+
                         _filmProductionScreenwriterRepository
                             .Delete(filmProductionScreenwriterToRemove);
                     }

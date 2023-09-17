@@ -228,10 +228,6 @@ namespace Subsogator.Web.Controllers
                     allFilmProductionsForSelectList, "Id", "Title"
                 );
             }
-            else
-            {
-                return RedirectToIndexActionInCurrentController();
-            }
 
             return View(editSubtitlesBindingModel);
         }
@@ -263,20 +259,6 @@ namespace Subsogator.Web.Controllers
                     allFilmProductionsForSelectList, "Id", "Title"
                 );
             }
-            else
-            {
-                return RedirectToIndexActionInCurrentController();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                ViewData["FilmProductionByTitle"] = new SelectList(
-                         allFilmProductionsForSelectList,
-                         "Id", "Title", editSubtitlesBindingModel.FilmProductionId
-                     );
-
-                return View(editSubtitlesBindingModel);
-            }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -286,10 +268,13 @@ namespace Subsogator.Web.Controllers
 
             if (!areCurrentSubtitlesSavedToDatabase)
             {
-                ViewData["FilmProductionByTitle"] = new SelectList(
+                if (allFilmProductionsForSelectList.Count > 0)
+                {
+                    ViewData["FilmProductionByTitle"] = new SelectList(
                          allFilmProductionsForSelectList,
                          "Id", "Title", editSubtitlesBindingModel.FilmProductionId
-                     );
+                    );
+                }
 
                 TempData["SubtitlesErrorMessage"] = string.Format(
                     NotificationMessages.RecordFailedUpdateSaveErrorMessage,

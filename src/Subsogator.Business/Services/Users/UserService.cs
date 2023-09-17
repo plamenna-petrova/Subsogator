@@ -57,7 +57,7 @@ namespace Subsogator.Business.Services.Users
 
                     switch (user.PromotionLevel)
                     {
-                        case "Uploader":
+                        case UploaderRoleName:
                             if (userRole == NormalUserRole)
                             {
                                 await AssignRole(user, NormalUserRole, UploaderRoleName);
@@ -66,7 +66,7 @@ namespace Subsogator.Business.Services.Users
                                 user.PromotionLevel = UploaderRoleName;
                             }
                             break;
-                        case "Editor":
+                        case EditorRoleName:
                             if (userRole == UploaderRoleName)
                             {
                                 await AssignRole(user, UploaderRoleName, EditorRoleName);
@@ -82,6 +82,29 @@ namespace Subsogator.Business.Services.Users
             }
         }
 
+        public async Task DemoteUser(string userId)
+        {
+            var user = FindUser(userId);
+            var roles = _userManager.GetRolesAsync(user).Result.ToArray();
+
+            if (roles.Length == 1) 
+            {
+                var userRole = roles[0];
+
+                switch (userRole)
+                {
+                    case EditorRoleName:
+                        await AssignRole(user, EditorRoleName, UploaderRoleName);
+                        DeclinePromotion(user.Id);
+                        break;
+                    case UploaderRoleName:
+                        await AssignRole(user, UploaderRoleName, NormalUserRole);
+                        DeclinePromotion(user.Id);
+                        break;
+                }
+            }
+        }
+
         public void DeclinePromotion(string userId)
         {
             var user = FindUser(userId);
@@ -89,7 +112,11 @@ namespace Subsogator.Business.Services.Users
             if (user.PromotionStatus == PromotionStatus.Pending)
             {
                 user.PromotionStatus = PromotionStatus.Declined;
-                user.PromotionLevel = null;
+
+                if (user.PromotionLevel != UploaderRoleName)
+                {
+                    user.PromotionLevel = null;
+                }
             }
 
             _userRepository.Update(user);
@@ -100,7 +127,17 @@ namespace Subsogator.Business.Services.Users
             var user = FindUser(userId);
 
             user.PromotionStatus = PromotionStatus.Pending;
-            user.PromotionLevel = "Uploader";
+            user.PromotionLevel = UploaderRoleName;
+
+            _userRepository.Update(user);
+        }
+
+        public void EnrollForEditorRole(string userId)
+        {
+            var user = FindUser(userId);
+
+            user.PromotionStatus = PromotionStatus.Pending;
+            user.PromotionLevel = EditorRoleName;
 
             _userRepository.Update(user);
         }

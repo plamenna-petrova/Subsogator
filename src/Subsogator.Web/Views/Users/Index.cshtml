@@ -67,6 +67,10 @@
                         <a asp-controller="Users" asp-action="Promote" asp-route-id="@user.Id" class="btn btn-light">Promote</a>
                         <a class="btn btn-primary" asp-controller="Users" asp-action="DeclinePromotion" asp-route-id="@user.Id" class="btn btn-light">Decline Promotion</a>
                     }
+                    @if (user.Roles[0] == EditorRoleName || user.Roles[0] == UploaderRoleName)
+                    {
+                        <a asp-controller="Users" asp-action="Demote" asp-route-id="@user.Id" class="btn btn-light">Demote</a>
+                    }
                 </td>
             </tr>
         }

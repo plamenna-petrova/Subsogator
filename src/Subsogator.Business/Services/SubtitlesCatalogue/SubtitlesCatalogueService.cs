@@ -44,6 +44,7 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
                             ImageName = s.FilmProduction.ImageName
                         }
                     })
+                    .OrderBy(s => s.Name)
                     .ToList();
 
             return allSubtitlesForCatalogue;

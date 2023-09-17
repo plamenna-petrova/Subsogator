@@ -225,6 +225,7 @@ namespace Subsogator.Business.Services.FilmProductions
                         FilmProductionId = filmProductionToCreate.Id,
                         GenreId = genreId
                     };
+
                     filmProductionToCreate.FilmProductionGenres
                         .Add(filmProductionGenreToAdd);
                 }
@@ -239,6 +240,7 @@ namespace Subsogator.Business.Services.FilmProductions
                         FilmProductionId = filmProductionToCreate.Id,
                         ActorId = actorId
                     };
+
                     filmProductionToCreate.FilmProductionActors
                         .Add(filmProductionActorToAdd);
                 }
@@ -253,6 +255,7 @@ namespace Subsogator.Business.Services.FilmProductions
                         FilmProductionId = filmProductionToCreate.Id,
                         DirectorId = directorId
                     };
+
                     filmProductionToCreate.FilmProductionDirectors
                         .Add(filmProductionDirectorToAdd);
                 }
@@ -267,6 +270,7 @@ namespace Subsogator.Business.Services.FilmProductions
                         FilmProductionId = filmProductionToCreate.Id,
                         ScreenwriterId = screenwriterId
                     };
+
                     filmProductionToCreate.FilmProductionScreenwriters
                         .Add(filmProductionScreenwriterToAdd);
                 }

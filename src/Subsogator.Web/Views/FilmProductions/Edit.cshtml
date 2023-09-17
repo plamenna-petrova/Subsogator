@@ -54,7 +54,7 @@
                 {
                     <img src="~/images/film-productions/@Model.ImageName"
                         class="rounded-square"
-                        asp-append-version="true" style="width: 100%; height: 300px;" />
+                        asp-append-version="true" style="width: 200px; height: 200px;" />
                     <br />
                     <span><a href="~/images/film-productions/@Model.ImageName">@Model.ImageName</a></span>
                 }
@@ -108,7 +108,7 @@
                                                    name="selectedActors"
                                                    value="@actor.ActorId"
                                                    @(Html.Raw(actor.IsAssigned ? "checked=\"checked\"" : "")) />
-                                            @actor.FirstName @actor.LastName
+                                            <span>@actor.FirstName @actor.LastName</span>
                                         @:</td>
                                     }
                                 @:</tr>
@@ -131,10 +131,11 @@
                                         }
                                         @:<td>
                                             <input type="checkbox"
-                                                   name="selectedDirectors"
-                                                   value="@director.DirectorId"
-                                                   @(Html.Raw(director.IsAssigned ? "checked=\"checked\"" : "")) />
-                                            @director.FirstName @director.LastName
+                                               name="selectedDirectors"
+                                               value="@director.DirectorId"
+                                               @(Html.Raw(director.IsAssigned ? "checked=\"checked\"" : "")) 
+                                            />
+                                            <span>@director.FirstName @director.LastName</span>
                                         @:</td>
                                     }
                                 @:</tr>
@@ -159,7 +160,7 @@
                                                        name="selectedScreenwriters"
                                                        value="@screenwriter.ScreenwriterId"
                                                        @(Html.Raw(screenwriter.IsAssigned ? "checked=\"checked\"" : "")) />
-                                                @screenwriter.FirstName @screenwriter.LastName
+                                                <span>@screenwriter.FirstName @screenwriter.LastName</span>
                                             @:</td>
                                         }
                                     @:</tr>

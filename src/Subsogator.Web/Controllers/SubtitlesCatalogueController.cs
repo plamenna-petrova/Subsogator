@@ -145,32 +145,35 @@ namespace Subsogator.Web.Controllers
                 TempData["SubtitlesCatalogueErrorMessage"] =
                    "An archive for this subtitles cannot be downloaded due to lack of uploaded files";
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Details), new { subtitles.Id });
             }
-
-            var subtitlesFilePaths = Directory.GetFiles(subtitlesDirectoryOutputPath);
-
-            var zipFileMemoryStream = new MemoryStream();
-
-            using (ZipArchive zipArchive = new ZipArchive(
-                    zipFileMemoryStream, ZipArchiveMode.Update, leaveOpen: true
-            ))
+            else
             {
-                foreach (var subtitlesFilePath in subtitlesFilePaths)
+                var subtitlesFilePaths = Directory.GetFiles(subtitlesDirectoryOutputPath);
+
+                var zipFileMemoryStream = new MemoryStream();
+
+                using (ZipArchive zipArchive = new ZipArchive(
+                        zipFileMemoryStream, ZipArchiveMode.Update, leaveOpen: true
+                ))
                 {
-                    var subtitlesFileName = Path.GetFileName(subtitlesFilePath);
-                    var entry = zipArchive.CreateEntry(subtitlesFileName);
-                    using (var entryStream = entry.Open())
-                    using (var fileStream = System.IO.File.OpenRead(subtitlesFilePath))
+                    foreach (var subtitlesFilePath in subtitlesFilePaths)
                     {
-                        await fileStream.CopyToAsync(entryStream);
+                        var subtitlesFileName = Path.GetFileName(subtitlesFilePath);
+                        var entry = zipArchive.CreateEntry(subtitlesFileName);
+
+                        using (var entryStream = entry.Open())
+                        using (var fileStream = System.IO.File.OpenRead(subtitlesFilePath))
+                        {
+                            await fileStream.CopyToAsync(entryStream);
+                        }
                     }
                 }
+
+                zipFileMemoryStream.Seek(0, SeekOrigin.Begin);
+
+                return File(zipFileMemoryStream, "application/zip", $"{subtitles.Name}.zip");
             }
-
-            zipFileMemoryStream.Seek(0, SeekOrigin.Begin);
-
-            return File(zipFileMemoryStream, "application/zip", $"{subtitles.Name}.zip");
         }
 
         public IActionResult WriteComment(

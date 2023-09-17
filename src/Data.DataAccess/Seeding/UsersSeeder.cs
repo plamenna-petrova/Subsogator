@@ -72,7 +72,7 @@ namespace Data.DataAccess.Seeding
                     if (i <= Array.IndexOf(usernames, IdentityConstants.UploaderUsername))
                     {
                         if (!await SeedUserAsync(
-                            databaseLoadedUsers, userManager, usernames[i], 
+                            userManager, usernames[i], 
                             emails[i], passwords[i], roles[i]
                         ))
                         {
@@ -86,7 +86,7 @@ namespace Data.DataAccess.Seeding
                     else
                     {
                         if (!await SeedUserAsync(
-                            databaseLoadedUsers, userManager, usernames[i], 
+                            userManager, usernames[i], 
                             emails[i], passwords[i], roles[roles.Length - 1]
                         ))
                         {
@@ -109,7 +109,7 @@ namespace Data.DataAccess.Seeding
         }
 
         public static async Task<bool> SeedUserAsync(
-            List<ApplicationUser> applicationUsers, UserManager<ApplicationUser> userManager,
+            UserManager<ApplicationUser> userManager,
             string username, string email, string password, string role
         )
         {

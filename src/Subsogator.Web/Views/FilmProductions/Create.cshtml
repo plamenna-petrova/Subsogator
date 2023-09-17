@@ -94,7 +94,7 @@
                                                    name="selectedActors"
                                                    value="@actor.ActorId"
                                                    @(Html.Raw(actor.IsAssigned ? "checked=\"checked\"" : "")) />
-                                            @actor.FirstName @actor.LastName
+                                            <span>@actor.FirstName @actor.LastName</span>
                                         @:</td>
                                     }
                                 @:</tr>
@@ -120,7 +120,7 @@
                                                    name="selectedDirectors"
                                                    value="@director.DirectorId"
                                                    @(Html.Raw(director.IsAssigned ? "checked=\"checked\"" : "")) />
-                                            @director.FirstName @director.LastName
+                                            <span>@director.FirstName @director.LastName</span>
                                         @:</td>
                                     }
                                 @:</tr>
@@ -145,7 +145,7 @@
                                                        name="selectedScreenwriters"
                                                        value="@screenwriter.ScreenwriterId"
                                                        @(Html.Raw(screenwriter.IsAssigned ? "checked=\"checked\"" : "")) />
-                                                @screenwriter.FirstName @screenwriter.LastName
+                                                <span>@screenwriter.FirstName @screenwriter.LastName</span>
                                             @:</td>
                                         }
                                     @:</tr>

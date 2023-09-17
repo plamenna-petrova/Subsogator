@@ -71,6 +71,12 @@
                                 <a asp-controller="Home" asp-action="BecomeAnUploader" class="btn btn-primary">Become An Uploader</a>
                             </li>
                         }
+                        @if (User.IsInRole(UploaderRoleName))
+                        {
+                            <li>
+                                <a asp-controller="Home" asp-action="BecomeAnEditor" class="btn btn-primary">Become An Editor</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -78,10 +84,10 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            @if (TempData["BecomeAnUploaderInfoMessage"] != null)
+            @if (TempData["UserPromotionInfoMessage"] != null)
             {
                 <div class="alert alert-success" role="alert">
-                    @TempData["BecomeAnUploaderInfoMessage"]
+                    @TempData["UserPromotionInfoMessage"]
                 </div>
             }
 

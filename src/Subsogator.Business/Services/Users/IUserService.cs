@@ -18,6 +18,10 @@ namespace Subsogator.Business.Services.Users
 
         void DeclinePromotion(string userId);
 
+        Task DemoteUser(string userId);
+
         void EnrollForUploaderRole(string userId);
+
+        void EnrollForEditorRole(string userId);
     }
 }

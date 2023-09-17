@@ -88,7 +88,6 @@ namespace Subsogator.Web.Controllers
         public async Task<IActionResult> Promote(string id)
         {
             await _userService.PromoteUser(id);
-
             _unitOfWork.CommitSaveChanges();
 
             return RedirectToIndexActionInCurrentController();
@@ -97,7 +96,14 @@ namespace Subsogator.Web.Controllers
         public IActionResult DeclinePromotion(string id)
         {
             _userService.DeclinePromotion(id);
+            _unitOfWork.CommitSaveChanges();
 
+            return RedirectToIndexActionInCurrentController();
+        }
+
+        public async Task<IActionResult> Demote(string id)
+        {
+            await _userService.DemoteUser(id);
             _unitOfWork.CommitSaveChanges();
 
             return RedirectToIndexActionInCurrentController();

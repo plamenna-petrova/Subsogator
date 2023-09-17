@@ -170,20 +170,56 @@ namespace Subsogator.Business.Services.Subtitles
 
             var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking().ToList();
             var relatedFilmProduction = allFilmProductions
-                  .Find(f => f.Id == editSubtitlesBindingModel.FilmProductionId);
+                  .Find(f => f.Id == editSubtitlesBindingModel.FilmProductionId) ?? subtitlesToUpdate.FilmProduction;
 
-            subtitlesToUpdate.FilmProductionId = editSubtitlesBindingModel.FilmProductionId;
+            subtitlesToUpdate.FilmProductionId = relatedFilmProduction.Id;
             subtitlesToUpdate.Name = $"{relatedFilmProduction.Title} {relatedFilmProduction.ReleaseDate.Year}";
             subtitlesToUpdate.ApplicationUserId = userId;
 
             var filteredSubtitles = _subtitlesRepository
-            .GetAllAsNoTracking()
+                .GetAllAsNoTracking()
                     .Where(a => !a.Id.Equals(subtitlesToUpdate.Id))
-                        .AsQueryable();
+                      .AsQueryable();
 
             if (_subtitlesRepository.Exists(filteredSubtitles, subtitlesToUpdate))
             {
                 return false;
+            }
+
+            if (editSubtitlesBindingModel.Files != null && editSubtitlesBindingModel.Files.Count() > 0)
+            {
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+                string subtitlesForFilmProductionDirectoryName = Path
+                    .GetDirectoryName(@$"{wwwRootPath}\archives\subtitles\{relatedFilmProduction.Id}\");
+
+                if (!Directory.Exists(subtitlesForFilmProductionDirectoryName))
+                {
+                    Directory.CreateDirectory(subtitlesForFilmProductionDirectoryName);
+                }
+                else
+                {
+                    DirectoryInfo subtitlesForFilmProductionDirectoryInfo = 
+                        new DirectoryInfo(subtitlesForFilmProductionDirectoryName);
+
+                    foreach (FileInfo subtitlesFileInfo in subtitlesForFilmProductionDirectoryInfo.GetFiles())
+                    {
+                        subtitlesFileInfo.Delete();
+                    }
+                }
+
+                foreach (var file in editSubtitlesBindingModel.Files)
+                {
+                    string outputPath = Path
+                      .Combine(wwwRootPath + @$"\archives\subtitles\{relatedFilmProduction.Id}");
+
+                    string path = Path.Combine(outputPath, file.FileName);
+
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                }
             }
 
             _subtitlesRepository.Update(subtitlesToUpdate);

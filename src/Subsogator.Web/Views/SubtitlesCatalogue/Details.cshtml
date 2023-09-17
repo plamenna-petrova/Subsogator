@@ -68,7 +68,7 @@
         </dl>
         <h3>@Html.DisplayFor(model => model.Name)</h3>
         <p class="text-center">
-            <a class="btn btn-primary" asp-controller="SubtitlesCatalogue" asp-action="DownloadSubtitles" asp-route-id="@Model.Id" download>Download</a>
+            <a class="btn btn-primary" asp-controller="SubtitlesCatalogue" asp-action="DownloadSubtitles" asp-route-id="@Model.Id">Download</a>
         </p>
     </div>
 </div>
@@ -79,7 +79,7 @@
             @if (comment.Content != null)
             {
                 <span class="badge badge-primary">By @comment.Username</span>
-                <span class="bg-secondary">By @comment.CreatedOn</span>
+                <span class="bg-secondary">@comment.CreatedOn</span>
                 <div class="alert alert-info" role="alert">
                     @comment.Content
                 </div>
