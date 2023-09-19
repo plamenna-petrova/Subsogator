@@ -12,7 +12,6 @@ namespace Subsogator.Business.Services.Screenwriters
 {
     public class ScreenwriterService: IScreenwriterService
     {
-
         private readonly IScreenwriterRepository _screenwriterRepository;
 
         private readonly IFilmProductionRepository _filmProductionRepository;
@@ -34,17 +33,17 @@ namespace Subsogator.Business.Services.Screenwriters
         {
             List<AllScreenwritersViewModel> allScreenwriters = _screenwriterRepository
                  .GetAllAsNoTracking()
-                    .OrderBy(d => d.FirstName)
-                        .Select(d => new AllScreenwritersViewModel
+                    .OrderBy(s => s.FirstName)
+                        .Select(s => new AllScreenwritersViewModel
                         {
-                            Id = d.Id,
-                            FirstName = d.FirstName,
-                            LastName = d.LastName,
-                            RelatedFilmProductions = d.FilmProductionScreenwriters
-                                .Where(fd => fd.ScreenwriterId == d.Id)
-                                .Select(fd => new FilmProductionConciseInformationViewModel
+                            Id = s.Id,
+                            FirstName = s.FirstName,
+                            LastName = s.LastName,
+                            RelatedFilmProductions = s.FilmProductionScreenwriters
+                                .Where(fps => fps.ScreenwriterId == s.Id)
+                                .Select(fps => new FilmProductionConciseInformationViewModel
                                 {
-                                    Title = fd.FilmProduction.Title
+                                    Title = fps.FilmProduction.Title
                                 })
                         })
                         .ToList();
@@ -55,7 +54,7 @@ namespace Subsogator.Business.Services.Screenwriters
         public ScreenwriterDetailsViewModel GetScreenwriterDetails(string screenwriterId)
         {
             var singleScreenwriter = _screenwriterRepository
-                    .GetAllByCondition(d => d.Id == screenwriterId)
+                    .GetAllByCondition(s => s.Id == screenwriterId)
                          .FirstOrDefault();
 
             if (singleScreenwriter is null)
@@ -71,12 +70,12 @@ namespace Subsogator.Business.Services.Screenwriters
                 CreatedOn = singleScreenwriter.CreatedOn,
                 ModifiedOn = singleScreenwriter.ModifiedOn,
                 RelatedFilmProductions = singleScreenwriter.FilmProductionScreenwriters
-                    .Where(fd => fd.ScreenwriterId == singleScreenwriter.Id)
-                    .Select(fd => new FilmProductionDetailedInformationViewModel
+                    .Where(fps => fps.ScreenwriterId == singleScreenwriter.Id)
+                    .Select(fps => new FilmProductionDetailedInformationViewModel
                     {
-                        Title = fd.FilmProduction.Title,
-                        Duration = fd.FilmProduction.Duration,
-                        ReleaseDate = fd.FilmProduction.ReleaseDate
+                        Title = fps.FilmProduction.Title,
+                        Duration = fps.FilmProduction.Duration,
+                        ReleaseDate = fps.FilmProduction.ReleaseDate
                     })
             };
 
@@ -137,9 +136,9 @@ namespace Subsogator.Business.Services.Screenwriters
         public EditScreenwriterBindingModel GetScreenwriterEditingDetails(string screenwriterId)
         {
             var screenwriterToEdit = _screenwriterRepository
-                    .GetAllByCondition(d => d.Id == screenwriterId)
-                        .Include(d => d.FilmProductionScreenwriters)
-                            .ThenInclude(fa => fa.FilmProduction)
+                    .GetAllByCondition(s => s.Id == screenwriterId)
+                        .Include(s => s.FilmProductionScreenwriters)
+                            .ThenInclude(fps => fps.FilmProduction)
                                 .FirstOrDefault();
 
             if (screenwriterToEdit is null)
@@ -164,9 +163,9 @@ namespace Subsogator.Business.Services.Screenwriters
         )
         {
             var screenwriterToUpdate = _screenwriterRepository
-                    .GetAllByCondition(a => a.Id == editScreenwriterBindingModel.Id)
-                        .Include(a => a.FilmProductionScreenwriters)
-                            .ThenInclude(fa => fa.FilmProduction)
+                    .GetAllByCondition(s => s.Id == editScreenwriterBindingModel.Id)
+                        .Include(s => s.FilmProductionScreenwriters)
+                            .ThenInclude(fps => fps.FilmProduction)
                                 .FirstOrDefault();
 
             screenwriterToUpdate.FirstName = editScreenwriterBindingModel.FirstName;
@@ -174,7 +173,7 @@ namespace Subsogator.Business.Services.Screenwriters
 
             var filteredActors = _screenwriterRepository
                 .GetAllAsNoTracking()
-                    .Where(a => !a.Id.Equals(screenwriterToUpdate.Id))
+                    .Where(s => !s.Id.Equals(screenwriterToUpdate.Id))
                         .AsQueryable();
 
             if (_screenwriterRepository.Exists(filteredActors, screenwriterToUpdate))
@@ -213,7 +212,7 @@ namespace Subsogator.Business.Services.Screenwriters
         public void DeleteScreenwriter(Screenwriter screenwriter)
         {
             var filmProductionScreenwritersByScreenwriter = _filmProductionScreenwriterRepository
-                    .GetAllByCondition(fa => fa.ScreenwriterId == screenwriter.Id)
+                    .GetAllByCondition(fps => fps.ScreenwriterId == screenwriter.Id)
                         .ToArray();
 
             _filmProductionScreenwriterRepository.DeleteRange(filmProductionScreenwritersByScreenwriter);
@@ -235,15 +234,14 @@ namespace Subsogator.Business.Services.Screenwriters
                     .ToList();
 
             var filmProductionsOfAScreenwriter = new HashSet<string>(screenwriter.FilmProductionScreenwriters
-                .Select(fa => fa.FilmProduction.Id));
+                .Select(fs => fs.FilmProduction.Id));
 
             var assignedFilmProductionDataViewModel =
                     new List<AssignedFilmProductionDataViewModel>();
 
             foreach (var filmProduction in allFilmProductions)
             {
-                assignedFilmProductionDataViewModel
-                .Add(new AssignedFilmProductionDataViewModel
+                assignedFilmProductionDataViewModel.Add(new AssignedFilmProductionDataViewModel
                 {
                     FilmProductionId = filmProduction.Id,
                     Title = filmProduction.Title,
@@ -268,7 +266,7 @@ namespace Subsogator.Business.Services.Screenwriters
             var selectedFilmProductionsIds = new HashSet<string>(selectedFilmProductions);
 
             var filmProductionsOfAScreenwriter = new HashSet<string>(
-                    screenwriter.FilmProductionScreenwriters.Select(fa => fa.FilmProduction.Id)
+                    screenwriter.FilmProductionScreenwriters.Select(fps => fps.FilmProduction.Id)
                 );
 
             var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking();
@@ -292,8 +290,8 @@ namespace Subsogator.Business.Services.Screenwriters
                     {
                         FilmProductionScreenwriter filmProductionScreenwriterToRemove =
                             screenwriter.FilmProductionScreenwriters
-                                    .FirstOrDefault(fp =>
-                                        fp.FilmProductionId == filmProduction.Id
+                                    .FirstOrDefault(fps =>
+                                        fps.FilmProductionId == filmProduction.Id
                                     );
 
                         _filmProductionScreenwriterRepository

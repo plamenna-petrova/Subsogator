@@ -476,8 +476,7 @@ namespace Subsogator.Business.Services.FilmProductions
 
             foreach (var genre in allGenres)
             {
-                assignedGenreDataViewModel
-                .Add(new AssignedGenreDataViewModel
+                assignedGenreDataViewModel.Add(new AssignedGenreDataViewModel
                 {
                     GenreId = genre.Id,
                     Name = genre.Name,
@@ -495,8 +494,7 @@ namespace Subsogator.Business.Services.FilmProductions
 
             foreach (var actor in allActors)
             {
-                assignedActorDataViewModel
-                .Add(new AssignedActorDataViewModel
+                assignedActorDataViewModel.Add(new AssignedActorDataViewModel
                 {
                     ActorId = actor.Id,
                     FirstName = actor.FirstName,
@@ -515,8 +513,7 @@ namespace Subsogator.Business.Services.FilmProductions
 
             foreach (var director in allDirectors)
             {
-                assignedDirectorDataViewModel
-                .Add(new AssignedDirectorDataViewModel
+                assignedDirectorDataViewModel.Add(new AssignedDirectorDataViewModel
                 {
                     DirectorId = director.Id,
                     FirstName = director.FirstName,
@@ -535,8 +532,7 @@ namespace Subsogator.Business.Services.FilmProductions
 
             foreach (var screenwriter in allScreenwriters)
             {
-                assignedScreenwriterDataViewModel
-                .Add(new AssignedScreenwriterDataViewModel
+                assignedScreenwriterDataViewModel.Add(new AssignedScreenwriterDataViewModel
                 {
                     ScreenwriterId = screenwriter.Id,
                     FirstName = screenwriter.FirstName,
@@ -638,6 +634,7 @@ namespace Subsogator.Business.Services.FilmProductions
                                     .FirstOrDefault(fp =>
                                         fp.ActorId == actor.Id
                                     );
+
                         _filmProductionActorRepository.Delete(filmProductionActorToRemove);
                     }
                 }
@@ -679,6 +676,7 @@ namespace Subsogator.Business.Services.FilmProductions
                                     .FirstOrDefault(fp =>
                                         fp.DirectorId == director.Id
                                     );
+
                         _filmProductonDirectorRepository.Delete(filmProductionDirectorToRemove);
                     }
                 }
@@ -720,6 +718,7 @@ namespace Subsogator.Business.Services.FilmProductions
                                     .FirstOrDefault(fp =>
                                         fp.ScreenwriterId == screenwriter.Id
                                     );
+
                         _filmProductionScreenwriterRepository
                                 .Delete(filmProductionScreenwriterToRemove);
                     }

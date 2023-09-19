@@ -41,13 +41,13 @@ namespace Subsogator.Business.Services.Users
         {
             var allUsers = _userRepository
                   .GetAllAsNoTracking()
-                    .Select(u => new AllUsersViewModel
+                    .Select(au => new AllUsersViewModel
                     {
-                        Id = u.Id,
-                        Username = u.UserName,
-                        PromotionStatus = u.PromotionStatus,
-                        PromotionLevel = u.PromotionLevel,
-                        Roles = u.ApplicationUserRoles.Select(aur => aur.Role.Name).ToList()
+                        Id = au.Id,
+                        Username = au.UserName,
+                        PromotionStatus = au.PromotionStatus,
+                        PromotionLevel = au.PromotionLevel,
+                        Roles = au.ApplicationUserRoles.Select(aur => aur.Role.Name).ToList()
                     });
 
             return allUsers;

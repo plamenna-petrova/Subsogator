@@ -29,9 +29,9 @@ namespace Subsogator.Business.Services.Genres
                             Name = g.Name,
                             RelatedFilmProductions = g.FilmProductionGenres
                                 .Where(fg => fg.GenreId == g.Id)
-                                .Select(fg => new FilmProductionConciseInformationViewModel
+                                .Select(fpg => new FilmProductionConciseInformationViewModel
                                 {
-                                    Title = fg.FilmProduction.Title
+                                    Title = fpg.FilmProduction.Title
                                 })
                         })
                         .ToList();
@@ -44,7 +44,7 @@ namespace Subsogator.Business.Services.Genres
             var singleGenre = _genreRepository
                    .GetAllByCondition(g => g.Id == genreId)
                       .Include(g => g.FilmProductionGenres)
-                        .ThenInclude(fg => fg.FilmProduction)
+                        .ThenInclude(fpg => fpg.FilmProduction)
                             .FirstOrDefault();
 
             if (singleGenre is null)
@@ -59,12 +59,12 @@ namespace Subsogator.Business.Services.Genres
                 CreatedOn = singleGenre.CreatedOn,
                 ModifiedOn = singleGenre.ModifiedOn,
                 RelatedFilmProductions = singleGenre.FilmProductionGenres
-                    .Where(fg => fg.GenreId == singleGenre.Id)
-                    .Select(fg => new FilmProductionDetailedInformationViewModel
+                    .Where(fpg => fpg.GenreId == singleGenre.Id)
+                    .Select(fpg => new FilmProductionDetailedInformationViewModel
                     {
-                        Title = fg.FilmProduction.Title,
-                        Duration = fg.FilmProduction.Duration,
-                        ReleaseDate = fg.FilmProduction.ReleaseDate
+                        Title = fpg.FilmProduction.Title,
+                        Duration = fpg.FilmProduction.Duration,
+                        ReleaseDate = fpg.FilmProduction.ReleaseDate
                     })
             };
 

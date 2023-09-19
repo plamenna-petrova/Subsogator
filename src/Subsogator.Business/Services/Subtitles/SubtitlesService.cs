@@ -86,7 +86,7 @@ namespace Subsogator.Business.Services.Subtitles
                     .ToList();
 
             var relatedFilmProduction = allFilmProductions
-                .Find(f => f.Id == createSubtitlesBindingModel.FilmProductionId);
+                .Find(fp => fp.Id == createSubtitlesBindingModel.FilmProductionId);
 
             if (createSubtitlesBindingModel.Files is null || createSubtitlesBindingModel.Files.Count() == 0)
             {
@@ -135,7 +135,7 @@ namespace Subsogator.Business.Services.Subtitles
         public EditSubtitlesBindingModel GetSubtitlesEditingDetails(string actorId)
         {
             var subtitlesToEdit = _subtitlesRepository
-                    .GetAllByCondition(a => a.Id == actorId)
+                    .GetAllByCondition(s => s.Id == actorId)
                                 .FirstOrDefault();
 
             if (subtitlesToEdit is null)
@@ -156,12 +156,12 @@ namespace Subsogator.Business.Services.Subtitles
         public bool EditSubtitles(EditSubtitlesBindingModel editSubtitlesBindingModel, string userId)
         {
             var subtitlesToUpdate = _subtitlesRepository
-                    .GetAllByCondition(a => a.Id == editSubtitlesBindingModel.Id)
+                    .GetAllByCondition(s => s.Id == editSubtitlesBindingModel.Id)
                           .FirstOrDefault();
 
             var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking().ToList();
             var relatedFilmProduction = allFilmProductions
-                  .Find(f => f.Id == editSubtitlesBindingModel.FilmProductionId) ?? subtitlesToUpdate.FilmProduction;
+                  .Find(fp => fp.Id == editSubtitlesBindingModel.FilmProductionId) ?? subtitlesToUpdate.FilmProduction;
 
             subtitlesToUpdate.FilmProductionId = relatedFilmProduction.Id;
             subtitlesToUpdate.Name = $"{relatedFilmProduction.Title} {relatedFilmProduction.ReleaseDate.Year}";
@@ -169,7 +169,7 @@ namespace Subsogator.Business.Services.Subtitles
 
             var filteredSubtitles = _subtitlesRepository
                 .GetAllAsNoTracking()
-                    .Where(a => !a.Id.Equals(subtitlesToUpdate.Id))
+                    .Where(s => !s.Id.Equals(subtitlesToUpdate.Id))
                       .AsQueryable();
 
             if (_subtitlesRepository.Exists(filteredSubtitles, subtitlesToUpdate))

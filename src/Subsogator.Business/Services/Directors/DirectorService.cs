@@ -40,10 +40,10 @@ namespace Subsogator.Business.Services.Directors
                             FirstName = d.FirstName,
                             LastName = d.LastName,
                             RelatedFilmProductions = d.FilmProductionDirectors
-                                .Where(fd => fd.DirectorId == d.Id)
-                                .Select(fd => new FilmProductionConciseInformationViewModel
+                                .Where(fpd => fpd.DirectorId == d.Id)
+                                .Select(fpd => new FilmProductionConciseInformationViewModel
                                 {
-                                    Title = fd.FilmProduction.Title
+                                    Title = fpd.FilmProduction.Title
                                 })
                         })
                         .ToList();
@@ -70,12 +70,12 @@ namespace Subsogator.Business.Services.Directors
                 CreatedOn = singleDirector.CreatedOn,
                 ModifiedOn = singleDirector.ModifiedOn,
                 RelatedFilmProductions = singleDirector.FilmProductionDirectors
-                    .Where(fd => fd.DirectorId == singleDirector.Id)
-                    .Select(fd => new FilmProductionDetailedInformationViewModel
+                    .Where(fpd => fpd.DirectorId == singleDirector.Id)
+                    .Select(fpd => new FilmProductionDetailedInformationViewModel
                     {
-                        Title = fd.FilmProduction.Title,
-                        Duration = fd.FilmProduction.Duration,
-                        ReleaseDate = fd.FilmProduction.ReleaseDate
+                        Title = fpd.FilmProduction.Title,
+                        Duration = fpd.FilmProduction.Duration,
+                        ReleaseDate = fpd.FilmProduction.ReleaseDate
                     })
             };
 
@@ -138,7 +138,7 @@ namespace Subsogator.Business.Services.Directors
             var directorToEdit = _directorRepository
                     .GetAllByCondition(d=> d.Id == directorId)
                         .Include(d => d.FilmProductionDirectors)
-                            .ThenInclude(fa => fa.FilmProduction)
+                            .ThenInclude(fpd => fpd.FilmProduction)
                                 .FirstOrDefault();
 
             if (directorToEdit is null)
@@ -163,9 +163,9 @@ namespace Subsogator.Business.Services.Directors
         )
         {
             var directorToUpdate = _directorRepository
-                    .GetAllByCondition(a => a.Id == editDirectorBindingModel.Id)
-                        .Include(a => a.FilmProductionDirectors)
-                            .ThenInclude(fa => fa.FilmProduction)
+                    .GetAllByCondition(d => d.Id == editDirectorBindingModel.Id)
+                        .Include(d => d.FilmProductionDirectors)
+                            .ThenInclude(fpd => fpd.FilmProduction)
                                 .FirstOrDefault();
 
             directorToUpdate.FirstName = editDirectorBindingModel.FirstName;
@@ -173,7 +173,7 @@ namespace Subsogator.Business.Services.Directors
 
             var filteredActors = _directorRepository
                 .GetAllAsNoTracking()
-                    .Where(a => !a.Id.Equals(directorToUpdate.Id))
+                    .Where(d => !d.Id.Equals(directorToUpdate.Id))
                         .AsQueryable();
 
             if (_directorRepository.Exists(filteredActors, directorToUpdate))
@@ -209,7 +209,7 @@ namespace Subsogator.Business.Services.Directors
         public void DeleteDirector(Director director)
         {
             var filmProductionDirectorsByDirector = _filmProductionDirectorRepository
-                    .GetAllByCondition(fa => fa.DirectorId == director.Id)
+                    .GetAllByCondition(fpd => fpd.DirectorId == director.Id)
                         .ToArray();
 
             _filmProductionDirectorRepository.DeleteRange(filmProductionDirectorsByDirector);
@@ -231,15 +231,14 @@ namespace Subsogator.Business.Services.Directors
                     .ToList();
 
             var filmProductionsOfADirector = new HashSet<string>(director.FilmProductionDirectors
-                .Select(fa => fa.FilmProduction.Id));
+                .Select(fpd => fpd.FilmProduction.Id));
 
             var assignedFilmProductionDataViewModel =
                     new List<AssignedFilmProductionDataViewModel>();
 
             foreach (var filmProduction in allFilmProductions)
             {
-                assignedFilmProductionDataViewModel
-                .Add(new AssignedFilmProductionDataViewModel
+                assignedFilmProductionDataViewModel.Add(new AssignedFilmProductionDataViewModel
                 {
                     FilmProductionId = filmProduction.Id,
                     Title = filmProduction.Title,
@@ -264,7 +263,7 @@ namespace Subsogator.Business.Services.Directors
             var selectedFilmProductionsIds = new HashSet<string>(selectedFilmProductions);
 
             var filmProductionsOfADirector = new HashSet<string>(
-                    director.FilmProductionDirectors.Select(fa => fa.FilmProduction.Id)
+                    director.FilmProductionDirectors.Select(fpd => fpd.FilmProduction.Id)
                 );
 
             var allFilmProductions = _filmProductionRepository.GetAllAsNoTracking();
@@ -288,9 +287,10 @@ namespace Subsogator.Business.Services.Directors
                     {
                         FilmProductionDirector filmProductionDirectorToRemove =
                             director.FilmProductionDirectors
-                                    .FirstOrDefault(fp =>
-                                        fp.FilmProductionId == filmProduction.Id
+                                    .FirstOrDefault(fpd =>
+                                        fpd.FilmProductionId == filmProduction.Id
                                     );
+
                         _filmProductionDirectorRepository.Delete(filmProductionDirectorToRemove);
                     }
                 }
