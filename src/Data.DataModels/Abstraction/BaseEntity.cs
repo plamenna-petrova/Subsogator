@@ -1,4 +1,5 @@
-﻿using Data.DataModels.Interfaces;
+﻿using Data.DataModels.Entities.Identity;
+using Data.DataModels.Interfaces;
 using System;
 
 namespace Data.DataModels.Abstraction

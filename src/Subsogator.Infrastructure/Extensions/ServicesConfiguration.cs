@@ -3,6 +3,7 @@ using Subsogator.Business.Services.Actors;
 using Subsogator.Business.Services.Comments;
 using Subsogator.Business.Services.Countries;
 using Subsogator.Business.Services.Directors;
+using Subsogator.Business.Services.Favourites;
 using Subsogator.Business.Services.FilmProductions;
 using Subsogator.Business.Services.Genres;
 using Subsogator.Business.Services.Languages;
@@ -31,6 +32,7 @@ namespace Subsogator.Infrastructure.Extensions
             serviceCollection.AddTransient<ISubtitlesService, SubtitlesService>();
             serviceCollection.AddTransient<ISubtitlesCatalogueService, SubtitlesCatalogueService>();
             serviceCollection.AddTransient<ICommentService, CommentService>();
+            serviceCollection.AddTransient<IFavouritesService, FavouritesService>();
             serviceCollection.AddTransient<IUserService, UserService>();
         }
     }

@@ -16,9 +16,16 @@ namespace Subsogator.Web.Models.Countries.ViewModels
         [DisplayName(DisplayConstants.CreatedOnDisplayName)]
         public DateTime CreatedOn { get; set; }
 
+        [DisplayName(DisplayConstants.CreatedByDisplayName)]
+        public string CreatedBy { get; set; }
+
         [DisplayName(DisplayConstants.ModifiedOnDisplayName)]
         [DisplayFormat(NullDisplayText = DisplayConstants.NullModifiedOnEntryDisplayName)]
         public DateTime? ModifiedOn { get; set; }
+
+        [DisplayName(DisplayConstants.ModifiedByDisplayName)]
+        [DisplayFormat(NullDisplayText = DisplayConstants.NullModifiedByEntryDisplayName)]
+        public string ModifiedBy { get; set; }
 
         public IEnumerable<FilmProductionDetailedInformationViewModel> RelatedFilmProductions { get; set; }
     }

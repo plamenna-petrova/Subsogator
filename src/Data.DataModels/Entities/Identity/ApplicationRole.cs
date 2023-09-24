@@ -7,16 +7,16 @@ namespace Data.DataModels.Entities.Identity
 {
     public class ApplicationRole: IdentityRole, IAuditInfo
     {
-        public ApplicationRole()
-            : this(null)
-        {
-            ApplicationUserRoles = new HashSet<ApplicationUserRole>();
-        }
-
         public ApplicationRole(string name)
             : base(name)
         {
             Id = Guid.NewGuid().ToString().Substring(0, 7);
+        }
+
+        public ApplicationRole()
+            : this(null)
+        {
+            ApplicationUserRoles = new HashSet<ApplicationUserRole>();
         }
 
         public DateTime CreatedOn { get; set; }

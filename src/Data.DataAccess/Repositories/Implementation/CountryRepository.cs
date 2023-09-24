@@ -17,7 +17,7 @@ namespace Data.DataAccess.Repositories.Implementation
         public override bool Exists(IQueryable<Country> countries, Country countryToFind)
         {
             Expression<Func<Country, bool>> countryExistsPredicate = c => 
-                c.Name.Trim().ToLower() == countryToFind.Name;
+                c.Name.Trim().ToLower() == countryToFind.Name.ToLower();
 
             bool countryExists = countries.Any(countryExistsPredicate);
 

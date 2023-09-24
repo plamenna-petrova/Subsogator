@@ -13,11 +13,11 @@ namespace Subsogator.Business.Services.Languages
 
         LanguageDetailsViewModel GetLanguageDetails(string languageId);
 
-        bool CreateLanguage(CreateLanguageBindingModel createLanguageBindingModel);
+        bool CreateLanguage(CreateLanguageBindingModel createLanguageBindingModel, string currentUserName);
 
         EditLanguageBindingModel GetLanguageEditingDetails(string languageId);
 
-        bool EditLanguage(EditLanguageBindingModel editLanguageBindingModel);
+        bool EditLanguage(EditLanguageBindingModel editLanguageBindingModel, string currentUserName);
 
         DeleteLanguageViewModel GetLanguageDeletionDetails(string languageId);
 

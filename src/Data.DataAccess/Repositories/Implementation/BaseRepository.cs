@@ -11,7 +11,7 @@ namespace Data.DataAccess.Repositories.Implementation
         public BaseRepository(ApplicationDbContext applicationDbContext)
         {
             ApplicationDbContext = applicationDbContext
-                    ?? throw new ArgumentNullException(nameof(applicationDbContext));
+               ?? throw new ArgumentNullException(nameof(applicationDbContext));
             DbSet = ApplicationDbContext.Set<TEntity>();
         }
 
@@ -29,9 +29,7 @@ namespace Data.DataAccess.Repositories.Implementation
             return DbSet.AsNoTracking();
         }
 
-        public virtual IQueryable<TEntity> GetAllByCondition(
-            Expression<Func<TEntity, bool>> filter
-        )
+        public virtual IQueryable<TEntity> GetAllByCondition(Expression<Func<TEntity, bool>> filter)
         {
             return DbSet.Where(filter);
         }

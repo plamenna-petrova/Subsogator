@@ -35,6 +35,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Favourites" asp-action="Index">Favourites</a>
+                            </li>
+                        }
                         @if (User.IsInRole(AdministratorRoleName) || User.IsInRole(EditorRoleName) || User.IsInRole(UploaderRoleName))
                         {
                             <li class="nav-item">
@@ -62,9 +68,6 @@
                                 </div>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SubtitlesCatalogue" asp-action="Index">Catalogue</a>
-                        </li>
                         @if (User.IsInRole(NormalUserRole))
                         {
                             <li>

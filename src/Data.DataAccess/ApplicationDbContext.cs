@@ -61,6 +61,8 @@ namespace Data.DataAccess
 
         public virtual DbSet<Comment> Comments { get; set; }
 
+        public virtual DbSet<Favourites> Favourites { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
         {
             dbContextOptionsBuilder.UseLazyLoadingProxies();

@@ -8,8 +8,9 @@ using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Countries.BindingModels;
 using Microsoft.Extensions.Logging;
 using Subsogator.Common.GlobalConstants;
-using Subsogator.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Subsogator.Common.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -88,10 +89,10 @@ namespace Subsogator.Web.Controllers
 
             ViewData["CurrentPageSize"] = pageSize;
 
-            var paginatedList = PaginatedList<AllCountriesViewModel>
+            var countriesPaginatedList = PaginatedList<AllCountriesViewModel>
                 .Create(allCountriesViewModel, pageNumber ?? 1, (int)pageSize);
 
-            return View(paginatedList);
+            return View(countriesPaginatedList);
         }
 
         [Authorize(Roles = "Administrator, Editor")]
@@ -124,8 +125,9 @@ namespace Subsogator.Web.Controllers
                 return View(createCountryBindingModel);
             }
 
-            bool isNewCountryCreated = _countryService
-                .CreateCountry(createCountryBindingModel);
+            bool isNewCountryCreated = _countryService.CreateCountry(
+                createCountryBindingModel, User.FindFirstValue(ClaimTypes.Name)
+            );
 
             if (!isNewCountryCreated)
             {
@@ -178,8 +180,9 @@ namespace Subsogator.Web.Controllers
                 return View(editCountryBindingModel);
             }
 
-            bool isCurrentCountryEdited = _countryService
-                .EditCountry(editCountryBindingModel);
+            bool isCurrentCountryEdited = _countryService.EditCountry(
+                editCountryBindingModel, User.FindFirstValue(ClaimTypes.Name)
+            );
 
             if (!isCurrentCountryEdited)
             {

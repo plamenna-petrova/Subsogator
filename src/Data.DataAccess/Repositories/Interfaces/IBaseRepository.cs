@@ -4,8 +4,7 @@ using System.Linq.Expressions;
 
 namespace Data.DataAccess.Repositories
 {
-    public interface IBaseRepository<TEntity>: IDisposable
-        where TEntity: class
+    public interface IBaseRepository<TEntity>: IDisposable where TEntity: class
     {
         IQueryable<TEntity> GetAll();
 

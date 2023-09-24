@@ -7,8 +7,9 @@ using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Genres.ViewModels;
 using Subsogator.Web.Models.Genres.BindingModels;
 using Subsogator.Common.GlobalConstants;
-using Subsogator.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Subsogator.Common.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -80,10 +81,10 @@ namespace Subsogator.Web.Controllers
 
             ViewData["CurrentPageSize"] = pageSize;
 
-            var paginatedList = PaginatedList<AllGenresViewModel>
+            var genresPaginatedList = PaginatedList<AllGenresViewModel>
                 .Create(allGenresViewModel, pageNumber ?? 1, (int)pageSize);
 
-            return View(paginatedList);
+            return View(genresPaginatedList);
         }
 
         [Authorize(Roles = "Administrator, Editor")]
@@ -115,7 +116,9 @@ namespace Subsogator.Web.Controllers
                 return View(createGenreBindingModel);
             }
 
-            bool isNewGenreCreated = _genreService.CreateGenre(createGenreBindingModel);
+            bool isNewGenreCreated = _genreService.CreateGenre(
+                createGenreBindingModel, User.FindFirstValue(ClaimTypes.Name)
+            );
 
             if (!isNewGenreCreated)
             {
@@ -168,7 +171,9 @@ namespace Subsogator.Web.Controllers
                 return View(editGenreBindingModel);
             }
 
-            bool isCurrentGenreEdited = _genreService.EditGenre(editGenreBindingModel);
+            bool isCurrentGenreEdited = _genreService.EditGenre(
+                editGenreBindingModel, User.FindFirstValue(ClaimTypes.Name)
+            );
 
             if (!isCurrentGenreEdited)
             {

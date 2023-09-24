@@ -7,8 +7,9 @@ using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Web.Models.Screenwriters.ViewModels;
 using Subsogator.Web.Models.Screenwriters.BindingModels;
 using Subsogator.Common.GlobalConstants;
-using Subsogator.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Subsogator.Common.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -38,8 +39,7 @@ namespace Subsogator.Web.Controllers
             int? pageNumber
         )
         {
-            IEnumerable<AllScreenwritersViewModel> allScreenwritersViewModel = _screenwriterService
-                    .GetAllScreenwriters();
+            IEnumerable<AllScreenwritersViewModel> allScreenwritersViewModel = _screenwriterService.GetAllScreenwriters();
 
             bool isAllScreenwritersViewModelEmpty = allScreenwritersViewModel.Count() == 0;
 
@@ -94,10 +94,10 @@ namespace Subsogator.Web.Controllers
 
             ViewData["CurrentPageSize"] = pageSize;
 
-            var paginatedList = PaginatedList<AllScreenwritersViewModel>
+            var screenwritersPaginatedList = PaginatedList<AllScreenwritersViewModel>
                 .Create(allScreenwritersViewModel, pageNumber ?? 1, (int)pageSize);
 
-            return View(paginatedList);
+            return View(screenwritersPaginatedList);
         }
 
         [Authorize(Roles = "Administrator, Editor")]
@@ -134,8 +134,9 @@ namespace Subsogator.Web.Controllers
                 return View(createScreenwriterBindingModel);
             }
 
-            bool isNewScreenwriterCreated = _screenwriterService
-                    .CreateScreenwriter(createScreenwriterBindingModel, selectedFilmProductions);
+            bool isNewScreenwriterCreated = _screenwriterService.CreateScreenwriter(
+                createScreenwriterBindingModel, selectedFilmProductions, User.FindFirstValue(ClaimTypes.Name)
+            );
 
             if (!isNewScreenwriterCreated)
             {
@@ -195,8 +196,9 @@ namespace Subsogator.Web.Controllers
                 return View(editScreenwriterBindingModel);
             }
 
-            bool isCurrentScreenwriterEdited = _screenwriterService
-                    .EditScreenwriter(editScreenwriterBindingModel, selectedFilmProductions);
+            bool isCurrentScreenwriterEdited = _screenwriterService.EditScreenwriter(
+                editScreenwriterBindingModel, selectedFilmProductions, User.FindFirstValue(ClaimTypes.Name)
+            );
 
             if (!isCurrentScreenwriterEdited)
             {

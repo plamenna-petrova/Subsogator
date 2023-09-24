@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
+using System.Xml.Linq;
 
-namespace Subsogator.Web.Helpers
+namespace Subsogator.Common.Helpers
 {
     public class PaginatedList<T> : List<T>
     {
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
-            TotalPages = (int) Math.Ceiling(count / (double) pageSize);
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             AddRange(items);
         }
 
@@ -26,8 +28,8 @@ namespace Subsogator.Web.Helpers
         public PageResultsEnum PageResults { get; set; }
 
         public static PaginatedList<T> Create(
-            IEnumerable<T> source, 
-            int pageIndex, 
+            IEnumerable<T> source,
+            int pageIndex,
             int pageSize
         )
         {

@@ -22,10 +22,22 @@
             @Html.DisplayFor(language => language.CreatedOn)
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(language => language.CreatedBy)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(language => language.CreatedBy)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
             @Html.DisplayNameFor(language => language.ModifiedOn)
         </dt>
-        <dd class="col-sm-10 text-light">
+        <dd class="col-sm-10 text-white">
             @Html.DisplayFor(language => language.ModifiedOn)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(language => language.ModifiedBy)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(language => language.ModifiedBy)
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
             Related Film Productions

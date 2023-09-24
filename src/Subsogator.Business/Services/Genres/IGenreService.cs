@@ -11,11 +11,11 @@ namespace Subsogator.Business.Services.Genres
 
         GenreDetailsViewModel GetGenreDetails(string genreId);
 
-        bool CreateGenre(CreateGenreBindingModel createGenreBindingModel);
+        bool CreateGenre(CreateGenreBindingModel createGenreBindingModel, string currentUserName);
 
         EditGenreBindingModel GetGenreEditingDetails(string genreId);
 
-        bool EditGenre(EditGenreBindingModel editGenreBindingModel);
+        bool EditGenre(EditGenreBindingModel editGenreBindingModel, string currentUserName);
 
         DeleteGenreViewModel GetGenreDeletionDetails(string genreId);
 

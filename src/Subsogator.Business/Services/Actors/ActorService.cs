@@ -70,7 +70,9 @@ namespace Subsogator.Business.Services.Actors
                 FirstName = singleActor.FirstName,
                 LastName = singleActor.LastName,
                 CreatedOn = singleActor.CreatedOn,
+                CreatedBy = singleActor.CreatedBy,
                 ModifiedOn = singleActor.ModifiedOn,
+                ModifiedBy = singleActor.ModifiedBy,
                 RelatedFilmProductions = singleActor.FilmProductionActors
                     .Where(fpa => fpa.ActorId == singleActor.Id)
                     .OrderBy(fpa => fpa.FilmProduction.Title)
@@ -102,7 +104,8 @@ namespace Subsogator.Business.Services.Actors
 
         public bool CreateActor(
             CreateActorBindingModel createActorBindingModel, 
-            string[] selectedFilmProductions
+            string[] selectedFilmProductions,
+            string currentUserName
         )
         {
             Actor actorToCreate = new Actor
@@ -131,6 +134,8 @@ namespace Subsogator.Business.Services.Actors
                     actorToCreate.FilmProductionActors.Add(filmProductionActorToAdd);
                 }
             }
+
+            actorToCreate.CreatedBy = currentUserName;
 
             _actorRepository.Add(actorToCreate);
 
@@ -163,7 +168,8 @@ namespace Subsogator.Business.Services.Actors
 
         public bool EditActor(
             EditActorBindingModel editActorBindingModel, 
-            string[] selectedFilmProductions
+            string[] selectedFilmProductions,
+            string currentUserName
         )
         {
             var actorToUpdate = _actorRepository
@@ -184,6 +190,8 @@ namespace Subsogator.Business.Services.Actors
             {
                 return false;
             }
+
+            actorToUpdate.ModifiedBy = currentUserName;
 
             _actorRepository.Update(actorToUpdate);
 

@@ -1,4 +1,5 @@
 ﻿using Data.DataModels.Abstraction;
+using Data.DataModels.Entities.Identity;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -44,10 +45,14 @@ namespace Data.DataModels.Entities
 
         public virtual Language Language { get; set; }
 
-        public string? ImageName { get; set; }
+        public string ImageName { get; set; }
 
         [NotMapped]
-        public IFormFile? ImageFile { get; set; }
+        public IFormFile ImageFile { get; set; }
+
+        public string CreatedBy { get; set; }
+
+        public string ModifiedBy { get; set; }
 
         public virtual ICollection<FilmProductionGenre> FilmProductionGenres { get; set; }
 

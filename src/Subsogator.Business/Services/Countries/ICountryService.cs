@@ -15,11 +15,11 @@ namespace Subsogator.Business.Services.Countries
 
         CountryDetailsViewModel GetCountryDetails(string countryId);
 
-        bool CreateCountry(CreateCountryBindingModel createCountryBindingModel);
+        bool CreateCountry(CreateCountryBindingModel createCountryBindingModel, string currentUserName);
 
         EditCountryBindingModel GetCountryEditingDetails(string countryId);
 
-        bool EditCountry(EditCountryBindingModel editCountryBindingModel);
+        bool EditCountry(EditCountryBindingModel editCountryBindingModel, string currentUserName);
 
         DeleteCountryViewModel GetCountryDeletionDetails(string countryId);
 

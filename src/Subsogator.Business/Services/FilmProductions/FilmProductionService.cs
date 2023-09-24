@@ -126,6 +126,10 @@ namespace Subsogator.Business.Services.FilmProductions
                 CountryName = singleFilmProduction.Country.Name,
                 LanguageName = singleFilmProduction.Language.Name,
                 ImageName = singleFilmProduction.ImageName,
+                CreatedOn = singleFilmProduction.CreatedOn,
+                CreatedBy = singleFilmProduction.CreatedBy,
+                ModifiedOn = singleFilmProduction.ModifiedOn,
+                ModifiedBy = singleFilmProduction.ModifiedBy,
                 RelatedGenres = singleFilmProduction.FilmProductionGenres
                                     .Select(fg => fg.Genre.Name)
                                     .ToList(),
@@ -182,7 +186,8 @@ namespace Subsogator.Business.Services.FilmProductions
             string[] selectedGenres,
             string[] selectedActors,
             string[] selectedDirectors,
-            string[] selectedScreenwriters
+            string[] selectedScreenwriters,
+            string currentUserName
         )
         {
             string wwwRootPath = _webHostEnvironment.WebRootPath;
@@ -271,6 +276,8 @@ namespace Subsogator.Business.Services.FilmProductions
                 }
             }
 
+            filmProductionToCreate.CreatedBy = currentUserName;
+
             _filmProductionRepository.Add(filmProductionToCreate);
         }
 
@@ -313,7 +320,8 @@ namespace Subsogator.Business.Services.FilmProductions
             string[] selectedGenres,
             string[] selectedActors,
             string[] selectedDirectors,
-            string[] selectedScreenwriters
+            string[] selectedScreenwriters,
+            string currentUserName
         )
         {
             var filmProductionToUpdate = _filmProductionRepository
@@ -371,6 +379,7 @@ namespace Subsogator.Business.Services.FilmProductions
             filmProductionToUpdate.PlotSummary = editFilmProductionBindingModel.PlotSummary;
             filmProductionToUpdate.CountryId = editFilmProductionBindingModel.CountryId;
             filmProductionToUpdate.LanguageId = editFilmProductionBindingModel.LanguageId;
+            filmProductionToUpdate.ModifiedBy = currentUserName;
 
             _filmProductionRepository.Update(filmProductionToUpdate);
 
@@ -427,6 +436,16 @@ namespace Subsogator.Business.Services.FilmProductions
             _filmProductonDirectorRepository.DeleteRange(filmProductionDirectorsByFilmProduction);
             _filmProductionScreenwriterRepository.DeleteRange(filmProductionScreewritersByFilmProduction);
 
+            _filmProductionRepository.Delete(filmProduction);
+        }
+
+        public FilmProduction FindFilmProduction(string filmProductionId)
+        {
+            return _filmProductionRepository.GetById(filmProductionId);
+        }
+
+        public void DeleteFilmProductionImage(FilmProduction filmProduction)
+        {
             if (filmProduction.ImageName != null)
             {
                 var existingImagePath = Path.Combine(
@@ -440,13 +459,6 @@ namespace Subsogator.Business.Services.FilmProductions
                     File.Delete(existingImagePath);
                 }
             }
-
-            _filmProductionRepository.Delete(filmProduction);
-        }
-
-        public FilmProduction FindFilmProduction(string filmProductionId)
-        {
-            return _filmProductionRepository.GetById(filmProductionId);
         }
 
         private Tuple<List<AssignedGenreDataViewModel>,

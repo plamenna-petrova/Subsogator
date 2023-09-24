@@ -15,14 +15,18 @@ namespace Subsogator.Business.Services.FilmProductions
 
         CreateFilmProductionBindingModel GetFilmProductionCreatingDetails();
 
-        void CreateFilmProduction(CreateFilmProductionBindingModel createFilmProductionBindingModel,
-            string[] selectedGenres, string[] selectedActors, string[] selectedDirectors, string[] selectedScreenwriters);
+        void CreateFilmProduction(
+            CreateFilmProductionBindingModel createFilmProductionBindingModel,
+            string[] selectedGenres, string[] selectedActors, 
+            string[] selectedDirectors, string[] selectedScreenwriters, string currentUserName
+        );
 
         EditFilmProductionBindingModel GetFilmProductionEditingDetails(string filmProductionId);
 
         void EditFilmProduction(
             EditFilmProductionBindingModel editFilmProductionBindingModel,
-            string[] selectedGenres, string[] selectedActors, string[] selectedDirectors, string[] selectedScreenwriters
+            string[] selectedGenres, string[] selectedActors, 
+            string[] selectedDirectors, string[] selectedScreenwriters, string currentUserName
         );
 
         DeleteFilmProductionViewModel GetFilmProductionDeletionDetails(string filmProductionId);
@@ -30,5 +34,7 @@ namespace Subsogator.Business.Services.FilmProductions
         void DeleteFilmProduction(FilmProduction filmProduction);
 
         FilmProduction FindFilmProduction(string filmProductionId);
+
+        void DeleteFilmProductionImage(FilmProduction filmProduction);
     }
 }

@@ -60,7 +60,9 @@ namespace Subsogator.Business.Services.Languages
                 Id = singleLanguage.Id,
                 Name = singleLanguage.Name,
                 CreatedOn = singleLanguage.CreatedOn,
+                CreatedBy = singleLanguage.CreatedBy,
                 ModifiedOn = singleLanguage.ModifiedOn,
+                ModifiedBy = singleLanguage.ModifiedBy,
                 RelatedFilmProductions = singleLanguage.FilmProductions
                     .Select(fp => new FilmProductionDetailedInformationViewModel 
                     {
@@ -73,7 +75,7 @@ namespace Subsogator.Business.Services.Languages
             return singleLanguageDetails;
         }
 
-        public bool CreateLanguage(CreateLanguageBindingModel createLanguageBindingModel)
+        public bool CreateLanguage(CreateLanguageBindingModel createLanguageBindingModel, string currentUserName)
         {
             Language languageToCreate = new Language
             {
@@ -86,6 +88,8 @@ namespace Subsogator.Business.Services.Languages
             {
                 return false;
             }
+
+            languageToCreate.CreatedBy = currentUserName;
 
             _languageRepository.Add(languageToCreate);
 
@@ -110,7 +114,7 @@ namespace Subsogator.Business.Services.Languages
             return countyToEditDetails;
         }
 
-        public bool EditLanguage(EditLanguageBindingModel editLanguageBindingModel)
+        public bool EditLanguage(EditLanguageBindingModel editLanguageBindingModel, string currentUserName)
         {
             var languageToUpdate = FindLanguage(editLanguageBindingModel.Id);
 
@@ -124,6 +128,8 @@ namespace Subsogator.Business.Services.Languages
             {
                 return false;
             }
+
+            languageToUpdate.ModifiedBy = currentUserName;
 
             _languageRepository.Update(languageToUpdate);
 

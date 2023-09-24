@@ -54,9 +54,9 @@
             {
                 <img src="~/images/film-productions/@Model.ImageName"
                  class="rounded-square"
-                 asp-append-version="true" style="width: 100%; height: 300px;" />
+                 asp-append-version="true" style="width: 300px; height: 300px;" />
                 <br />
-                <span><a href="~/images/film-productions/@Model.ImageName">@Model.ImageName</a></span>
+                <span><a href="~/images/film-productions/@Model.ImageName" style="color: white;">@Model.ImageName</a></span>
             }
             else 
             {
@@ -64,60 +64,52 @@
             }
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(filmProduction => filmProduction.CreatedOn)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(filmProduction => filmProduction.CreatedOn)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(filmProduction => filmProduction.CreatedBy)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(filmProduction => filmProduction.CreatedBy)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(filmProduction => filmProduction.ModifiedOn)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(filmProduction => filmProduction.ModifiedOn)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(filmProduction => filmProduction.ModifiedBy)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(filmProduction => filmProduction.ModifiedBy)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
             @Html.DisplayNameFor(filmProduction => filmProduction.RelatedGenres)
         </dt>
         <dd class="col-sm-10 text-white">
-            @for (var i = 0; i < Model.RelatedGenres.Count(); i++)
-            {
-                <span>@Model.RelatedGenres[i]</span>
-
-                if (i != Model.RelatedGenres.Count() - 1)
-                {
-                   <span>,</span>
-                }
-            }
+            <span>@string.Join(", ", Model.RelatedGenres)</span>
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
             @Html.DisplayNameFor(filmProduction => filmProduction.RelatedActors)
         </dt>
         <dd class="col-sm-10 text-white">
-            @for (var i = 0; i < Model.RelatedActors.Count(); i++)
-            {
-                <span>@Model.RelatedActors[i].Item1 @Model.RelatedActors[i].Item2</span>
-
-                if (i != Model.RelatedActors.Count() - 1)
-                {
-                    <span>,</span>
-                }
-            }
+            <span>@string.Join(", ", Model.RelatedActors.Select(ra => $"{ra.Item1} {ra.Item2}"))</span>
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
             @Html.DisplayNameFor(filmProduction => filmProduction.RelatedDirectors)
         </dt>
         <dd class="col-sm-10 text-white">
-            @for (var i = 0; i < Model.RelatedDirectors.Count(); i++)
-            {
-                <span>@Model.RelatedDirectors[i].Item1 @Model.RelatedDirectors[i].Item2</span>
-
-                if (i != Model.RelatedDirectors.Count() - 1)
-                {
-                    <span>,</span>
-                }
-            }
+            <span>@string.Join(", ", Model.RelatedDirectors.Select(rd => $"{rd.Item1} {rd.Item2}"))</span>
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
             @Html.DisplayNameFor(filmProduction => filmProduction.RelatedScreenwriters)
         </dt>
         <dd class="col-sm-10 text-white">
-            @for (var i = 0; i < Model.RelatedScreenwriters.Count(); i++)
-            {
-                <span>@Model.RelatedScreenwriters[i].Item1 @Model.RelatedScreenwriters[i].Item2</span>
-
-                if (i != Model.RelatedScreenwriters.Count() - 1)
-                {
-                    <span>,</span>
-                }
-            }
+            <span>@string.Join(", ", Model.RelatedScreenwriters.Select(rs => $"{rs.Item1} {rs.Item2}"))</span>
         </dd>
     </dl>
 </div>

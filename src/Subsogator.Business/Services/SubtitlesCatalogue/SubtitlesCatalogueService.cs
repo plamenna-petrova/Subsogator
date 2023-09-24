@@ -1,5 +1,9 @@
 ﻿using Data.DataAccess.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Subsogator.Web.Models.Comments.ViewModels;
+using Subsogator.Web.Models.Favourites.ViewModels;
 using Subsogator.Web.Models.SubtitlesCatalogue;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,12 +13,22 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
     {
         private ISubtitlesRepository _subtitlesRepository;
 
-        public SubtitlesCatalogueService(ISubtitlesRepository subtitlesRepository)
+        private ICommentRepository _commentRepository;
+
+        private IFavouritesRepository _favouritesRepository;
+
+        public SubtitlesCatalogueService(
+            ISubtitlesRepository subtitlesRepository, 
+            ICommentRepository commentRepository,
+            IFavouritesRepository favouritesRepository
+        )
         {
             _subtitlesRepository = subtitlesRepository;
+            _commentRepository = commentRepository;
+            _favouritesRepository = favouritesRepository;
         }
 
-        public IEnumerable<AllSubtitlesForCatalogueViewModel> GetAllSubtitlesForCatalogue()
+        public CatalogueItemsViewModel GetAllSubtitlesForCatalogue()
         {
             List<AllSubtitlesForCatalogueViewModel> allSubtitlesForCatalogue = _subtitlesRepository
                 .GetAllAsNoTracking()
@@ -37,14 +51,55 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
                     .OrderBy(s => s.Name)
                     .ToList();
 
-            return allSubtitlesForCatalogue;
+            List<LatestCommentViewModel> latestComments = _commentRepository
+                .GetAllAsNoTracking()
+                    .OrderByDescending(c => c.CreatedOn)
+                        .Select(c => new LatestCommentViewModel
+                        {
+                            SubtitlesId = c.Subtitles.Id,
+                            SubtitlesName = c.Subtitles.Name,
+                            UserName = c.ApplicationUser.UserName
+                        })
+                        .ToList();
+
+            var topSubtitlesIds = _favouritesRepository
+                .GetAllAsNoTracking()
+                    .GroupBy(f => f.SubtitlesId)
+                        .OrderByDescending(fgr => fgr.Count())
+                            .Take(5)
+                                .Select(fgr => fgr.Key)
+                                .ToList();
+
+            List<TopSubtitlesViewModel> topSubtitles = new List<TopSubtitlesViewModel>();
+
+            topSubtitlesIds.ForEach(topSubtitlesId =>
+            {
+                var relatedSubtitles = _subtitlesRepository.GetById(topSubtitlesId);
+
+                topSubtitles.Add(new TopSubtitlesViewModel
+                {
+                    Id = relatedSubtitles.Id,
+                    Name = relatedSubtitles.Name,
+                    UploaderUserName = relatedSubtitles.ApplicationUser.UserName
+                });
+            });
+
+            CatalogueItemsViewModel catalogueItemsViewModel = new CatalogueItemsViewModel
+            {
+                AllSubtitlesForCatalogue = allSubtitlesForCatalogue,
+                LatestComments = latestComments,
+                TopSubtitles = topSubtitles
+            };
+
+            return catalogueItemsViewModel;
         }
 
         public SubtitlesCatalogueItemDetailsViewModel GetSubtitlesCatalogueItemDetails(string subtitlesId)
         {
             var singleSubtitlesCatalogueItem = _subtitlesRepository
                .GetAllByCondition(s => s.Id == subtitlesId)
-                   .FirstOrDefault();
+                   .Include(s => s.ApplicationUser)
+                      .FirstOrDefault();
 
             if (singleSubtitlesCatalogueItem is null)
             {

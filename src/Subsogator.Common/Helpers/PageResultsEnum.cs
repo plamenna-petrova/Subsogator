@@ -1,6 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Xml.Linq;
 
-namespace Subsogator.Web.Helpers
+namespace Subsogator.Common.Helpers
 {
     public enum PageResultsEnum
     {

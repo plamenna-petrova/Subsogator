@@ -13,11 +13,11 @@ namespace Subsogator.Business.Services.Actors
 
         CreateActorBindingModel GetActorCreatingDetails();
 
-        bool CreateActor(CreateActorBindingModel createActorBindingModel, string[] selectedFilmProductions);
+        bool CreateActor(CreateActorBindingModel createActorBindingModel, string[] selectedFilmProductions, string currentUserName);
 
         EditActorBindingModel GetActorEditingDetails(string actorId);
 
-        bool EditActor(EditActorBindingModel editActorBindingModel, string[] selectedFilmProductions);
+        bool EditActor(EditActorBindingModel editActorBindingModel, string[] selectedFilmProductions, string currentUserName);
 
         DeleteActorViewModel GetActorDeletionDetails(string actorId);
 

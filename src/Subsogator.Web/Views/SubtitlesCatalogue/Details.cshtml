@@ -1,26 +1,26 @@
 ﻿@model Subsogator.Web.Models.SubtitlesCatalogue.SubtitlesCatalogueItemDetailsViewModel
 
-@if (TempData["SubtitlesCatalogueErrorMessage"] != null)
+@if (TempData["SubtitlesCatalogueInfoMessage"] != null)
 {
-    <div class="alert alert-danger" role="alert">
-        @TempData["SubtitlesCatalogueErrorMessage"]
+    <div class="alert alert-info" role="alert">
+        @TempData["SubtitlesCatalogueInfoMessage"]
     </div>
 }
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         @if (Model.RelatedFilmProduction.ImageName != null)
         {
             <img src="~/images/film-productions/@Model.RelatedFilmProduction.ImageName"
              class="rounded-square"
-             asp-append-version="true" style="width: 100%; height: auto;" />
+             asp-append-version="true" style="width: 100%; height: 400px;" />
             <br />
         }
         else
         {
-            <img src="~/images/film-productions/istockphoto-1147544807-612x612.jpg" style="width: 100%; height: auto;" />
+            <img src="~/images/film-productions/istockphoto-1147544807-612x612.jpg" style="width: 100%; height: 400px;" />
         }
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-8">
         <h1 class="text-primary">@Html.DisplayFor(model => model.RelatedFilmProduction.Title)</h1>
         <dl class="row bg-secondary">
             <dt class="col-sm-3 text-white bg-info font-weight-normal">
@@ -69,6 +69,10 @@
         <h3>@Html.DisplayFor(model => model.Name)</h3>
         <p class="text-center">
             <a class="btn btn-primary" asp-controller="SubtitlesCatalogue" asp-action="DownloadSubtitles" asp-route-id="@Model.Id">Download</a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-dark" asp-controller="SubtitlesCatalogue" asp-action="AddToFavourites" asp-route-id="@Model.Id">Add To Favourites</a>
+            }
         </p>
     </div>
 </div>

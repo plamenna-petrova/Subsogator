@@ -60,33 +60,29 @@ namespace Subsogator.Business.Services.Users
             if (user.PromotionStatus == PromotionStatus.Pending)
             {
                 var roles = _userManager.GetRolesAsync(user).Result.ToArray();
+                var mainUserRole = roles[0];
 
-                if (roles.Length == 1)
+                switch (user.PromotionLevel)
                 {
-                    var userRole = roles[0];
-
-                    switch (user.PromotionLevel)
-                    {
-                        case UploaderRoleName:
-                            if (userRole == NormalUserRole)
-                            {
-                                await AssignRole(user, NormalUserRole, UploaderRoleName);
-                                user.PromotionStatus = PromotionStatus.Accepted;
-                                user.PromotionLevel = UploaderRoleName;
-                            }
-                            break;
-                        case EditorRoleName:
-                            if (userRole == UploaderRoleName)
-                            {
-                                await AssignRole(user, UploaderRoleName, EditorRoleName);
-                                user.PromotionStatus = PromotionStatus.Accepted;
-                                user.PromotionLevel = EditorRoleName;
-                            }
-                            break;
-                    }
-
-                    _userRepository.Update(user);
+                    case UploaderRoleName:
+                        if (mainUserRole == NormalUserRole)
+                        {
+                            await AssignRole(user, NormalUserRole, UploaderRoleName);
+                            user.PromotionStatus = PromotionStatus.Accepted;
+                            user.PromotionLevel = UploaderRoleName;
+                        }
+                        break;
+                    case EditorRoleName:
+                        if (mainUserRole == UploaderRoleName)
+                        {
+                            await AssignRole(user, UploaderRoleName, EditorRoleName);
+                            user.PromotionStatus = PromotionStatus.Accepted;
+                            user.PromotionLevel = EditorRoleName;
+                        }
+                        break;
                 }
+
+                _userRepository.Update(user);
             }
         }
 
@@ -95,21 +91,18 @@ namespace Subsogator.Business.Services.Users
             var user = FindUser(userId);
             var roles = _userManager.GetRolesAsync(user).Result.ToArray();
 
-            if (roles.Length == 1) 
-            {
-                var userRole = roles[0];
+            var mainUserRole = roles[0];
 
-                switch (userRole)
-                {
-                    case EditorRoleName:
-                        await AssignRole(user, EditorRoleName, UploaderRoleName);
-                        DeclinePromotion(user.Id);
-                        break;
-                    case UploaderRoleName:
-                        await AssignRole(user, UploaderRoleName, NormalUserRole);
-                        DeclinePromotion(user.Id);
-                        break;
-                }
+            switch (mainUserRole)
+            {
+                case EditorRoleName:
+                    await AssignRole(user, EditorRoleName, UploaderRoleName);
+                    DeclinePromotion(user.Id);
+                    break;
+                case UploaderRoleName:
+                    await AssignRole(user, UploaderRoleName, NormalUserRole);
+                    DeclinePromotion(user.Id);
+                    break;
             }
         }
 

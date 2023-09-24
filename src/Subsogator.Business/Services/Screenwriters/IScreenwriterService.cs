@@ -13,11 +13,11 @@ namespace Subsogator.Business.Services.Screenwriters
 
         ScreenwriterDetailsViewModel GetScreenwriterDetails(string directorId);
 
-        bool CreateScreenwriter(CreateScreenwriterBindingModel createScreenwriterBindingModel, string[] selectedFilmProductions);
+        bool CreateScreenwriter(CreateScreenwriterBindingModel createScreenwriterBindingModel, string[] selectedFilmProductions, string currentUserName);
 
         EditScreenwriterBindingModel GetScreenwriterEditingDetails(string directorId);
 
-        bool EditScreenwriter(EditScreenwriterBindingModel editScreenwriterBindingModel, string[] selectedFilmProductions);
+        bool EditScreenwriter(EditScreenwriterBindingModel editScreenwriterBindingModel, string[] selectedFilmProductions, string currentUserName);
 
         DeleteScreenwriterViewModel GetScreenwriterDeletionDetails(string directorId);
 

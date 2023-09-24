@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 using Subsogator.Common.GlobalConstants;
 using Subsogator.Business.Services.Subtitles;
 using Subsogator.Business.Transactions.Interfaces;
-using Subsogator.Web.Helpers;
 using Subsogator.Web.Models.Subtitles.ViewModels;
 using Subsogator.Business.Services.FilmProductions;
 using Subsogator.Web.Models.Subtitles.BindingModels;
 using System.Security.Claims;
+using Subsogator.Common.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -91,10 +91,10 @@ namespace Subsogator.Web.Controllers
 
             ViewData["CurrentPageSize"] = pageSize;
 
-            var paginatedList = PaginatedList<AllSubtitlesViewModel>
+            var subtitlesPaginatedList = PaginatedList<AllSubtitlesViewModel>
                 .Create(allSubtitlesViewModel, pageNumber ?? 1, (int)pageSize);
 
-            return View(paginatedList);
+            return View(subtitlesPaginatedList);
         }
 
 

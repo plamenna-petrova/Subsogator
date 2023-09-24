@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Subsogator.Common.GlobalConstants;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Subsogator.Web.Models.FilmProductions.ViewModels
 {
@@ -24,7 +26,22 @@ namespace Subsogator.Web.Models.FilmProductions.ViewModels
         [DisplayName("Language")]
         public string LanguageName { get; set; }
 
+        [DisplayName("Image")]
         public string ImageName { get; set; }
+
+        [DisplayName(DisplayConstants.CreatedOnDisplayName)]
+        public DateTime CreatedOn { get; set; }
+
+        [DisplayName(DisplayConstants.CreatedByDisplayName)]
+        public string CreatedBy { get; set; }
+
+        [DisplayName(DisplayConstants.ModifiedOnDisplayName)]
+        [DisplayFormat(NullDisplayText = DisplayConstants.NullModifiedOnEntryDisplayName)]
+        public DateTime? ModifiedOn { get; set; }
+
+        [DisplayName(DisplayConstants.ModifiedByDisplayName)]
+        [DisplayFormat(NullDisplayText = DisplayConstants.NullModifiedByEntryDisplayName)]
+        public string ModifiedBy { get; set; }
 
         [DisplayName("Genres")]
         public List<string> RelatedGenres { get; set; }

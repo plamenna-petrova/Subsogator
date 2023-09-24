@@ -61,7 +61,9 @@ namespace Subsogator.Business.Services.Countries
                 Id = singleCountry.Id,
                 Name = singleCountry.Name,
                 CreatedOn = singleCountry.CreatedOn,
+                CreatedBy = singleCountry.CreatedBy,
                 ModifiedOn = singleCountry.ModifiedOn,
+                ModifiedBy = singleCountry.ModifiedBy,
                 RelatedFilmProductions = singleCountry.FilmProductions
                     .Select(fp => new FilmProductionDetailedInformationViewModel 
                     { 
@@ -74,7 +76,7 @@ namespace Subsogator.Business.Services.Countries
             return singleCountryDetails;
         }
 
-        public bool CreateCountry(CreateCountryBindingModel createCountryBindingModel)
+        public bool CreateCountry(CreateCountryBindingModel createCountryBindingModel, string currentUserName)
         {
             Country countryToCreate = new Country
             {
@@ -87,6 +89,8 @@ namespace Subsogator.Business.Services.Countries
             {
                 return false;
             }
+
+            countryToCreate.CreatedBy = currentUserName;
 
             _countryRepository.Add(countryToCreate);
 
@@ -111,7 +115,7 @@ namespace Subsogator.Business.Services.Countries
             return countyToEditDetails;
         }
 
-        public bool EditCountry(EditCountryBindingModel editCountryBindingModel)
+        public bool EditCountry(EditCountryBindingModel editCountryBindingModel, string currentUserName)
         {
             var countryToUpdate = FindCountry(editCountryBindingModel.Id);
 
@@ -125,6 +129,8 @@ namespace Subsogator.Business.Services.Countries
             {
                 return false;
             }
+
+            countryToUpdate.ModifiedBy = currentUserName;
 
             _countryRepository.Update(countryToUpdate);
 

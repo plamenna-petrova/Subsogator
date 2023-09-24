@@ -8,8 +8,9 @@ using Subsogator.Web.Models.Languages.ViewModels;
 using Subsogator.Web.Models.Languages.BindingModels;
 using Microsoft.Extensions.Logging;
 using Subsogator.Common.GlobalConstants;
-using Subsogator.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Subsogator.Common.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -88,10 +89,10 @@ namespace Subsogator.Web.Controllers
 
             ViewData["CurrentPageSize"] = pageSize;
 
-            var paginatedList = PaginatedList<AllLanguagesViewModel>
+            var languagesPaginatedList = PaginatedList<AllLanguagesViewModel>
                 .Create(allLanguagesViewModel, pageNumber ?? 1, (int)pageSize);
 
-            return View(paginatedList);
+            return View(languagesPaginatedList);
         }
 
         [Authorize(Roles = "Administrator, Editor")]
@@ -124,8 +125,9 @@ namespace Subsogator.Web.Controllers
                 return View(createLanguageBindingModel);
             }
 
-            bool isNewLanguageCreated = _languageService
-                .CreateLanguage(createLanguageBindingModel);
+            bool isNewLanguageCreated = _languageService.CreateLanguage(
+                createLanguageBindingModel, User.FindFirstValue(ClaimTypes.Name)
+            );
 
             if (!isNewLanguageCreated)
             {
@@ -178,8 +180,9 @@ namespace Subsogator.Web.Controllers
                 return View(editLanguageBindingModel);
             }
 
-            bool isCurrentLanguageEdited = _languageService
-                .EditLanguage(editLanguageBindingModel);
+            bool isCurrentLanguageEdited = _languageService.EditLanguage(
+                editLanguageBindingModel, User.FindFirstValue(ClaimTypes.Name)
+            );
 
             if (!isCurrentLanguageEdited)
             {

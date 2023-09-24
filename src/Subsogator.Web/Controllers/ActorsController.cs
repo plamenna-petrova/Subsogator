@@ -7,8 +7,9 @@ using Subsogator.Web.Models.Actors.ViewModels;
 using Subsogator.Web.Models.Actors.BindingModels;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Common.GlobalConstants;
-using Subsogator.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Subsogator.Common.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -89,10 +90,10 @@ namespace Subsogator.Web.Controllers
 
             ViewData["CurrentPageSize"] = pageSize;
 
-            var paginatedList = PaginatedList<AllActorsViewModel>
+            var actorsPaginatedList = PaginatedList<AllActorsViewModel>
                 .Create(allActorsViewModel, pageNumber ?? 1, (int) pageSize);
             
-            return View(paginatedList);
+            return View(actorsPaginatedList);
         }
 
         [Authorize(Roles = "Administrator, Editor")]
@@ -127,8 +128,9 @@ namespace Subsogator.Web.Controllers
                 return View(createActorBindingModel);
             }
 
-            bool isNewActorCreated = _actorService
-                    .CreateActor(createActorBindingModel, selectedFilmProductions);
+            bool isNewActorCreated = _actorService.CreateActor(
+                createActorBindingModel, selectedFilmProductions, User.FindFirstValue(ClaimTypes.Name)
+            );
 
             if (!isNewActorCreated)
             {
@@ -188,8 +190,9 @@ namespace Subsogator.Web.Controllers
                 return View(editActorBindingModel);
             }
 
-            bool isCurrentActorEdited = _actorService
-                    .EditActor(editActorBindingModel, selectedFilmProductions);
+            bool isCurrentActorEdited = _actorService.EditActor(
+                editActorBindingModel, selectedFilmProductions, User.FindFirstValue(ClaimTypes.Name)
+            );
 
             if (!isCurrentActorEdited)
             {

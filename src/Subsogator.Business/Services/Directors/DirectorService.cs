@@ -68,7 +68,9 @@ namespace Subsogator.Business.Services.Directors
                 FirstName = singleDirector.FirstName,
                 LastName = singleDirector.LastName,
                 CreatedOn = singleDirector.CreatedOn,
+                CreatedBy = singleDirector.CreatedBy,
                 ModifiedOn = singleDirector.ModifiedOn,
+                ModifiedBy = singleDirector.ModifiedBy,
                 RelatedFilmProductions = singleDirector.FilmProductionDirectors
                     .Where(fpd => fpd.DirectorId == singleDirector.Id)
                     .Select(fpd => new FilmProductionDetailedInformationViewModel
@@ -98,7 +100,8 @@ namespace Subsogator.Business.Services.Directors
 
         public bool CreateDirector(
             CreateDirectorBindingModel createDirectorBindingModel,
-            string[] selectedFilmProductions
+            string[] selectedFilmProductions,
+            string currentUserName
         )
         {
             Director directorToCreate = new Director
@@ -127,6 +130,8 @@ namespace Subsogator.Business.Services.Directors
                     directorToCreate.FilmProductionDirectors.Add(filmProductionActorToAdd);
                 }
             }
+
+            directorToCreate.CreatedBy = currentUserName;   
 
             _directorRepository.Add(directorToCreate);
 
@@ -159,7 +164,8 @@ namespace Subsogator.Business.Services.Directors
 
         public bool EditDirector(
             EditDirectorBindingModel editDirectorBindingModel,
-            string[] selectedFilmProductions
+            string[] selectedFilmProductions,
+            string currentUserName
         )
         {
             var directorToUpdate = _directorRepository
@@ -180,6 +186,8 @@ namespace Subsogator.Business.Services.Directors
             {
                 return false;
             }
+
+            directorToUpdate.ModifiedBy = currentUserName;
 
             _directorRepository.Update(directorToUpdate);
 

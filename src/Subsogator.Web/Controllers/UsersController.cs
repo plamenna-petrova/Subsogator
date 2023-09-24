@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Subsogator.Business.Services.Users;
 using Subsogator.Business.Transactions.Interfaces;
 using Subsogator.Common.GlobalConstants;
-using Subsogator.Web.Helpers;
+using Subsogator.Common.Helpers;
 using Subsogator.Web.Models.Users.ViewModels;
 using System.Collections.Generic;
 using System.Data;
@@ -80,10 +80,10 @@ namespace Subsogator.Web.Controllers
 
             ViewData["CurrentPageSize"] = pageSize;
 
-            var paginatedList = PaginatedList<AllUsersViewModel>
+            var usersPaginatedList = PaginatedList<AllUsersViewModel>
                 .Create(allUsersViewModel, pageNumber ?? 1, (int)pageSize);
 
-            return View(paginatedList);
+            return View(usersPaginatedList);
         }
 
         public async Task<IActionResult> Promote(string id)

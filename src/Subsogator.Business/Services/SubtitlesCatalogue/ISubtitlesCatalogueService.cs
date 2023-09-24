@@ -5,7 +5,7 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
 {
     public interface ISubtitlesCatalogueService
     {
-        IEnumerable<AllSubtitlesForCatalogueViewModel> GetAllSubtitlesForCatalogue();
+        CatalogueItemsViewModel GetAllSubtitlesForCatalogue();
 
         SubtitlesCatalogueItemDetailsViewModel GetSubtitlesCatalogueItemDetails(string subtitlesId);
     }

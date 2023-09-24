@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Data.DataModels.Entities.Identity;
+using System.Collections.Generic;
 
 namespace Data.DataModels.Entities
 {

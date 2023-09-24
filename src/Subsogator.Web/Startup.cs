@@ -2,11 +2,13 @@ using Data.DataAccess;
 using Data.DataModels.Entities.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Subsogator.Infrastructure.Extensions;
+using System.Globalization;
 using static Subsogator.Common.GlobalConstants.IdentityConstants;
 
 namespace Subsogator.Web
@@ -25,7 +27,7 @@ namespace Subsogator.Web
         {
             serviceCollection.AddDbContext<ApplicationDbContext>();
 
-            serviceCollection.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            serviceCollection.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -67,7 +69,21 @@ namespace Subsogator.Web
                 applicationBuilder.UseExceptionHandler("/Home/Error");
                 applicationBuilder.UseHsts();
             }
+
             applicationBuilder.UseHttpsRedirection();
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en-US")
+            };
+
+            applicationBuilder.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-US"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
+
             applicationBuilder.UseStaticFiles();
 
             applicationBuilder.UseRouting();

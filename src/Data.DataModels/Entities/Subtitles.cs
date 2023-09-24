@@ -9,6 +9,7 @@ namespace Data.DataModels.Entities
         public Subtitles()
         {
             Comments = new HashSet<Comment>();
+            Favourites = new HashSet<Favourites>();
         }
 
         public string Name { get; set; }
@@ -22,5 +23,7 @@ namespace Data.DataModels.Entities
         public virtual ApplicationUser ApplicationUser { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
+
+        public virtual ICollection<Favourites> Favourites { get; set; }
     }
 }

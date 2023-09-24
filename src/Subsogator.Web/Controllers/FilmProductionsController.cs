@@ -10,8 +10,9 @@ using Subsogator.Web.Models.FilmProductions.BindingModels;
 using Subsogator.Business.Transactions.Interfaces;
 using Microsoft.Extensions.Logging;
 using Subsogator.Common.GlobalConstants;
-using Subsogator.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Subsogator.Common.Helpers;
 
 namespace Subsogator.Web.Controllers
 {
@@ -116,10 +117,10 @@ namespace Subsogator.Web.Controllers
 
             ViewData["CurrentPageSize"] = pageSize;
 
-            var paginatedList = PaginatedList<AllFilmProductionsViewModel>
+            var filmProductionsPaginatedList = PaginatedList<AllFilmProductionsViewModel>
                 .Create(allFilmProductionsViewModel, pageNumber ?? 1, (int)pageSize);
 
-            return View(paginatedList);
+            return View(filmProductionsPaginatedList);
         }
 
         [Authorize(Roles = "Administrator, Editor")]
@@ -174,7 +175,8 @@ namespace Subsogator.Web.Controllers
                 selectedGenres,
                 selectedActors,
                 selectedDirectors,
-                selectedScreenwriters
+                selectedScreenwriters,
+                User.FindFirstValue(ClaimTypes.Name)
             );
 
             bool isNewFilmProductionSavedToDatabase = _unitOfWork.CommitSaveChanges();
@@ -267,7 +269,8 @@ namespace Subsogator.Web.Controllers
                 selectedGenres,
                 selectedActors,
                 selectedDirectors,
-                selectedScreenwriters
+                selectedScreenwriters,
+                User.FindFirstValue(ClaimTypes.Name)
             );
 
             bool isCurrentFilmProductionSavedToDatabase = _unitOfWork.CommitSaveChanges();
@@ -335,6 +338,10 @@ namespace Subsogator.Web.Controllers
                     + "Check the film production relationship status!";
 
                 return RedirectToAction(nameof(Delete));
+            }
+            else
+            {
+                _filmProductionService.DeleteFilmProductionImage(filmProductionToConfirmDeletion);
             }
 
             TempData["FilmProductionSuccessMessage"] = string.Format(

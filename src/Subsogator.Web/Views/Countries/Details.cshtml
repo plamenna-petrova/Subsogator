@@ -22,10 +22,22 @@
             @Html.DisplayFor(country => country.CreatedOn)
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(country => country.CreatedBy)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(country => country.CreatedBy)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
             @Html.DisplayNameFor(country => country.ModifiedOn)
         </dt>
         <dd class="col-sm-10 text-white">
             @Html.DisplayFor(country => country.ModifiedOn)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(country => country.ModifiedBy)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(country => country.ModifiedBy)
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
             Related Film Productions

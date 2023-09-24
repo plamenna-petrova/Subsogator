@@ -1,0 +1,160 @@
+﻿@model PaginatedList<Subsogator.Web.Models.Favourites.ViewModels.UserFavouritesViewModel>
+
+@{
+    ViewData["Title"] = "Favourites";
+}
+
+@if (TempData["FavouritesInfoMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["FavouritesInfoMessage"]
+    </div>
+}
+
+@if(!Model.Any())
+{
+    <h3>There are currently no favourites</h3>
+}
+else
+{
+    <h3>@ViewData["Title"]</h3>
+
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <p>
+                <b>Search for favourites: </b>
+                <input type="text" name="SearchTerm" class="search-term-input"
+                       value="@ViewData["FavouritesSearchFilter"]" />
+                <input type="submit" value="Search" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-primary">Reset</a>
+            </p>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-dark table-striped table-hover mt-3">
+        <thead class="thead-light">
+            <tr class="text-center">
+                <th>
+                    <a asp-action="Index" class="sorting-link"
+                   asp-route-sortOrder="@ViewData["SubtitlesNameSort"]"
+                   asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]">
+                        @Html.DisplayNameFor(favourites => favourites.ViewModel.Name)
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index" class="sorting-link"
+                   asp-route-sortOrder="@ViewData["FilmProductionTitleSort"]"
+                   asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]">
+                        @Html.DisplayNameFor(favourites => favourites.ViewModel.RelatedFilmProduction.Title)
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index" class="sorting-link"
+                   asp-route-sortOrder="@ViewData["UploaderNameSort"]"
+                   asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]">
+                        @Html.DisplayNameFor(favourites => favourites.ViewModel.UploaderUserName)
+                    </a>
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var favourites in Model)
+            {
+                <tr class="text-center">
+                    <td>
+                        @Html.DisplayFor(favouritesModelItem => favourites.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(favouritesModelItem => favourites.RelatedFilmProduction.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(favouritesModelItem => favourites.UploaderUserName)
+                    </td>
+                    <td>
+                        <a asp-action="RemoveFromFavourites" asp-route-id="@favourites.Id"
+                           class="btn btn-danger">Remove</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+ 
+    var isPreviousPageDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var isNextPageDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    string getPageButtonAdditionalClassName(int currentPageIndex)
+    {
+        string pageButtonClassName = "";
+
+        if (Model.PageIndex == currentPageIndex)
+        {
+            pageButtonClassName = "btn-primary";
+        }
+        else
+        {
+            pageButtonClassName = "btn-outline-primary";
+        }
+
+        return pageButtonClassName;
+    }
+
+    <div class="row">
+        <div class="col-5">
+            <a asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-pageSize="@ViewData["CurrentPageSize"]"
+               asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]"
+               class="btn btn-outline-primary @isPreviousPageDisabled">
+                Previous
+            </a>
+
+            @for (int pageIndex = 1; pageIndex <= @Model.TotalPages; pageIndex++)
+            {
+                <a class="btn @getPageButtonAdditionalClassName(pageIndex)"
+               asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]"
+               asp-route-pageSize="@ViewData["CurrentPageSize"]"
+               asp-route-pageNumber="@pageIndex">
+                    @pageIndex
+                </a>
+            }
+
+            <a asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-pageSize="@ViewData["CurrentPageSize"]"
+               asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]"
+               class="btn btn-outline-primary @isNextPageDisabled">
+                Next
+            </a>
+        </div>
+        <div class="col-5">
+            <form>
+                <div class="form-group">
+                    <label asp-for="PageResults" class="control-label"></label>
+                    <select name="PageSize" asp-for="PageResults"
+                            class="form-control page-size-select"
+                            asp-items="Html.GetEnumSelectList<PageResultsEnum>()">
+                    </select>
+                    <span asp-validation-for="PageResults" class="text-danger"></span>
+                </div>
+                <a class="btn btn-outline-primary text-primary change-page-size-button"
+                   asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]">
+                    Change
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-5">
+            <div class="mt-2">Page @Model.PageIndex out of @Model.TotalPages </div>
+        </div>
+    </div>
+}

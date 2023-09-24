@@ -28,10 +28,22 @@
             @Html.DisplayFor(screenwriter => screenwriter.CreatedOn)
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(screenwriter => screenwriter.CreatedBy)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(screenwriter => screenwriter.CreatedBy)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
             @Html.DisplayNameFor(screenwriter => screenwriter.ModifiedOn)
         </dt>
         <dd class="col-sm-10 text-white">
             @Html.DisplayFor(screenwriter => screenwriter.ModifiedOn)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(screenwriter => screenwriter.ModifiedBy)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(screenwriter => screenwriter.ModifiedBy)
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
             Related Film Productions

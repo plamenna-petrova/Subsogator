@@ -17,7 +17,7 @@ namespace Data.DataAccess.Repositories.Implementation
         public override bool Exists(IQueryable<Language> languages, Language languageToFind)
         {
             Expression<Func<Language, bool>> languageExistsPredicate = l =>
-                l.Name.Trim().ToLower() == languageToFind.Name;
+                l.Name.Trim().ToLower() == languageToFind.Name.ToLower();
 
             bool languageExists = languages.Any(languageExistsPredicate);
 

@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Subsogator.Business.Services.Comments;
+using Subsogator.Business.Services.Favourites;
 using Subsogator.Business.Services.Subtitles;
 using Subsogator.Business.Services.SubtitlesCatalogue;
 using Subsogator.Business.Transactions.Interfaces;
-using Subsogator.Web.Helpers;
+using Subsogator.Common.Helpers;
 using Subsogator.Web.Models.Comments.BindingModels;
 using Subsogator.Web.Models.SubtitlesCatalogue;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -27,6 +27,8 @@ namespace Subsogator.Web.Controllers
 
         private readonly ICommentService _commentService;
 
+        private readonly IFavouritesService _favouritesService;
+
         private readonly IUnitOfWork _unitOfWork;
 
         private IWebHostEnvironment _webHostEnvironment;
@@ -37,6 +39,7 @@ namespace Subsogator.Web.Controllers
             ISubtitlesCatalogueService subtitlesCatalogueService,
             ISubtitlesService subtitlesService,
             ICommentService commentService,
+            IFavouritesService favouritesService,
             IUnitOfWork unitOfWork,
             IWebHostEnvironment webHostEnvironment,
             ILogger<SubtitlesCatalogueController> logger
@@ -45,22 +48,17 @@ namespace Subsogator.Web.Controllers
             _subtitlesCatalogueService = subtitlesCatalogueService;
             _subtitlesService = subtitlesService;
             _commentService = commentService;
+            _favouritesService = favouritesService;
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
         }
 
-        public IActionResult Index(
-            string currentFilter,
-            string searchTerm,
-            int? pageSize,
-            int? pageNumber)
+        public IActionResult Index( string currentFilter, string searchTerm, int? pageSize, int? pageNumber)
         {
-            IEnumerable<AllSubtitlesForCatalogueViewModel> allSubtitlesForCatalogueViewModel =
-                _subtitlesCatalogueService
-                    .GetAllSubtitlesForCatalogue();
+            var catalogueItemsViewModel = _subtitlesCatalogueService.GetAllSubtitlesForCatalogue();
 
-            bool isAllSubtitlesForCatalogueViewModelEmpty = allSubtitlesForCatalogueViewModel.Count() == 0;
+            bool isAllSubtitlesForCatalogueViewModelEmpty = catalogueItemsViewModel.AllSubtitlesForCatalogue.Count() == 0;
 
             if (isAllSubtitlesForCatalogueViewModelEmpty)
             {
@@ -80,7 +78,7 @@ namespace Subsogator.Web.Controllers
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                allSubtitlesForCatalogueViewModel = allSubtitlesForCatalogueViewModel
+                catalogueItemsViewModel.AllSubtitlesForCatalogue = catalogueItemsViewModel.AllSubtitlesForCatalogue
                         .Where(ascvm =>
                             ascvm.Name.ToLower().Contains(searchTerm.ToLower()) ||
                             ascvm.RelatedFilmProduction.ReleaseDate.Year.ToString().ToLower()
@@ -99,10 +97,17 @@ namespace Subsogator.Web.Controllers
 
             ViewData["CurrentPageSize"] = pageSize;
 
-            var paginatedList = PaginatedList<AllSubtitlesForCatalogueViewModel>
-                .Create(allSubtitlesForCatalogueViewModel, pageNumber ?? 1, (int)pageSize);
+            var subtitlesCataloguePaginatedList = PaginatedList<AllSubtitlesForCatalogueViewModel>
+                .Create(catalogueItemsViewModel.AllSubtitlesForCatalogue, pageNumber ?? 1, (int)pageSize);
 
-            return View(paginatedList);
+            CatalogueItemsWithPaginationViewModel catalogueItemsWithPaginationViewModel = new CatalogueItemsWithPaginationViewModel
+            {
+                AllSubtitlesForCatalogue = subtitlesCataloguePaginatedList,
+                LatestComments = catalogueItemsViewModel.LatestComments,
+                TopSubtitles = catalogueItemsViewModel.TopSubtitles
+            };
+
+            return View(catalogueItemsWithPaginationViewModel);
         }
 
         public IActionResult Details(string id)
@@ -125,6 +130,35 @@ namespace Subsogator.Web.Controllers
             return View(subtitlesDetailsViewModel);
         }
 
+        public IActionResult AddToFavourites(string id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var subtitlesFavouritesReference = _subtitlesService.FindSubtitles(id);
+
+            bool isSubtitlesAddedToFavourites = _favouritesService.AddToFavourites(userId, id);
+
+            if (!isSubtitlesAddedToFavourites)
+            {
+                TempData["SubtitlesCatalogueInfoMessage"] = $"{subtitlesFavouritesReference.Name} is already in favourites list!";
+
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            bool isNewUserFavouritesSavedToDatabase = _unitOfWork.CommitSaveChanges();
+
+            if (!isNewUserFavouritesSavedToDatabase)
+            {
+                TempData["SubtitlesCatalogueInfoMessage"] = "Couldn't save favourites to database!";
+
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            TempData["SubtitlesCatalogueInfoMessage"] = $"Sucessfully added {subtitlesFavouritesReference.Name} to favourites!";
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
         public async Task<IActionResult> DownloadSubtitles(string id)
         {
             var subtitles = _subtitlesService.GetAllToList()
@@ -138,7 +172,7 @@ namespace Subsogator.Web.Controllers
 
             if (!Directory.Exists(subtitlesDirectoryOutputPath))
             {
-                TempData["SubtitlesCatalogueErrorMessage"] =
+                TempData["SubtitlesCatalogueInfoMessage"] =
                    "An archive for this subtitles cannot be downloaded due to lack of uploaded files";
 
                 return RedirectToAction(nameof(Details), new { subtitles.Id });
@@ -188,7 +222,7 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewCommentCreated)
             {
-                TempData["CommentErrorMessage"] = "Couldn't create comment!";
+                TempData["SubtitlesCatalogueInfoMessage"] = "Couldn't create comment!";
 
                 return RedirectToAction(nameof(Details), new { subtitlesCatalogueDetailsViewModel.Id });
             }
@@ -197,12 +231,12 @@ namespace Subsogator.Web.Controllers
 
             if (!isNewCommentSavedToDatabase)
             {
-                TempData["CommentErrorMessage"] = "Couldn't save comment to database!";
+                TempData["SubtitlesCatalogueInfoMessage"] = "Couldn't save comment to database!";
 
                 return RedirectToAction(nameof(Details), new { subtitlesCatalogueDetailsViewModel.Id });
             }
 
-            TempData["CommentSuccessMessage"] = "Comment added successfully!";
+            TempData["SubtitlesCatalogueInfoMessage"] = "Comment added successfully!";
 
             return RedirectToAction(nameof(Details), new { subtitlesCatalogueDetailsViewModel.Id });
         }

@@ -27,11 +27,23 @@
         <dd class="col-sm-10 text-white">
             @Html.DisplayFor(director => director.CreatedOn)
         </dd>
-        <dt class="col-sm-2  text-white bg-info font-weight-normal">
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(director => director.CreatedBy)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(director=> director.CreatedBy)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
             @Html.DisplayNameFor(director => director.ModifiedOn)
         </dt>
         <dd class="col-sm-10 text-white">
             @Html.DisplayFor(director => director.ModifiedOn)
+        </dd>
+        <dt class="col-sm-2 text-white bg-info font-weight-normal">
+            @Html.DisplayNameFor(director => director.ModifiedBy)
+        </dt>
+        <dd class="col-sm-10 text-white">
+            @Html.DisplayFor(director => director.ModifiedBy)
         </dd>
         <dt class="col-sm-2 text-white bg-info font-weight-normal">
             Related Film Productions

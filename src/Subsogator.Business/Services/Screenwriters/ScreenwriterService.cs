@@ -68,7 +68,9 @@ namespace Subsogator.Business.Services.Screenwriters
                 FirstName = singleScreenwriter.FirstName,
                 LastName = singleScreenwriter.LastName,
                 CreatedOn = singleScreenwriter.CreatedOn,
+                CreatedBy = singleScreenwriter.CreatedBy,
                 ModifiedOn = singleScreenwriter.ModifiedOn,
+                ModifiedBy = singleScreenwriter.ModifiedBy,
                 RelatedFilmProductions = singleScreenwriter.FilmProductionScreenwriters
                     .Where(fps => fps.ScreenwriterId == singleScreenwriter.Id)
                     .Select(fps => new FilmProductionDetailedInformationViewModel
@@ -98,7 +100,8 @@ namespace Subsogator.Business.Services.Screenwriters
 
         public bool CreateScreenwriter(
             CreateScreenwriterBindingModel createScreenwriterBindingModel,
-            string[] selectedFilmProductions
+            string[] selectedFilmProductions,
+            string currentUserName
         )
         {
             Screenwriter screenwriterToCreate = new Screenwriter
@@ -127,6 +130,8 @@ namespace Subsogator.Business.Services.Screenwriters
                     screenwriterToCreate.FilmProductionScreenwriters.Add(filmProductionActorToAdd);
                 }
             }
+
+            screenwriterToCreate.CreatedBy = currentUserName;
 
             _screenwriterRepository.Add(screenwriterToCreate);
 
@@ -159,7 +164,8 @@ namespace Subsogator.Business.Services.Screenwriters
 
         public bool EditScreenwriter(
             EditScreenwriterBindingModel editScreenwriterBindingModel,
-            string[] selectedFilmProductions
+            string[] selectedFilmProductions,
+            string currentUserName
         )
         {
             var screenwriterToUpdate = _screenwriterRepository
@@ -180,6 +186,8 @@ namespace Subsogator.Business.Services.Screenwriters
             {
                 return false;
             }
+
+            screenwriterToUpdate.ModifiedBy = currentUserName;
 
             _screenwriterRepository.Update(screenwriterToUpdate);
 

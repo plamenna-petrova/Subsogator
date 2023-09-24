@@ -57,7 +57,9 @@ namespace Subsogator.Business.Services.Genres
                 Id = singleGenre.Id,
                 Name = singleGenre.Name,
                 CreatedOn = singleGenre.CreatedOn,
+                CreatedBy = singleGenre.CreatedBy,
                 ModifiedOn = singleGenre.ModifiedOn,
+                ModifiedBy = singleGenre.ModifiedBy,
                 RelatedFilmProductions = singleGenre.FilmProductionGenres
                     .Where(fpg => fpg.GenreId == singleGenre.Id)
                     .Select(fpg => new FilmProductionDetailedInformationViewModel
@@ -71,7 +73,7 @@ namespace Subsogator.Business.Services.Genres
             return singleGenreDetails;
         }
 
-        public bool CreateGenre(CreateGenreBindingModel createGenreBindingModel)
+        public bool CreateGenre(CreateGenreBindingModel createGenreBindingModel, string currentUserName)
         {
             Genre genreToCreate = new Genre
             {
@@ -84,6 +86,8 @@ namespace Subsogator.Business.Services.Genres
             {
                 return false;
             }
+
+            genreToCreate.CreatedBy = currentUserName;
 
             _genreRepository.Add(genreToCreate);
 
@@ -108,7 +112,7 @@ namespace Subsogator.Business.Services.Genres
             return countyToEditDetails;
         }
 
-        public bool EditGenre(EditGenreBindingModel editGenreBindingModel)
+        public bool EditGenre(EditGenreBindingModel editGenreBindingModel, string currentUserName)
         {
             var genreToUpdate = FindGenre(editGenreBindingModel.Id);
 
@@ -122,6 +126,8 @@ namespace Subsogator.Business.Services.Genres
             {
                 return false;
             }
+
+            genreToUpdate.ModifiedBy = currentUserName;
 
             _genreRepository.Update(genreToUpdate);
 

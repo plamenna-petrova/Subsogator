@@ -16,6 +16,7 @@ namespace Data.DataModels.Entities.Identity
             Logins = new HashSet<IdentityUserLogin<string>>();
             Subtitles = new HashSet<Subtitles>();
             Comments = new HashSet<Comment>();
+            Favourites = new HashSet<Favourites>();
         }
 
         public DateTime CreatedOn { get; set; }
@@ -35,5 +36,7 @@ namespace Data.DataModels.Entities.Identity
         public virtual ICollection<Subtitles> Subtitles { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
+
+        public virtual ICollection<Favourites> Favourites { get; set; }
     }
 }
