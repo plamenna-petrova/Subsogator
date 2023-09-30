@@ -33,15 +33,7 @@ namespace Subsogator.Web.Controllers
             int? pageSize,
             int? pageNumber)
         {
-            IEnumerable<AllGenresViewModel> allGenresViewModel = _genreService
-                .GetAllGenres();
-
-            bool isAllGenresViewModelEmpty = allGenresViewModel.Count() == 0;
-
-            if (isAllGenresViewModelEmpty)
-            {
-                return NotFound();
-            }
+            IEnumerable<AllGenresViewModel> allGenresViewModel = _genreService.GetAllGenres();
 
             ViewData["CurrentSort"] = sortOrder;
             ViewData["GenreNameSort"] = string.IsNullOrEmpty(sortOrder)
@@ -232,7 +224,7 @@ namespace Subsogator.Web.Controllers
                 TempData["GenreErrorMessage"] =
                     string.Format(NotificationMessages
                     .RecordFailedDeletionErrorMessage, "genre") +
-                    $"{genreToConfirmDeletion.Name}";
+                    $" {genreToConfirmDeletion.Name}";
 
                 return RedirectToAction(nameof(Delete));
             }

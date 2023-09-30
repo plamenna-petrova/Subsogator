@@ -25,7 +25,6 @@ namespace Data.DataAccess.Seeding
             {
                 IdentityConstants.AdministratorUsername,
                 IdentityConstants.EditorUsername,
-                IdentityConstants.TranslatorUsername,
                 IdentityConstants.UploaderUsername,
                 IdentityConstants.ExampleUserUsername
             };
@@ -33,7 +32,6 @@ namespace Data.DataAccess.Seeding
             string[] emails = {
                 IdentityConstants.AdministratorEmail,
                 IdentityConstants.EditorEmail,
-                IdentityConstants.TranslatorEmail,
                 IdentityConstants.UploaderEmail,
                 IdentityConstants.ExampleUserEmail
             };
@@ -42,7 +40,6 @@ namespace Data.DataAccess.Seeding
             {
                 IdentityConstants.AdministratorPassword,
                 IdentityConstants.EditorPassword,
-                IdentityConstants.TranslatorPassword,
                 IdentityConstants.UploaderPassword,
                 IdentityConstants.ExampleUserPassword
             };
@@ -51,7 +48,6 @@ namespace Data.DataAccess.Seeding
             {
                 IdentityConstants.AdministratorRoleName,
                 IdentityConstants.EditorRoleName,
-                IdentityConstants.TranslatorRoleName,
                 IdentityConstants.UploaderRoleName,
                 IdentityConstants.NormalUserRole
             };
@@ -67,33 +63,13 @@ namespace Data.DataAccess.Seeding
 
                 if (user == null)
                 {
-                    if (i <= Array.IndexOf(usernames, IdentityConstants.UploaderUsername))
+                    if (!await SeedUserAsync(userManager, usernames[i], emails[i], passwords[i], roles[i]))
                     {
-                        if (!await SeedUserAsync(
-                            userManager, usernames[i], 
-                            emails[i], passwords[i], roles[i]
-                        ))
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            createdUsersCounter++;
-                        }
+                        break;
                     }
                     else
                     {
-                        if (!await SeedUserAsync(
-                            userManager, usernames[i], 
-                            emails[i], passwords[i], roles[roles.Length - 1]
-                        ))
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            createdUsersCounter++;
-                        }
+                        createdUsersCounter++;
                     }
                 }
             }

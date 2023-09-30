@@ -19,8 +19,6 @@ namespace Subsogator.Web.Controllers
 
         private readonly IUnitOfWork _unitOfWork;
 
-        private const string template = "{0}, {1}, {2}";
-
         public ScreenwritersController(
             IScreenwriterService screenwriterService, 
             IUnitOfWork unitOfWork
@@ -40,13 +38,6 @@ namespace Subsogator.Web.Controllers
         )
         {
             IEnumerable<AllScreenwritersViewModel> allScreenwritersViewModel = _screenwriterService.GetAllScreenwriters();
-
-            bool isAllScreenwritersViewModelEmpty = allScreenwritersViewModel.Count() == 0;
-
-            if (isAllScreenwritersViewModelEmpty)
-            {
-                return NotFound();
-            }
 
             ViewData["CurrentSort"] = sortOrder;
             ViewData["ScreenwriterFirstNameSort"] = string.IsNullOrEmpty(sortOrder)
@@ -262,7 +253,7 @@ namespace Subsogator.Web.Controllers
                 TempData["ScreenwriterErrorMessage"] = string.Format(
                     NotificationMessages.RecordFailedDeletionErrorMessage,
                     "screenwriter"
-                   ) + $"{screenwriterToConfirmDeletion.FirstName} " +
+                   ) + $" {screenwriterToConfirmDeletion.FirstName} " +
                    $"{screenwriterToConfirmDeletion.LastName}";
 
                 return RedirectToAction(nameof(Delete));

@@ -41,15 +41,7 @@ namespace Subsogator.Web.Controllers
             int? pageSize,
             int? pageNumber)
         {
-            IEnumerable<AllCountriesViewModel> allCountriesViewModel = _countryService
-                .GetAllCountriesWithRelatedData();
-
-            bool isAllCountriesViewModelEmpty = allCountriesViewModel.Count() == 0;
-
-            if (isAllCountriesViewModelEmpty)
-            {
-                return NotFound();
-            }
+            IEnumerable<AllCountriesViewModel> allCountriesViewModel = _countryService.GetAllCountriesWithRelatedData();
 
             ViewData["CurrentSort"] = sortOrder;
             ViewData["CountryNameSort"] = string.IsNullOrEmpty(sortOrder)
@@ -242,9 +234,8 @@ namespace Subsogator.Web.Controllers
                     .RecordFailedDeletionErrorMessage;
 
                 TempData["CountryErrorMessage"] =
-                    string.Format(failedDeletionMessage, "country") + 
-                    $"{countryToConfirmDeletion.Name}!"
-                    + "Check the country relationship status!";
+                    string.Format(failedDeletionMessage, $" {countryToConfirmDeletion.Name}") + 
+                      "Check the country relationship status!";
 
                 return RedirectToAction(nameof(Delete));
             }

@@ -23,7 +23,6 @@ namespace Data.DataAccess.Seeding
             string[] roleNames = {
                 IdentityConstants.AdministratorRoleName, 
                 IdentityConstants.EditorRoleName, 
-                IdentityConstants.TranslatorRoleName,
                 IdentityConstants.UploaderRoleName,
                 IdentityConstants.NormalUserRole 
             };

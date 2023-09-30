@@ -12,11 +12,6 @@
         public const string EditorUsername = "editor";
         public const string EditorPassword = "Editor123/";
 
-        public const string TranslatorRoleName = "Translator";
-        public const string TranslatorEmail = "translator@translator.com";
-        public const string TranslatorUsername = "translator";
-        public const string TranslatorPassword = "Translator123/";
-
         public const string UploaderRoleName = "Uploader";
         public const string UploaderEmail = "uploader@uploader.com";
         public const string UploaderUsername = "uploader";

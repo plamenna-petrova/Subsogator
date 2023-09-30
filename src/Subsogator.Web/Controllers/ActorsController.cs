@@ -34,15 +34,7 @@ namespace Subsogator.Web.Controllers
             int? pageNumber
         )
         {
-            IEnumerable<AllActorsViewModel> allActorsViewModel = _actorService
-                    .GetAllActors();
-
-            bool isAllActorsViewModelEmpty = allActorsViewModel.Count() == 0;
-
-            if (isAllActorsViewModelEmpty)
-            {
-                return NotFound();
-            }
+            IEnumerable<AllActorsViewModel> allActorsViewModel = _actorService.GetAllActors();
 
             ViewData["CurrentSort"] = sortOrder;
             ViewData["ActorFirstNameSort"] = string.IsNullOrEmpty(sortOrder)
@@ -256,7 +248,7 @@ namespace Subsogator.Web.Controllers
                 TempData["ActorErrorMessage"] = string.Format(
                     NotificationMessages.RecordFailedDeletionErrorMessage,
                     "actor"
-                   ) + $"{actorToConfirmDeletion.FirstName} " +
+                   ) + $" {actorToConfirmDeletion.FirstName} " +
                    $"{actorToConfirmDeletion.LastName}";
 
                 return RedirectToAction(nameof(Delete));

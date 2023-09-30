@@ -1,8 +1,11 @@
-﻿using Data.DataAccess.Repositories.Interfaces;
+﻿using Data.DataAccess.Repositories.Implementation;
+using Data.DataAccess.Repositories.Interfaces;
+using Data.DataModels.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Subsogator.Web.Models.FilmProductions.ViewModels;
 using Subsogator.Web.Models.Subtitles.BindingModels;
 using Subsogator.Web.Models.Subtitles.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,17 +16,21 @@ namespace Subsogator.Business.Services.Subtitles
     {
         private readonly ISubtitlesRepository _subtitlesRepository;
 
+        private readonly ISubtitlesFilesRepository _subtitlesFilesRepository;
+
         private readonly IFilmProductionRepository _filmProductionRepository;
 
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public SubtitlesService(
             ISubtitlesRepository subtitlesRepository,
+            ISubtitlesFilesRepository subtitlesFilesRepository,
             IFilmProductionRepository filmProductionRepository,
             IWebHostEnvironment webHostEnvironment
         )
         {
             _subtitlesRepository = subtitlesRepository;
+            _subtitlesFilesRepository = subtitlesFilesRepository;
             _filmProductionRepository = filmProductionRepository;
             _webHostEnvironment = webHostEnvironment;
         }
@@ -88,10 +95,26 @@ namespace Subsogator.Business.Services.Subtitles
             var relatedFilmProduction = allFilmProductions
                 .Find(fp => fp.Id == createSubtitlesBindingModel.FilmProductionId);
 
+            Data.DataModels.Entities.Subtitles subtitlesToCreate = new Data.DataModels.Entities.Subtitles
+            {
+                FilmProductionId = createSubtitlesBindingModel.FilmProductionId,
+                Name = $"{relatedFilmProduction.Title} {relatedFilmProduction.ReleaseDate.Year}",
+                ApplicationUserId = userId
+            };
+
+            var allSubtitles = _subtitlesRepository.GetAllAsNoTracking();
+
+            if (_subtitlesRepository.Exists(allSubtitles, subtitlesToCreate))
+            {
+                return false;
+            }
+
             if (createSubtitlesBindingModel.Files is null || createSubtitlesBindingModel.Files.Count() == 0)
             {
                 return false;
             }
+
+            _subtitlesRepository.Add(subtitlesToCreate);
 
             string wwwRootPath = _webHostEnvironment.WebRootPath;
 
@@ -111,23 +134,15 @@ namespace Subsogator.Business.Services.Subtitles
                 {
                     file.CopyTo(fileStream);
                 }
+
+                var subtitlesFiles = new SubtitlesFiles
+                {
+                    FileName = file.FileName,
+                    SubtitlesId = subtitlesToCreate.Id
+                };
+
+                _subtitlesFilesRepository.Add(subtitlesFiles);
             }
-
-            Data.DataModels.Entities.Subtitles subtitlesToCreate = new Data.DataModels.Entities.Subtitles
-            {
-                FilmProductionId = createSubtitlesBindingModel.FilmProductionId,
-                Name = $"{relatedFilmProduction.Title} {relatedFilmProduction.ReleaseDate.Year}",
-                ApplicationUserId = userId
-            };
-
-            var allSubtitles = _subtitlesRepository.GetAllAsNoTracking();
-
-            if (_subtitlesRepository.Exists(allSubtitles, subtitlesToCreate))
-            {
-                return false;
-            }
-
-            _subtitlesRepository.Add(subtitlesToCreate);
 
             return true;
         }
@@ -135,8 +150,8 @@ namespace Subsogator.Business.Services.Subtitles
         public EditSubtitlesBindingModel GetSubtitlesEditingDetails(string actorId)
         {
             var subtitlesToEdit = _subtitlesRepository
-                    .GetAllByCondition(s => s.Id == actorId)
-                                .FirstOrDefault();
+                .GetAllByCondition(s => s.Id == actorId)
+                    .FirstOrDefault();
 
             if (subtitlesToEdit is null)
             {
@@ -177,8 +192,17 @@ namespace Subsogator.Business.Services.Subtitles
                 return false;
             }
 
+            _subtitlesRepository.Update(subtitlesToUpdate);
+
             if (editSubtitlesBindingModel.Files != null && editSubtitlesBindingModel.Files.Count() > 0)
             {
+                var existingSubtitlesFiles = GetSubtitlesFilesBySubtitlesId(subtitlesToUpdate.Id);
+
+                if (existingSubtitlesFiles != null)
+                {
+                    _subtitlesFilesRepository.DeleteRange(existingSubtitlesFiles.ToArray());
+                }
+
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
 
                 string subtitlesForFilmProductionDirectoryName = Path
@@ -210,10 +234,16 @@ namespace Subsogator.Business.Services.Subtitles
                     {
                         file.CopyTo(fileStream);
                     }
+
+                    var subtitlesFiles = new SubtitlesFiles
+                    {
+                        FileName = file.FileName,
+                        SubtitlesId = subtitlesToUpdate.Id
+                    };
+
+                    _subtitlesFilesRepository.Add(subtitlesFiles);
                 }
             }
-
-            _subtitlesRepository.Update(subtitlesToUpdate);
 
             return true;
         }
@@ -237,7 +267,21 @@ namespace Subsogator.Business.Services.Subtitles
 
         public void DeleteSubtitles(Data.DataModels.Entities.Subtitles subtitles)
         {
+            var subtitlesFilesToDelete = _subtitlesFilesRepository
+                  .GetAllByCondition(sf => sf.SubtitlesId == sf.SubtitlesId)
+                      .ToArray();
+
+            _subtitlesFilesRepository.DeleteRange(subtitlesFilesToDelete);
+
             _subtitlesRepository.Delete(subtitles);
+        }
+
+        public List<SubtitlesFiles> GetSubtitlesFilesBySubtitlesId(string id)
+        {
+            return _subtitlesFilesRepository
+                .GetAllAsNoTracking()
+                .Where(sf => sf.SubtitlesId == id)
+                .ToList();
         }
 
         public Data.DataModels.Entities.Subtitles FindSubtitles(string subtitlesId)

@@ -41,37 +41,48 @@
             </div>
         </div>
         <div class="col-lg-3">
-            @if (Model.LatestComments.Any())
+            @if (!Model.LatestComments.Any())
             {
-                <h4>Latest Comments</h4>
-
-                <ul class="list-group mb-3">
-                    @foreach (var latestComment in Model.LatestComments)
-                    {
-                        <li class="list-group-item">@latestComment.UserName commented on 
-                            <a class="link-primary" asp-action="Details" asp-route-id="@latestComment.SubtitlesId">
-                                @latestComment.SubtitlesName
-                            </a>
-                        </li>
-                    }
-                </ul>
+                <h5>There are currently no comments</h5>
+            }
+            else
+            {
+                <div class="mb-5">
+                    <h5>Latest Comments</h5>
+                    <ul class="list-group">
+                        @foreach (var latestComment in Model.LatestComments)
+                        {
+                            <li class="list-group-item">
+                                @latestComment.UserName commented on
+                                <a class="link-primary" asp-action="Details" asp-route-id="@latestComment.SubtitlesId">
+                                    @latestComment.SubtitlesName
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
             }
 
-            @if (Model.TopSubtitles.Any())
+            @if (!Model.TopSubtitles.Any())
             {
-                <h4>Top Subtitles</h4>
-
-                <ul class="list-group mb-3">
-                    @foreach (var topSubtitlesEntry in Model.TopSubtitles)
-                    {
-                        <li class="list-group-item">
-                            <a class="link-primary" asp-action="Details" asp-route-id="@topSubtitlesEntry.Id">
-                                @topSubtitlesEntry.Name
-                            </a>
-                            uploaded by @topSubtitlesEntry.UploaderUserName
-                        </li>
-                    }
-                </ul>
+                <h5>No subtitles have been added to favourites yet</h5>
+            }
+            else
+            {
+                <div>
+                    <h5>Top Subtitles</h5>
+                    <ul class="list-group mb-3">
+                        @foreach (var topSubtitlesEntry in Model.TopSubtitles)
+                        {
+                            <li class="list-group-item">
+                                <a class="link-primary" asp-action="Details" asp-route-id="@topSubtitlesEntry.Id">
+                                    @topSubtitlesEntry.Name
+                                </a>
+                                uploaded by @topSubtitlesEntry.UploaderUserName
+                            </li>
+                        }
+                    </ul>
+                </div>
             }
         </div>
     </div>

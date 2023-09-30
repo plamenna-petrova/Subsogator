@@ -52,16 +52,7 @@ namespace Subsogator.Web.Controllers
             int? pageNumber)
         {
             IEnumerable<AllFilmProductionsViewModel> allFilmProductionsViewModel =
-                _filmProductionService
-                    .GetAllFilmProductionsWithRelatedData();
-
-            bool isAllFilmProductionsViewModelEmpty =
-                allFilmProductionsViewModel.Count() == 0;
-
-            if (isAllFilmProductionsViewModelEmpty)
-            {
-                return NotFound();
-            }
+                _filmProductionService.GetAllFilmProductionsWithRelatedData();
 
             ViewData["CurrentSort"] = sortOrder;
             ViewData["FilmProductionTitleSort"] = string.IsNullOrEmpty(sortOrder)
@@ -333,8 +324,9 @@ namespace Subsogator.Web.Controllers
                     .RecordFailedDeletionErrorMessage;
 
                 TempData["FilmProductionErrorMessage"] =
-                    string.Format(failedDeletionMessage, "film production") +
-                    $"{filmProductionToConfirmDeletion.Title}!"
+                    string.Format(
+                        failedDeletionMessage, 
+                        $" film production {filmProductionToConfirmDeletion.Title}")
                     + "Check the film production relationship status!";
 
                 return RedirectToAction(nameof(Delete));

@@ -16,7 +16,7 @@ namespace Data.DataAccess.EntityTypeConfigurations
             entityTypeBuilder
                .HasOne(c => c.Subtitles)
                .WithMany(s => s.Comments)
-               .OnDelete(DeleteBehavior.NoAction);
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -114,8 +114,8 @@ namespace Subsogator.Web.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            Favourites favouritesToRemove = _favouritesService.FindFavourites(userId, id);
-            Subtitles favouriteSubtitles = _subtitlesService.FindSubtitles(favouritesToRemove.SubtitlesId);
+            var favouritesToRemove = _favouritesService.FindFavourites(userId, id);
+            var favouriteSubtitles = _subtitlesService.FindSubtitles(favouritesToRemove.SubtitlesId);
 
             _favouritesService.RemoveFromFavourites(favouritesToRemove);
 
@@ -128,7 +128,7 @@ namespace Subsogator.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["FavouritesInfoMessage"] = $"Success. Removed from {favouriteSubtitles} favourites";
+            TempData["FavouritesInfoMessage"] = $"Success. Removed from {favouriteSubtitles.Name} favourites";
 
             return RedirectToIndexActionInCurrentController();
         }

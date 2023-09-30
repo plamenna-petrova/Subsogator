@@ -30,6 +30,17 @@
                 <input asp-for="Files" type="file" accept=".srt" class="form-control" multiple />
                 <span asp-validation-for="Files" class="text-danger"></span>
             </div>
+            @if (ViewBag.ExistingSubtitlesFilesNames != null)
+            {
+                <span>Already uploaded files : </span>
+
+                <ul>
+                    @foreach (var existingSubtitlesFileName in ViewBag.ExistingSubtitlesFilesNames)
+                    {
+                        <li>@existingSubtitlesFileName</li>
+                    }
+                </ul>
+            } 
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

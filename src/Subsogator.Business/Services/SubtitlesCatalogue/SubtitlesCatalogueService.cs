@@ -11,11 +11,11 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
 {
     public class SubtitlesCatalogueService: ISubtitlesCatalogueService
     {
-        private ISubtitlesRepository _subtitlesRepository;
+        private readonly ISubtitlesRepository _subtitlesRepository;
 
-        private ICommentRepository _commentRepository;
+        private readonly ICommentRepository _commentRepository;
 
-        private IFavouritesRepository _favouritesRepository;
+        private readonly IFavouritesRepository _favouritesRepository;
 
         public SubtitlesCatalogueService(
             ISubtitlesRepository subtitlesRepository, 
@@ -54,6 +54,7 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
             List<LatestCommentViewModel> latestComments = _commentRepository
                 .GetAllAsNoTracking()
                     .OrderByDescending(c => c.CreatedOn)
+                        .Take(5)
                         .Select(c => new LatestCommentViewModel
                         {
                             SubtitlesId = c.Subtitles.Id,
@@ -63,12 +64,12 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
                         .ToList();
 
             var topSubtitlesIds = _favouritesRepository
-                .GetAllAsNoTracking()
-                    .GroupBy(f => f.SubtitlesId)
-                        .OrderByDescending(fgr => fgr.Count())
-                            .Take(5)
-                                .Select(fgr => fgr.Key)
-                                .ToList();
+               .GetAllAsNoTracking()
+                   .GroupBy(f => f.SubtitlesId)
+                       .OrderByDescending(fgr => fgr.Count())
+                           .Take(5)
+                               .Select(fgr => fgr.Key)
+                               .ToList();
 
             List<TopSubtitlesViewModel> topSubtitles = new List<TopSubtitlesViewModel>();
 

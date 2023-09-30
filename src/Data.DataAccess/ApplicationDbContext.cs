@@ -63,6 +63,8 @@ namespace Data.DataAccess
 
         public virtual DbSet<Favourites> Favourites { get; set; }
 
+        public virtual DbSet<SubtitlesFiles> SubtitlesFiles { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
         {
             dbContextOptionsBuilder.UseLazyLoadingProxies();

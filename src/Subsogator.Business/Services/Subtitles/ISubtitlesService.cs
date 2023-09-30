@@ -1,5 +1,7 @@
-﻿using Subsogator.Web.Models.Subtitles.BindingModels;
+﻿using Data.DataModels.Entities;
+using Subsogator.Web.Models.Subtitles.BindingModels;
 using Subsogator.Web.Models.Subtitles.ViewModels;
+using System;
 using System.Collections.Generic;
 
 namespace Subsogator.Business.Services.Subtitles
@@ -21,6 +23,8 @@ namespace Subsogator.Business.Services.Subtitles
         DeleteSubtitlesViewModel GetSubtitlesDeletionDetails(string subtitlesId);
 
         void DeleteSubtitles(Data.DataModels.Entities.Subtitles subtitles);
+
+        List<SubtitlesFiles> GetSubtitlesFilesBySubtitlesId(string id);
 
         Data.DataModels.Entities.Subtitles FindSubtitles(string subtielsId);
     }

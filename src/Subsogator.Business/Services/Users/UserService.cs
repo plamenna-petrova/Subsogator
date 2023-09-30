@@ -16,24 +16,24 @@ namespace Subsogator.Business.Services.Users
 {
     public class UserService: IUserService
     {
-        private readonly ApplicationDbContext _applicationDbContext;
-
         private readonly IUserRepository _userRepository;
 
         private readonly ISubtitlesRepository _subtitlesRepository;
 
+        private readonly IFavouritesRepository _favouritesRepository;
+
         private readonly UserManager<ApplicationUser> _userManager;
 
         public UserService(
-            ApplicationDbContext applicationDbContext,
             IUserRepository userRepository, 
-            ISubtitlesRepository subtitlesRepository, 
+            ISubtitlesRepository subtitlesRepository,
+            IFavouritesRepository favouritesRepository,
             UserManager<ApplicationUser> userManager
         )
         {
-            _applicationDbContext = applicationDbContext;
             _userRepository = userRepository;
             _subtitlesRepository = subtitlesRepository;
+            _favouritesRepository = favouritesRepository;
             _userManager = userManager;
         }
 
@@ -188,6 +188,12 @@ namespace Subsogator.Business.Services.Users
                     .ToArray();
 
                 _subtitlesRepository.DeleteRange(subtitlesOfUser);
+
+                var userFavourites = _favouritesRepository.GetAllAsNoTracking()
+                    .Where(f => f.ApplicationUserId == managedUserToDelete.Id)
+                    .ToArray();
+
+                _favouritesRepository.DeleteRange(userFavourites);
 
                 await _userManager.DeleteAsync(managedUserToDelete);
 

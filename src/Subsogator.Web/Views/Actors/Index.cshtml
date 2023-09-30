@@ -15,82 +15,88 @@
         @TempData["ActorSuccessMessage"]
     </div>
 }
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            <b>Search by actor names: </b>
-            <input type="text" name="SearchTerm" class="search-term-input"
-                   value="@ViewData["ActorSearchFilter"]" />
-            <input type="submit" value="Search" class="btn btn-success" />
-            <a asp-action="Index" class="btn btn-primary">Reset</a>
-        </p>
-    </div>
-</form>
 
-<table class="table table-bordered table-dark table-striped table-hover mt-3">
-    <thead class="thead-light">
-        <tr class="text-center">
-            <th>
-                <a asp-action="Index" class="sorting-link" 
-                   asp-route-sortOrder="@ViewData["ActorFirstNameSort"]"
-                   asp-route-currentFilter="@ViewData["ActorSearchFilter"]">
-                    @Html.DisplayNameFor(actor => actor.ViewModel.FirstName)
-                </a>
-            </th>
-            <th>
-                <a asp-action="Index" class="sorting-link" 
-                   asp-route-sortOrder="@ViewData["ActorLastNameSort"]"
-                   asp-route-currentFilter="@ViewData["ActorSearchFilter"]">
-                    @Html.DisplayNameFor(actor => actor.ViewModel.LastName)
-                </a>
-            </th>
-            <th>
-                Related Film Productions
-            </th>
-            <th>
-                Actions
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var actor in Model)
-        {
+@if (!Model.Any())
+{
+    <h3>There are currently no actors</h3>
+}
+else
+{
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <p>
+                <b>Search by actor names: </b>
+                <input type="text" name="SearchTerm" class="search-term-input"
+                       value="@ViewData["ActorSearchFilter"]" />
+                <input type="submit" value="Search" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-primary">Reset</a>
+            </p>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-dark table-striped table-hover mt-3">
+        <thead class="thead-light">
             <tr class="text-center">
-                <td>
-                    @Html.DisplayFor(actorModelItem => actor.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(actorModelItem => actor.LastName)
-                </td>
-                <td>
-                    <ul>
-                        @if (actor.RelatedFilmProductions.Count() > 0)
-                        {
-                            @foreach (var filmProduction in actor.RelatedFilmProductions)
-                            {
-                                <li>@filmProduction.Title</li>
-                            }
-                        }
-                        else
-                        {
-                            <li>No Related Film Productions</li>
-                        }
-                    </ul>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@actor.Id"
-                       class="btn btn-light">Edit</a>
-                    <a asp-action="Details" asp-route-id="@actor.Id"
-                       class="btn btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@actor.Id"
-                       class="btn btn-danger">Delete</a>
-                </td>
+                <th>
+                    <a asp-action="Index" class="sorting-link"
+                       asp-route-sortOrder="@ViewData["ActorFirstNameSort"]"
+                       asp-route-currentFilter="@ViewData["ActorSearchFilter"]">
+                        @Html.DisplayNameFor(actor => actor.ViewModel.FirstName)
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index" class="sorting-link"
+                       asp-route-sortOrder="@ViewData["ActorLastNameSort"]"
+                       asp-route-currentFilter="@ViewData["ActorSearchFilter"]">
+                        @Html.DisplayNameFor(actor => actor.ViewModel.LastName)
+                    </a>
+                </th>
+                <th>
+                    Related Film Productions
+                </th>
+                <th>
+                    Actions
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var actor in Model)
+            {
+                <tr class="text-center">
+                    <td>
+                        @Html.DisplayFor(actorModelItem => actor.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(actorModelItem => actor.LastName)
+                    </td>
+                    <td>
+                        <ul>
+                            @if (actor.RelatedFilmProductions.Count() > 0)
+                            {
+                                @foreach (var filmProduction in actor.RelatedFilmProductions)
+                                {
+                                    <li>@filmProduction.Title</li>
+                                }
+                            }
+                            else
+                            {
+                                <li>No Related Film Productions</li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@actor.Id"
+                           class="btn btn-light">Edit</a>
+                        <a asp-action="Details" asp-route-id="@actor.Id"
+                           class="btn btn-info">Details</a>
+                        <a asp-action="Delete" asp-route-id="@actor.Id"
+                           class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-@{
     var isPreviousPageDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var isNextPageDisabled = !Model.HasNextPage ? "disabled" : "";
 
@@ -109,61 +115,62 @@
 
         return pageButtonClassName;
     }
+
+    <div class="row">
+        <div class="col-5">
+            <a asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-pageSize="@ViewData["CurrentPageSize"]"
+               asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
+               class="btn btn-outline-primary @isPreviousPageDisabled">
+                Previous
+            </a>
+
+            @for (int pageIndex = 1; pageIndex <= @Model.TotalPages; pageIndex++)
+            {
+                <a class="btn @getPageButtonAdditionalClassName(pageIndex)"
+                   asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
+                   asp-route-pageSize="@ViewData["CurrentPageSize"]"
+                   asp-route-pageNumber="@pageIndex">
+                    @pageIndex
+                </a>
+            }
+
+            <a asp-action="Index"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-pageSize="@ViewData["CurrentPageSize"]"
+               asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
+               class="btn btn-outline-primary @isNextPageDisabled">
+                Next
+            </a>
+        </div>
+        <div class="col-5">
+            <form>
+                <div class="form-group">
+                    <label asp-for="PageResults" class="control-label"></label>
+                    <select name="PageSize" asp-for="PageResults"
+                            class="form-control page-size-select"
+                        asp-items="Html.GetEnumSelectList<PageResultsEnum>()">
+                    </select>
+                    <span asp-validation-for="PageResults" class="text-danger"></span>
+                </div>
+                <a class="btn btn-outline-primary text-primary change-page-size-button"
+                   asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]">
+                    Change
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-5">
+            <div class="mt-2">Page @Model.PageIndex out of @Model.TotalPages </div>
+        </div>
+    </div>
 }
 
-<div class="row">
-    <div class="col-5">
-        <a asp-action="Index"
-           asp-route-sortOrder="@ViewData["CurrentSort"]"
-           asp-route-pageNumber="@(Model.PageIndex - 1)"
-           asp-route-pageSize="@ViewData["CurrentPageSize"]"
-           asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
-           class="btn btn-outline-primary @isPreviousPageDisabled">
-            Previous
-        </a>
-
-        @for (int pageIndex = 1; pageIndex <= @Model.TotalPages; pageIndex++)
-        {
-            <a class="btn @getPageButtonAdditionalClassName(pageIndex)"
-               asp-action="Index"
-               asp-route-sortOrder="@ViewData["CurrentSort"]"
-               asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
-               asp-route-pageSize="@ViewData["CurrentPageSize"]"
-               asp-route-pageNumber="@pageIndex">
-                @pageIndex
-            </a>
-        }
-
-        <a asp-action="Index"
-           asp-route-sortOrder="@ViewData["CurrentSort"]"
-           asp-route-pageNumber="@(Model.PageIndex + 1)"
-           asp-route-pageSize="@ViewData["CurrentPageSize"]"
-           asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
-           class="btn btn-outline-primary @isNextPageDisabled">
-            Next
-        </a>
-    </div>
-    <div class="col-5">
-        <form>
-            <div class="form-group">
-                <label asp-for="PageResults" class="control-label"></label>
-                <select name="PageSize" asp-for="PageResults"
-                        class="form-control page-size-select"
-                        asp-items="Html.GetEnumSelectList<PageResultsEnum>()">
-                </select>
-                <span asp-validation-for="PageResults" class="text-danger"></span>
-            </div>
-            <a class="btn btn-outline-primary text-primary change-page-size-button"
-               asp-action="Index"
-               asp-route-sortOrder="@ViewData["CurrentSort"]">
-                Change
-            </a>
-        </form>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-5">
-        <div class="mt-2">Page @Model.PageIndex out of @Model.TotalPages </div>
-    </div>
-</div>

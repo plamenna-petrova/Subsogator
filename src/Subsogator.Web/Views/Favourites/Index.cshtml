@@ -36,22 +36,22 @@ else
             <tr class="text-center">
                 <th>
                     <a asp-action="Index" class="sorting-link"
-                   asp-route-sortOrder="@ViewData["SubtitlesNameSort"]"
-                   asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]">
+                       asp-route-sortOrder="@ViewData["SubtitlesNameSort"]"
+                       asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]">
                         @Html.DisplayNameFor(favourites => favourites.ViewModel.Name)
                     </a>
                 </th>
                 <th>
                     <a asp-action="Index" class="sorting-link"
-                   asp-route-sortOrder="@ViewData["FilmProductionTitleSort"]"
-                   asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]">
+                       asp-route-sortOrder="@ViewData["FilmProductionTitleSort"]"
+                       asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]">
                         @Html.DisplayNameFor(favourites => favourites.ViewModel.RelatedFilmProduction.Title)
                     </a>
                 </th>
                 <th>
                     <a asp-action="Index" class="sorting-link"
-                   asp-route-sortOrder="@ViewData["UploaderNameSort"]"
-                   asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]">
+                       asp-route-sortOrder="@ViewData["UploaderNameSort"]"
+                       asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]">
                         @Html.DisplayNameFor(favourites => favourites.ViewModel.UploaderUserName)
                     </a>
                 </th>
@@ -115,11 +115,11 @@ else
             @for (int pageIndex = 1; pageIndex <= @Model.TotalPages; pageIndex++)
             {
                 <a class="btn @getPageButtonAdditionalClassName(pageIndex)"
-               asp-action="Index"
-               asp-route-sortOrder="@ViewData["CurrentSort"]"
-               asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]"
-               asp-route-pageSize="@ViewData["CurrentPageSize"]"
-               asp-route-pageNumber="@pageIndex">
+                   asp-action="Index"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-currentFilter="@ViewData["FavouritesSearchFilter"]"
+                   asp-route-pageSize="@ViewData["CurrentPageSize"]"
+                   asp-route-pageNumber="@pageIndex">
                     @pageIndex
                 </a>
             }

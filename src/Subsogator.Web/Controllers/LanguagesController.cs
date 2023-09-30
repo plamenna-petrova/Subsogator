@@ -41,15 +41,7 @@ namespace Subsogator.Web.Controllers
             int? pageSize,
             int? pageNumber)
         {
-            IEnumerable<AllLanguagesViewModel> allLanguagesViewModel = _languageService
-                .GetAllLanguagesWithRelatedData();
-
-            bool isAllLanguagesViewModelEmpty = allLanguagesViewModel.Count() == 0;
-
-            if (isAllLanguagesViewModelEmpty)
-            {
-                return NotFound();
-            }
+            IEnumerable<AllLanguagesViewModel> allLanguagesViewModel = _languageService.GetAllLanguagesWithRelatedData();
 
             ViewData["CurrentSort"] = sortOrder;
             ViewData["LanguageNameSort"] = string.IsNullOrEmpty(sortOrder)
@@ -243,7 +235,7 @@ namespace Subsogator.Web.Controllers
 
                 TempData["LanguageErrorMessage"] = 
                     string.Format(failedDeletionMessage, "language") + 
-                    $"{languageToConfirmDeletion.Name}!"
+                    $" {languageToConfirmDeletion.Name}"
                     + "Check the language relationship status!";
 
                 return RedirectToAction(nameof(Delete));

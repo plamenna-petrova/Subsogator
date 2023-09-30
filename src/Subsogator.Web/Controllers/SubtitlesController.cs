@@ -43,15 +43,7 @@ namespace Subsogator.Web.Controllers
             int? pageNumber
         )
         {
-            IEnumerable<AllSubtitlesViewModel> allSubtitlesViewModel = _subtitlesService
-                    .GetAllSubtitles();
-
-            bool isAllSubtitlesViewModelEmpty = allSubtitlesViewModel.Count() == 0;
-
-            if (isAllSubtitlesViewModelEmpty)
-            {
-                return NotFound();
-            }
+            IEnumerable<AllSubtitlesViewModel> allSubtitlesViewModel = _subtitlesService.GetAllSubtitles();
 
             ViewData["CurrentSort"] = sortOrder;
             ViewData["SubtitlesNameSort"] = string.IsNullOrEmpty(sortOrder)
@@ -187,9 +179,7 @@ namespace Subsogator.Web.Controllers
         [Authorize(Roles = "Administrator, Editor, Uploader")]
         public IActionResult Edit(string id)
         {
-            EditSubtitlesBindingModel editSubtitlesBindingModel =
-               _subtitlesService
-                   .GetSubtitlesEditingDetails(id);
+            EditSubtitlesBindingModel editSubtitlesBindingModel = _subtitlesService.GetSubtitlesEditingDetails(id);
 
             if (editSubtitlesBindingModel == null)
             {
@@ -217,6 +207,14 @@ namespace Subsogator.Web.Controllers
                 ViewData["FilmProductionByTitle"] = new SelectList(
                     allFilmProductionsForSelectList, "Id", "Title"
                 );
+            }
+
+            var subtitlesFilesBySubtitlesId = _subtitlesService.GetSubtitlesFilesBySubtitlesId(editSubtitlesBindingModel.Id);
+
+            if (subtitlesFilesBySubtitlesId.Any())
+            {
+                ViewData["ExistingSubtitlesFilesNames"] = subtitlesFilesBySubtitlesId
+                    .Select(sf => sf.FileName).ToList();
             }
 
             return View(editSubtitlesBindingModel);
@@ -313,8 +311,9 @@ namespace Subsogator.Web.Controllers
                     .RecordFailedDeletionErrorMessage;
 
                 TempData["SubtitlesErrorMessage"] =
-                    string.Format(subtitlesFailedDeletionMessage, "subtitles") +
-                    $"{subtitlesToConfirmDeletion.Name}!"
+                    string.Format(
+                        subtitlesFailedDeletionMessage, 
+                        $" subtitles {subtitlesToConfirmDeletion.Name}") 
                     + "Check the subtitles relationship status!";
 
                 return RedirectToAction(nameof(Delete));

@@ -34,15 +34,7 @@ namespace Subsogator.Web.Controllers
             int? pageNumber
         )
         {
-            IEnumerable<AllDirectorsViewModel> allDirectorsViewModel = _directorService
-                    .GetAllDirectors();
-
-            bool isAllDirectorsViewModelEmpty = allDirectorsViewModel.Count() == 0;
-
-            if (isAllDirectorsViewModelEmpty)
-            {
-                return NotFound();
-            }
+            IEnumerable<AllDirectorsViewModel> allDirectorsViewModel = _directorService.GetAllDirectors();
 
             ViewData["CurrentSort"] = sortOrder;
             ViewData["DirectorFirstNameSort"] = string.IsNullOrEmpty(sortOrder)
@@ -257,7 +249,7 @@ namespace Subsogator.Web.Controllers
                 TempData["DirectorErrorMessage"] = string.Format(
                     NotificationMessages.RecordFailedDeletionErrorMessage,
                     "director"
-                   ) + $"{directorToConfirmDeletion.FirstName} " +
+                   ) + $" {directorToConfirmDeletion.FirstName} " +
                    $"{directorToConfirmDeletion.LastName}";
 
                 return RedirectToAction(nameof(Delete));
