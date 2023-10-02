@@ -53,6 +53,7 @@ namespace TestConsole
                         var sciFiGenre = applicationDbContext.Genres
                                 .Where(g => g.Name == newGenre.Name)
                                 .SingleOrDefault();
+
                         applicationDbContext.Remove(sciFiGenre);
                     }
 
@@ -61,11 +62,13 @@ namespace TestConsole
                     genresToAdd.ToList().ForEach(x =>
                     {
                         Expression<Func<Genre, bool>> genreRemovalPedicate = g => g.Name == x.Name;
+
                         if (applicationDbContext.Genres.Any(genreRemovalPedicate))
                         {
                             var genreToRemove = applicationDbContext.Genres
                                 .Where(genreRemovalPedicate)
                                 .SingleOrDefault();
+
                             applicationDbContext.Genres.Remove(genreToRemove);
                         }
                     });

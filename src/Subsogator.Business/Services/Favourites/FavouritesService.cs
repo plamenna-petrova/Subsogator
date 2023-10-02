@@ -16,7 +16,10 @@ namespace Subsogator.Business.Services.Favourites
 
         private ISubtitlesRepository _subtitlesRepository;
 
-        public FavouritesService(IFavouritesRepository favouritesRepository, ISubtitlesRepository subtitlesRepository)
+        public FavouritesService(
+            IFavouritesRepository favouritesRepository, 
+            ISubtitlesRepository subtitlesRepository
+        )
         {
             _favouritesRepository = favouritesRepository;
             _subtitlesRepository = subtitlesRepository;

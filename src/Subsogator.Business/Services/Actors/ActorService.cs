@@ -224,7 +224,10 @@ namespace Subsogator.Business.Services.Actors
                     .GetAllByCondition(fpa => fpa.ActorId == actor.Id)
                         .ToArray();
 
-            _filmProductionActorRepository.DeleteRange(filmProductionActorsByActor);
+            if (filmProductionActorsByActor.Any())
+            {
+                _filmProductionActorRepository.DeleteRange(filmProductionActorsByActor);
+            }
 
             _actorRepository.Delete(actor);
         }

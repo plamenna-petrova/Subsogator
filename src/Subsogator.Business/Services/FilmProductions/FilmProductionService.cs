@@ -431,10 +431,25 @@ namespace Subsogator.Business.Services.FilmProductions
                     .GetAllByCondition(fps => fps.FilmProductionId == filmProduction.Id)
                         .ToArray();
 
-            _filmProductionGenreRepository.DeleteRange(filmProductionGenresByFilmProduction);
-            _filmProductionActorRepository.DeleteRange(filmProductionActorsByFilmProduction);
-            _filmProductonDirectorRepository.DeleteRange(filmProductionDirectorsByFilmProduction);
-            _filmProductionScreenwriterRepository.DeleteRange(filmProductionScreewritersByFilmProduction);
+            if (filmProductionGenresByFilmProduction.Any())
+            {
+                _filmProductionGenreRepository.DeleteRange(filmProductionGenresByFilmProduction);
+            }
+
+            if (filmProductionActorsByFilmProduction.Any())
+            {
+                _filmProductionActorRepository.DeleteRange(filmProductionActorsByFilmProduction);
+            } 
+
+            if (filmProductionDirectorsByFilmProduction.Any())
+            {
+                _filmProductonDirectorRepository.DeleteRange(filmProductionDirectorsByFilmProduction);
+            }
+
+            if (filmProductionScreewritersByFilmProduction.Any())
+            {
+                _filmProductionScreenwriterRepository.DeleteRange(filmProductionScreewritersByFilmProduction);
+            }
 
             _filmProductionRepository.Delete(filmProduction);
         }

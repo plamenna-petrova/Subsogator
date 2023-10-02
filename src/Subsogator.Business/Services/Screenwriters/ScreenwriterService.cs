@@ -223,7 +223,10 @@ namespace Subsogator.Business.Services.Screenwriters
                     .GetAllByCondition(fps => fps.ScreenwriterId == screenwriter.Id)
                         .ToArray();
 
-            _filmProductionScreenwriterRepository.DeleteRange(filmProductionScreenwritersByScreenwriter);
+            if (filmProductionScreenwritersByScreenwriter.Any()) 
+            {
+                _filmProductionScreenwriterRepository.DeleteRange(filmProductionScreenwritersByScreenwriter);
+            }
 
             _screenwriterRepository.Delete(screenwriter);
         }

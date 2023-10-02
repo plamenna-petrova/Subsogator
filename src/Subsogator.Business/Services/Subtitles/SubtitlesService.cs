@@ -271,7 +271,10 @@ namespace Subsogator.Business.Services.Subtitles
                   .GetAllByCondition(sf => sf.SubtitlesId == sf.SubtitlesId)
                       .ToArray();
 
-            _subtitlesFilesRepository.DeleteRange(subtitlesFilesToDelete);
+            if (subtitlesFilesToDelete.Any())
+            {
+                _subtitlesFilesRepository.DeleteRange(subtitlesFilesToDelete);
+            }
 
             _subtitlesRepository.Delete(subtitles);
         }

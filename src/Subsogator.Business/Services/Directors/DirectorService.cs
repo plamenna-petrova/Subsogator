@@ -220,7 +220,10 @@ namespace Subsogator.Business.Services.Directors
                     .GetAllByCondition(fpd => fpd.DirectorId == director.Id)
                         .ToArray();
 
-            _filmProductionDirectorRepository.DeleteRange(filmProductionDirectorsByDirector);
+            if (filmProductionDirectorsByDirector.Any()) 
+            {
+                _filmProductionDirectorRepository.DeleteRange(filmProductionDirectorsByDirector);
+            }
 
             _directorRepository.Delete(director);
         }

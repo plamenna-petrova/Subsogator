@@ -54,22 +54,22 @@ namespace Subsogator.Business.Services.SubtitlesCatalogue
             List<LatestCommentViewModel> latestComments = _commentRepository
                 .GetAllAsNoTracking()
                     .OrderByDescending(c => c.CreatedOn)
-                        .Take(5)
-                        .Select(c => new LatestCommentViewModel
-                        {
-                            SubtitlesId = c.Subtitles.Id,
-                            SubtitlesName = c.Subtitles.Name,
-                            UserName = c.ApplicationUser.UserName
-                        })
-                        .ToList();
+                    .Take(5)
+                    .Select(c => new LatestCommentViewModel
+                    {
+                        SubtitlesId = c.Subtitles.Id,
+                        SubtitlesName = c.Subtitles.Name,
+                        UserName = c.ApplicationUser.UserName
+                    })
+                    .ToList();
 
             var topSubtitlesIds = _favouritesRepository
                .GetAllAsNoTracking()
                    .GroupBy(f => f.SubtitlesId)
-                       .OrderByDescending(fgr => fgr.Count())
-                           .Take(5)
-                               .Select(fgr => fgr.Key)
-                               .ToList();
+                   .OrderByDescending(fgr => fgr.Count())
+                   .Take(5)
+                   .Select(fgr => fgr.Key)
+                   .ToList();
 
             List<TopSubtitlesViewModel> topSubtitles = new List<TopSubtitlesViewModel>();
 
