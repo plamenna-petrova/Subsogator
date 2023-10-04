@@ -72,9 +72,11 @@ namespace Data.DataAccess
             if (!dbContextOptionsBuilder.IsConfigured)
             {
                 string secretsJSONFullPath = ConnectionConstants.DatabaseConnectionString;
+
                 _configurationBuilder = new ConfigurationBuilder()
                     .SetBasePath(Path.Join(secretsJSONFullPath))
                     .AddJsonFile(ConnectionConstants.SecretsJSONFileName);
+
                 _configurationRoot = _configurationBuilder.Build();
 
                 dbContextOptionsBuilder

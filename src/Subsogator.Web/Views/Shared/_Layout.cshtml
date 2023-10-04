@@ -71,13 +71,13 @@
                         @if (User.IsInRole(NormalUserRole))
                         {
                             <li>
-                                <a asp-controller="Home" asp-action="BecomeAnUploader" class="btn btn-primary">Become An Uploader</a>
+                                <a asp-controller="Home" asp-action="BecomeAnUploader" class="btn btn-primary ml-3">Become An Uploader</a>
                             </li>
                         }
                         @if (User.IsInRole(UploaderRoleName))
                         {
                             <li>
-                                <a asp-controller="Home" asp-action="BecomeAnEditor" class="btn btn-primary">Become An Editor</a>
+                                <a asp-controller="Home" asp-action="BecomeAnEditor" class="btn btn-primary ml-3">Become An Editor</a>
                             </li>
                         }
                     </ul>

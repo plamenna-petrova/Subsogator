@@ -131,6 +131,8 @@ namespace Subsogator.Web.Controllers
             }
             else
             {
+                TempData["SubtitlesErrorMessage"] = "No free film productions to create new subtitles";
+
                 return RedirectToIndexActionInCurrentController();
             }
 

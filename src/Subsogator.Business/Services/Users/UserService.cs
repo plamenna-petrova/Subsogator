@@ -97,11 +97,11 @@ namespace Subsogator.Business.Services.Users
             {
                 case EditorRoleName:
                     await AssignRole(user, EditorRoleName, UploaderRoleName);
-                    DeclinePromotion(user.Id);
+                    NeutralizePromotion(user.Id);
                     break;
                 case UploaderRoleName:
                     await AssignRole(user, UploaderRoleName, NormalUserRole);
-                    DeclinePromotion(user.Id);
+                    NeutralizePromotion(user.Id);
                     break;
             }
         }
@@ -121,6 +121,21 @@ namespace Subsogator.Business.Services.Users
             }
 
             _userRepository.Update(user);
+        }
+
+        public void NeutralizePromotion(string userId)
+        {
+            var user = FindUser(userId);
+
+            if (user.PromotionStatus == PromotionStatus.Pending)
+            {
+                user.PromotionStatus = PromotionStatus.Neutral;
+
+                if (user.PromotionLevel != UploaderRoleName)
+                {
+                    user.PromotionLevel = null;
+                }
+            }
         }
 
         public void EnrollForUploaderRole(string userId)

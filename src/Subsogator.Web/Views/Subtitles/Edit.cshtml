@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>@ViewData["Title"] @Model.Name</h1>
 
 @if (TempData["SubtitlesErrorMessage"] != null)
 {

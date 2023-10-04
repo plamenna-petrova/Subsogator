@@ -97,25 +97,6 @@ else
         </tbody>
     </table>
 
-    var isPreviousPageDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var isNextPageDisabled = !Model.HasNextPage ? "disabled" : "";
-
-    string getPageButtonAdditionalClassName(int currentPageIndex)
-    {
-        string pageButtonClassName = "";
-
-        if (Model.PageIndex == currentPageIndex)
-        {
-            pageButtonClassName = "btn-primary";
-        }
-        else
-        {
-            pageButtonClassName = "btn-outline-primary";
-        }
-
-        return pageButtonClassName;
-    }
-
     <div class="row">
         <div class="col-5">
             <a asp-action="Index"
@@ -123,13 +104,13 @@ else
                asp-route-pageNumber="@(Model.PageIndex - 1)"
                asp-route-pageSize="@ViewData["CurrentPageSize"]"
                asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
-               class="btn btn-outline-primary @isPreviousPageDisabled">
+               class="btn btn-outline-primary @(!Model.HasPreviousPage ? "disabled" : "")">
                 Previous
             </a>
 
             @for (int pageIndex = 1; pageIndex <= @Model.TotalPages; pageIndex++)
             {
-                <a class="btn @getPageButtonAdditionalClassName(pageIndex)"
+                <a class="btn @(Model.PageIndex == pageIndex ? "btn-primary" : "btn-outline-primary")"
                    asp-action="Index"
                    asp-route-sortOrder="@ViewData["CurrentSort"]"
                    asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
@@ -144,7 +125,7 @@ else
                asp-route-pageNumber="@(Model.PageIndex + 1)"
                asp-route-pageSize="@ViewData["CurrentPageSize"]"
                asp-route-currentFilter="@ViewData["ActorSearchFilter"]"
-               class="btn btn-outline-primary @isNextPageDisabled">
+               class="btn btn-outline-primary @(!Model.HasNextPage ? "disabled" : "")">
                 Next
             </a>
         </div>
@@ -173,4 +154,3 @@ else
         </div>
     </div>
 }
-
