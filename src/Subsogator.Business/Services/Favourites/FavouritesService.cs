@@ -12,9 +12,9 @@ namespace Subsogator.Business.Services.Favourites
 {
     public class FavouritesService : IFavouritesService
     {
-        private IFavouritesRepository _favouritesRepository;
+        private readonly IFavouritesRepository _favouritesRepository;
 
-        private ISubtitlesRepository _subtitlesRepository;
+        private readonly ISubtitlesRepository _subtitlesRepository;
 
         public FavouritesService(
             IFavouritesRepository favouritesRepository, 

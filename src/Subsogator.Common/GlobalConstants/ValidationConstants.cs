@@ -17,7 +17,7 @@
         public const string DirectorLastNameMinimumLengthValidationMessage = "The last name of the " +
              "director cannot be shorter than 2 symbols";
 
-        public const string GenreNameMinimumLengthValidationMessage = "The country name " +
+        public const string GenreNameMinimumLengthValidationMessage = "The genre name " +
             "cannot be shorter than 5 symbols";
 
         public const string LanguageNameMinimumLengthValidationMessage = "The language name " +

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Subsogator.Web.Models.Languages.ViewModels
 {
-    public class  LanguageDetailsViewModel
+    public class LanguageDetailsViewModel
     {
         public string Id { get; set; }
 
